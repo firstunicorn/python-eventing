@@ -36,7 +36,7 @@ def _configure_hypothesis_profiles() -> None:
         "stress",
         settings(max_examples=100000, parent=common),
     )
-    settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
+    settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "thorough"))
 
 
 @lru_cache(maxsize=1)
