@@ -88,6 +88,22 @@ class FakeBroker:
         return self.healthy and timeout == 1.0
 
 
+class FakeKafkaBroker:
+    """Broker fake that records publish arguments."""
+
+    def __init__(self) -> None:
+        self.published: list[tuple[dict[str, object], str, bytes | None]] = []
+
+    async def publish(
+        self,
+        message: dict[str, object],
+        *,
+        topic: str,
+        key: bytes | None,
+    ) -> None:
+        self.published.append((message, topic, key))
+
+
 @pytest.mark.asyncio
 async def test_outbox_event_handler_persists_event() -> None:
     """Outbox handler should store dispatched events."""
@@ -175,3 +191,19 @@ def test_kafka_publisher_uses_event_type_as_topic() -> None:
     topic = publisher._resolve_topic({"eventType": "gamification.XPAwarded"})
 
     assert topic == "gamification.XPAwarded"
+
+
+@pytest.mark.asyncio
+async def test_kafka_publisher_serializes_string_keys_to_bytes() -> None:
+    """Publisher should encode string aggregate keys for FastStream Kafka."""
+    broker = FakeKafkaBroker()
+    publisher = KafkaEventPublisher(cast(Any, broker))
+    message = {
+        "eventType": "gamification.XPAwarded",
+        "aggregateId": "user-123",
+        "source": "gamification-service",
+    }
+
+    await publisher.publish_to_topic("gamification.XPAwarded", message)
+
+    assert broker.published == [(message, "gamification.XPAwarded", b"user-123")]
