@@ -46,7 +46,7 @@ dmypy.json
 # Documentation builds
 docs/_build/
 docs/.doctrees/
-docs/autoapi/
+docs/source/autoapi/
 site/
 
 # IDE and editors
