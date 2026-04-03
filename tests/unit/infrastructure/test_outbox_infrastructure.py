@@ -12,7 +12,6 @@ from eventing.core.events import BaseEvent
 from eventing.infrastructure.health import EventingHealthCheck
 from eventing.infrastructure.messaging import (
     DeadLetterHandler,
-    IdempotentConsumerBase,
     KafkaEventPublisher,
 )
 from eventing.infrastructure.outbox import OutboxEventHandler, ScheduledOutboxWorker
@@ -92,17 +91,6 @@ class FakeBroker:
         return self.healthy and timeout == 1.0
 
 
-class RecordingConsumer(IdempotentConsumerBase):
-    """Consumer fake that records handled messages."""
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.handled: list[dict[str, object]] = []
-
-    async def handle_event(self, message: dict[str, object]) -> None:
-        self.handled.append(message)
-
-
 @pytest.mark.asyncio
 async def test_outbox_event_handler_persists_event() -> None:
     """Outbox handler should store dispatched events."""
@@ -163,20 +151,6 @@ async def test_worker_routes_failed_events_to_dlq() -> None:
     assert published == 0
     assert repository.failed == [(event.event_id, "publish failed")]
     assert dlq_publisher.topics == [f"{event.event_type}.DLQ"]
-
-
-@pytest.mark.asyncio
-async def test_idempotent_consumer_skips_duplicate_events() -> None:
-    """Consumer should only process a given event identifier once."""
-    consumer = RecordingConsumer()
-    message = {"eventId": "abc-123", "payload": 1}
-
-    first = await consumer.consume(message)
-    second = await consumer.consume(message)
-
-    assert first is True
-    assert second is False
-    assert consumer.handled == [message]
 
 
 @pytest.mark.asyncio

@@ -111,7 +111,10 @@ class EventBus:
                     DispatchTrace("failure", event, self._backend.name, handler.name, error),
                 )
                 raise
-            self._emit("on_success", DispatchTrace("success", event, self._backend.name, handler.name))
+            self._emit(
+                "on_success",
+                DispatchTrace("success", event, self._backend.name, handler.name),
+            )
 
         await self._backend.invoke(event, handlers, invoke_one)
 
