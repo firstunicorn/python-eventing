@@ -14,7 +14,7 @@ This package defines the core eventing contracts:
 **Envelope Formatting**
   - EventEnvelopeFormatter : CloudEvents 1.0 wrapper for Kafka
 
-See Also
+See also
 --------
 - eventing.core.contracts.bus : Event bus facade and dispatch backends
 - eventing.infrastructure.outbox : Transactional outbox handler

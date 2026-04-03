@@ -20,7 +20,7 @@ This layer provides concrete implementations of technical concerns:
 **Health Checks**
   - EventingHealthCheck : Outbox staleness monitoring
 
-See Also
+See also
 --------
 - eventing.core : Domain-agnostic event contracts
 - eventing.infrastructure.outbox : Outbox pattern implementation

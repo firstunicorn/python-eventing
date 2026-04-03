@@ -5,7 +5,7 @@ events have already been processed by specific consumers. It uses a composite
 primary key of `(consumer_name, event_id)` to ensure an event is only processed
 once per consumer group.
 
-See Also
+See also
 --------
 - eventing.infrastructure.persistence.processed_message_store : The store that manages these records
 """

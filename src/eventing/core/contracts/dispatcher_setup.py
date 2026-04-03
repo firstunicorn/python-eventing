@@ -4,7 +4,7 @@ This module provides factory functions like `build_event_bus` and data structure
 like `HandlerRegistration` to easily configure and instantiate event buses with
 pre-wired handlers.
 
-See Also
+See also
 --------
 - eventing.core.contracts.bus.event_bus : The event bus created by these factories
 """

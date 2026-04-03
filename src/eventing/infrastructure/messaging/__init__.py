@@ -20,7 +20,7 @@ This module provides Kafka integration with built-in reliability patterns:
   - create_kafka_broker : FastStream Kafka broker factory
   - IProcessedMessageStore : Interface for idempotency stores
 
-See Also
+See also
 --------
 - eventing.infrastructure.persistence : Idempotency store implementations
 - eventing.infrastructure.outbox : Outbox worker uses KafkaEventPublisher

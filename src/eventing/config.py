@@ -5,7 +5,7 @@ environment variables. It extends reusable base configurations from the
 toolkit (e.g., database, FastAPI) and adds eventing-specific variables
 like Kafka broker settings and outbox worker configuration.
 
-See Also
+See also
 --------
 - eventing.main : Where settings are used during app creation
 - fastapi_config_patterns : The toolkit base settings classes

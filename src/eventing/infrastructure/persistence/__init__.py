@@ -14,7 +14,7 @@ This module provides SQLAlchemy-based persistence for:
 **Session Management**
   - create_session_factory : Async SQLAlchemy session configuration
 
-See Also
+See also
 --------
 - eventing.infrastructure.outbox : Outbox repository and worker
 - eventing.infrastructure.messaging : Kafka consumer base with idempotency

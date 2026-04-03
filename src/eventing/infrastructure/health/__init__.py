@@ -12,7 +12,7 @@ The health check helps detect:
 - Kafka connectivity issues (events can't be published)
 - Database issues (can't read outbox table)
 
-See Also
+See also
 --------
 - eventing.infrastructure.outbox : Outbox repository and worker
 - eventing.presentation.router : Health endpoint integration

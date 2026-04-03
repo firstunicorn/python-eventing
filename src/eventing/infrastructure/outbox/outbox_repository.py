@@ -4,7 +4,7 @@ This module provides `SqlAlchemyOutboxRepository` which implements the CRUD
 operations for storing domain events in the database transactionally alongside
 business data. It also tracks the published/failed status of events.
 
-See Also
+See also
 --------
 - eventing.infrastructure.persistence.outbox_orm : The underlying ORM model
 - eventing.infrastructure.outbox.outbox_worker : The worker that reads these events

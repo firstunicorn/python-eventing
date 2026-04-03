@@ -4,7 +4,7 @@ This module provides the `DeadLetterHandler` which is used by the outbox worker
 when an event fails to publish after all retry attempts are exhausted. It marks
 the event as failed in the database and publishes it to a designated DLQ topic.
 
-See Also
+See also
 --------
 - eventing.infrastructure.outbox.outbox_worker : The worker that triggers this handler
 """

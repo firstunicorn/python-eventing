@@ -3,7 +3,7 @@
 This module provides legacy imports for the event-bus facade internals.
 The actual implementation lives in the ``eventing.core.contracts.bus`` package.
 
-See Also
+See also
 --------
 - eventing.core.contracts.bus : Actual event bus implementations
 """

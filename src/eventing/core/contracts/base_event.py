@@ -4,7 +4,7 @@ This module defines the foundational `BaseEvent` class that all domain
 events must inherit from. It provides common fields like event ID,
 timestamps, and tracking identifiers.
 
-See Also
+See also
 --------
 - eventing.core.contracts.event_registry : For registering event types
 """

@@ -5,7 +5,7 @@ consumers that ensures each event is processed exactly once. It extracts the
 `event_id` from incoming messages and attempts to claim it via the configured
 processed message store before delegating to `handle_event`.
 
-See Also
+See also
 --------
 - eventing.infrastructure.messaging.processed_message_store : The idempotency store protocol
 """

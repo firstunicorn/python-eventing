@@ -4,7 +4,7 @@ This module provides the `DispatchBackend` protocol and the default
 `SequentialDispatchBackend` implementation. Backends control how the event bus
 routes events to their registered handlers (e.g., sequentially, concurrently).
 
-See Also
+See also
 --------
 - eventing.core.contracts.bus.event_bus : The event bus that uses these backends
 """

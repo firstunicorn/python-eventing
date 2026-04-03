@@ -3,7 +3,7 @@
 This module provides a formatter to wrap domain events in the
 CloudEvents 1.0 specification format before publishing to external systems.
 
-See Also
+See also
 --------
 - eventing.core.contracts.base_event : The event base class
 """

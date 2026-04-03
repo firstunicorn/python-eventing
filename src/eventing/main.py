@@ -5,7 +5,7 @@ manager. It wires together the database session, Kafka broker, outbox repository
 and background worker, ensuring all infrastructure is properly initialized
 and gracefully shut down.
 
-See Also
+See also
 --------
 - eventing.presentation.router : API routes registered with the application
 - eventing.config.Settings : Configuration used during initialization

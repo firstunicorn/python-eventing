@@ -16,7 +16,7 @@ DispatchBackend
 SequentialDispatchBackend
     Default backend that dispatches events to handlers one at a time.
 
-See Also
+See also
 --------
 - eventing.core.contracts.dispatch_hooks : Hook definitions and settings
 - eventing.core.contracts.dispatcher_setup : Mediator integration

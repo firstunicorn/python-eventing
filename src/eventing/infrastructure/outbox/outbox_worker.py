@@ -5,7 +5,7 @@ polling the outbox repository for unpublished events and publishing them to
 Kafka. It handles retries with exponential backoff and routes permanently failed
 events to a Dead Letter Queue (DLQ).
 
-See Also
+See also
 --------
 - eventing.infrastructure.outbox.outbox_repository : Where events are polled from
 - eventing.infrastructure.messaging.kafka_publisher : Used for publishing

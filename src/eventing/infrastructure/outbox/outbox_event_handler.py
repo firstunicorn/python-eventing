@@ -4,7 +4,7 @@ This module provides the `OutboxEventHandler` which acts as a bridge between
 the in-process `EventBus` and the persistent `SqlAlchemyOutboxRepository`.
 When registered as a subscriber, it automatically persists any emitted events.
 
-See Also
+See also
 --------
 - eventing.core.contracts.bus.event_bus : The event bus where this handler is registered
 """

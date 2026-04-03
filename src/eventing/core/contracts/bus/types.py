@@ -3,7 +3,7 @@
 This module defines the type hints and data structures used internally by
 the `EventBus` to manage registered handlers and callbacks.
 
-See Also
+See also
 --------
 - eventing.core.contracts.bus.event_bus : The main event bus implementation
 """

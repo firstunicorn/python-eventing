@@ -4,7 +4,7 @@ The outbox pattern ensures reliable event publishing by storing events
 in the application database within the same transaction as business data,
 then publishing them asynchronously to Kafka.
 
-**Core Components**
+**Core components**
   - OutboxEventHandler : Store events in outbox during transaction
   - SqlAlchemyOutboxRepository : CRUD operations on outbox table
   - ScheduledOutboxWorker : Background worker that publishes unpublished events
@@ -15,14 +15,14 @@ then publishing them asynchronously to Kafka.
   - Ordered publication per aggregate (events publish in insert order)
   - Survives app crashes (unpublished events persist in database)
 
-**Usage Pattern**
+**Usage pattern**
   1. Register OutboxEventHandler as domain event listener
   2. Emit domain events in application transaction
   3. Events automatically save to outbox_events table
   4. OutboxWorker polls table and publishes to Kafka
   5. Published events marked as published_at timestamp
 
-See Also
+See also
 --------
 - eventing.core : Domain event definitions
 - eventing.infrastructure.messaging : KafkaEventPublisher used by worker

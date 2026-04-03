@@ -3,12 +3,12 @@
 This package provides reusable event contracts, transactional outbox publishing,
 Kafka integration, and in-process dispatch patterns for event-driven architectures.
 
-Key Components
+Key components
 --------------
 - eventing.core : Event definitions, registry, and envelope formatting
 - eventing.infrastructure : Outbox, messaging, and persistence implementations
 
-Quick Start
+Quick start
 -----------
 >>> from eventing.core import BaseEvent, EventBus, build_event_bus
 >>> from eventing.infrastructure import OutboxEventHandler

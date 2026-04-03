@@ -4,7 +4,7 @@ This module provides the `EventRegistry` which acts as a central catalog
 for all domain events. It handles type-safe deserialization by mapping string
 event types (e.g., "user.created") back to their corresponding Python classes.
 
-See Also
+See also
 --------
 - eventing.core.contracts.base_event : The base class for registered events
 """
