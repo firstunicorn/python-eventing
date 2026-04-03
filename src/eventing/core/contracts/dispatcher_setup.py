@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from eventing.core.events.base_event import BaseEvent
-from eventing.core.events.dispatch_hooks import DispatchHooks, DispatchSettings
-from eventing.core.events.event_bus import DispatchBackend, EventBus
+from eventing.core.contracts.base_event import BaseEvent
+from eventing.core.contracts.bus import DispatchBackend, EventBus
+from eventing.core.contracts.dispatch_hooks import DispatchHooks, DispatchSettings
 from python_domain_events import IDomainEventHandler, InProcessEventDispatcher
 
 

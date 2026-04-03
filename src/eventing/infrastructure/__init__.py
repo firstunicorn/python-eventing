@@ -3,8 +3,8 @@
 from eventing.infrastructure.health import EventingHealthCheck
 from eventing.infrastructure.messaging import (
     DeadLetterHandler,
-    IProcessedMessageStore,
     IdempotentConsumerBase,
+    IProcessedMessageStore,
     KafkaEventPublisher,
     create_kafka_broker,
 )
@@ -14,10 +14,11 @@ from eventing.infrastructure.outbox import (
     SqlAlchemyOutboxRepository,
     build_outbox_config,
 )
-from eventing.infrastructure.persistence import OutboxEventRecord, create_session_factory
 from eventing.infrastructure.persistence import (
+    OutboxEventRecord,
     ProcessedMessageRecord,
     SqlAlchemyProcessedMessageStore,
+    create_session_factory,
 )
 
 __all__ = [

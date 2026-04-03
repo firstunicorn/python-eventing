@@ -5,7 +5,7 @@ eventing.infrastructure.messaging.kafka_consumer_base
 
 .. autoapi-nested-parse::
 
-   Idempotent consumer base with simple in-memory deduplication.
+   Idempotent consumer base backed by a durable processed-message store.
 
 
 
@@ -20,12 +20,12 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: IdempotentConsumerBase
+.. py:class:: IdempotentConsumerBase(*, consumer_name, processed_message_store)
 
    Bases: :py:obj:`abc.ABC`
 
 
-   Skip duplicate events by event identifier within the process lifetime.
+   Skip duplicate events by identifier using a durable processed-message store.
 
 
    .. py:method:: consume(message)

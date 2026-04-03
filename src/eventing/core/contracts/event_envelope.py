@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from eventing.core.events.base_event import BaseEvent
+from eventing.core.contracts.base_event import BaseEvent
 from python_outbox_core import CloudEventsFormatter
 
 

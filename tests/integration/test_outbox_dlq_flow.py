@@ -8,7 +8,7 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from eventing.core.events import BaseEvent, EventRegistry
+from eventing.core.contracts import BaseEvent, EventRegistry
 from eventing.infrastructure.messaging import DeadLetterHandler
 from eventing.infrastructure.outbox import ScheduledOutboxWorker
 from eventing.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository

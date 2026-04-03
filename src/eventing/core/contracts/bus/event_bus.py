@@ -2,54 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
-from typing import Protocol
+from collections.abc import Callable
 
-from eventing.core.events.base_event import BaseEvent
-from eventing.core.events.dispatch_hooks import DispatchHooks, DispatchSettings, DispatchTrace
-from python_domain_events import IDomainEventHandler
-
-EventCallback = Callable[[BaseEvent], Awaitable[None]]
-HandlerLike = IDomainEventHandler[BaseEvent] | EventCallback
-
-
-@dataclass(frozen=True, slots=True)
-class RegisteredHandler:
-    """Store one registered callback with its display name."""
-
-    name: str
-    callback: EventCallback
-
-
-class DispatchBackend(Protocol):
-    """Execute one dispatch strategy."""
-
-    name: str
-
-    async def invoke(
-        self,
-        event: BaseEvent,
-        handlers: list[RegisteredHandler],
-        invoke_one: Callable[[RegisteredHandler], Awaitable[None]],
-    ) -> None:
-        """Run the provided handlers for one event."""
-
-
-class SequentialDispatchBackend:
-    """Dispatch handlers sequentially in registration order."""
-
-    name = "sequential"
-
-    async def invoke(
-        self,
-        event: BaseEvent,
-        handlers: list[RegisteredHandler],
-        invoke_one: Callable[[RegisteredHandler], Awaitable[None]],
-    ) -> None:
-        _ = event
-        for handler in handlers:
-            await invoke_one(handler)
+from eventing.core.contracts.base_event import BaseEvent
+from eventing.core.contracts.bus.backends import DispatchBackend, SequentialDispatchBackend
+from eventing.core.contracts.bus.types import EventCallback, HandlerLike, RegisteredHandler
+from eventing.core.contracts.dispatch_hooks import DispatchHooks, DispatchSettings, DispatchTrace
 
 
 class EventBus:

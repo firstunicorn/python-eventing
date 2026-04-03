@@ -10,7 +10,7 @@ from uuid import UUID
 from sqlalchemy import func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from eventing.core.events import BaseEvent, EventRegistry
+from eventing.core.contracts import BaseEvent, EventRegistry
 from eventing.infrastructure.persistence.outbox_orm import OutboxEventRecord
 from python_outbox_core import IOutboxEvent, IOutboxRepository
 

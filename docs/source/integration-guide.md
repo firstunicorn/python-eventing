@@ -17,7 +17,7 @@ The published distribution name is `python-eventing`, while Python imports stay
 ## Add a New Event Schema
 
 1. Create a Pydantic event model that extends
-   `eventing.core.events.BaseEvent`.
+   `eventing.core.contracts.BaseEvent`.
 2. Declare a stable default `event_type` so the registry can auto-register it.
 3. Keep payload fields transport-safe and JSON-serializable.
 
@@ -30,8 +30,8 @@ producer payload.
 
 1. Register the event class in an `EventRegistry`.
 2. Add dispatcher registrations through
-   `eventing.core.events.build_dispatcher` or the higher-level
-   `eventing.core.events.build_event_bus`.
+   `eventing.core.contracts.build_dispatcher` or the higher-level
+   `eventing.core.contracts.build_event_bus`.
 3. Include the outbox writer handler so in-process dispatch automatically
    persists the event inside the same application transaction.
 

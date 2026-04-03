@@ -5,10 +5,10 @@ from __future__ import annotations
 from hypothesis import given
 from hypothesis import strategies as st
 
-from eventing.core.events import BaseEvent, EventEnvelopeFormatter, EventRegistry
+from eventing.core.contracts import BaseEvent, EventEnvelopeFormatter, EventRegistry
 
 
-class ExampleEvent(BaseEvent):
+class ExampleEvent(BaseEvent):  # pylint: disable=too-many-ancestors
     """Concrete generated event used for property tests."""
 
     event_type: str = "gamification.XPAwarded"

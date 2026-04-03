@@ -1,7 +1,7 @@
-eventing.core.events.event_envelope
-===================================
+eventing.core.contracts.event_envelope
+======================================
 
-.. py:module:: eventing.core.events.event_envelope
+.. py:module:: eventing.core.contracts.event_envelope
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Classes
 
 .. autoapisummary::
 
-   eventing.core.events.event_envelope.EventEnvelopeFormatter
+   eventing.core.contracts.event_envelope.EventEnvelopeFormatter
 
 
 Module Contents

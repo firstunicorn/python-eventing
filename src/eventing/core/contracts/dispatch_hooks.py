@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from eventing.core.events.base_event import BaseEvent
+from eventing.core.contracts.base_event import BaseEvent
 
 
 @dataclass(frozen=True, slots=True)

@@ -6,7 +6,7 @@ from typing import Any
 
 from pydantic_core import PydanticUndefined
 
-from eventing.core.events.base_event import BaseEvent
+from eventing.core.contracts.base_event import BaseEvent
 
 
 class UnknownEventTypeError(KeyError):  # pylint: disable=too-many-ancestors

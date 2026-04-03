@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager, suppress
 from fastapi import APIRouter, FastAPI
 
 from eventing.config import settings
-from eventing.core.events import EventRegistry
+from eventing.core.contracts import EventRegistry
 from eventing.infrastructure import (
     DeadLetterHandler,
     EventingHealthCheck,

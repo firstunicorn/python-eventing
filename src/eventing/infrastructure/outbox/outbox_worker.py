@@ -6,7 +6,7 @@ import asyncio
 
 from tenacity import AsyncRetrying, stop_after_attempt, wait_exponential
 
-from eventing.core.events import BaseEvent
+from eventing.core.contracts import BaseEvent
 from eventing.infrastructure.messaging.dead_letter_handler import DeadLetterHandler
 from python_outbox_core import IEventPublisher, IOutboxRepository, OutboxConfig, OutboxPublisherBase
 

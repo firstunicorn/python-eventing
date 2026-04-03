@@ -1,7 +1,7 @@
-eventing.core.events.dispatch_hooks
-===================================
+eventing.core.contracts.dispatch_hooks
+======================================
 
-.. py:module:: eventing.core.events.dispatch_hooks
+.. py:module:: eventing.core.contracts.dispatch_hooks
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Attributes
 
 .. autoapisummary::
 
-   eventing.core.events.dispatch_hooks.DispatchHook
+   eventing.core.contracts.dispatch_hooks.DispatchHook
 
 
 Classes
@@ -22,9 +22,9 @@ Classes
 
 .. autoapisummary::
 
-   eventing.core.events.dispatch_hooks.DispatchTrace
-   eventing.core.events.dispatch_hooks.DispatchHooks
-   eventing.core.events.dispatch_hooks.DispatchSettings
+   eventing.core.contracts.dispatch_hooks.DispatchTrace
+   eventing.core.contracts.dispatch_hooks.DispatchHooks
+   eventing.core.contracts.dispatch_hooks.DispatchSettings
 
 
 Module Contents
@@ -40,7 +40,7 @@ Module Contents
 
 
    .. py:attribute:: event
-      :type:  eventing.core.events.base_event.BaseEvent
+      :type:  eventing.core.contracts.base_event.BaseEvent
 
 
    .. py:attribute:: backend_name

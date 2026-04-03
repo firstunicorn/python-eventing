@@ -8,12 +8,9 @@ from uuid import UUID
 
 import pytest
 
-from eventing.core.events import BaseEvent
+from eventing.core.contracts import BaseEvent
 from eventing.infrastructure.health import EventingHealthCheck
-from eventing.infrastructure.messaging import (
-    DeadLetterHandler,
-    KafkaEventPublisher,
-)
+from eventing.infrastructure.messaging import DeadLetterHandler, KafkaEventPublisher
 from eventing.infrastructure.outbox import OutboxEventHandler, ScheduledOutboxWorker
 from python_outbox_core import IOutboxEvent, OutboxConfig
 

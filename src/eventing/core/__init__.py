@@ -1,13 +1,13 @@
 """Core cross-layer primitives for the eventing service."""
 
-from eventing.core.events import (
+from eventing.core.contracts import (
     BaseEvent,
     DispatchBackend,
     DispatchHooks,
     DispatchSettings,
     DispatchTrace,
-    EventEnvelopeFormatter,
     EventBus,
+    EventEnvelopeFormatter,
     EventRegistry,
     HandlerRegistration,
     SequentialDispatchBackend,

@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from tests.integration.processed_message_consumers import FailingConsumer, RecordingConsumer
 
-
 pytestmark = pytest.mark.asyncio
 
 

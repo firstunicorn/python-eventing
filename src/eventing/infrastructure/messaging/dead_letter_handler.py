@@ -1,6 +1,6 @@
 """Dead-letter routing for permanently failed events."""
 
-from eventing.core.events import BaseEvent
+from eventing.core.contracts import BaseEvent
 from eventing.infrastructure.messaging.kafka_publisher import KafkaEventPublisher
 from python_outbox_core import IOutboxRepository
 

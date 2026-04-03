@@ -9,7 +9,7 @@ from faststream.kafka import KafkaBroker
 from testcontainers.kafka import KafkaContainer  # type: ignore[import-untyped]
 from testcontainers.postgres import PostgresContainer  # type: ignore[import-untyped]
 
-from eventing.core.events import BaseEvent, EventRegistry
+from eventing.core.contracts import BaseEvent, EventRegistry
 from eventing.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
 from eventing.infrastructure.persistence.orm_base import Base
 from eventing.infrastructure.persistence.session import create_session_factory

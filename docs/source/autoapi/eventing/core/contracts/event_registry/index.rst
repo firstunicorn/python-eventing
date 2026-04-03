@@ -1,7 +1,7 @@
-eventing.core.events.event_registry
-===================================
+eventing.core.contracts.event_registry
+======================================
 
-.. py:module:: eventing.core.events.event_registry
+.. py:module:: eventing.core.contracts.event_registry
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Exceptions
 
 .. autoapisummary::
 
-   eventing.core.events.event_registry.UnknownEventTypeError
+   eventing.core.contracts.event_registry.UnknownEventTypeError
 
 
 Classes
@@ -22,7 +22,7 @@ Classes
 
 .. autoapisummary::
 
-   eventing.core.events.event_registry.EventRegistry
+   eventing.core.contracts.event_registry.EventRegistry
 
 
 Module Contents

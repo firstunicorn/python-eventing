@@ -7,7 +7,7 @@ from typing import Any, cast
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from eventing.core.events import BaseEvent, EventRegistry
+from eventing.core.contracts import BaseEvent, EventRegistry
 from eventing.infrastructure.health import EventingHealthCheck
 from eventing.infrastructure.outbox import ScheduledOutboxWorker
 from eventing.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository

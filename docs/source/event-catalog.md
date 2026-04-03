@@ -1,7 +1,7 @@
 # Event Catalog
 
 The canonical event contract is defined by the installable `eventing` import
-package via `eventing.core.events.BaseEvent`.
+package via `eventing.core.contracts.BaseEvent`.
 Every published event shares the fields below before service-specific payload
 fields are added.
 
@@ -18,7 +18,7 @@ fields are added.
 | `metadata` | Extra transport-safe attributes. |
 
 The transport envelope is produced through
-`eventing.core.events.EventEnvelopeFormatter`, which wraps each event as a
+`eventing.core.contracts.EventEnvelopeFormatter`, which wraps each event as a
 CloudEvents 1.0 payload before publication.
 
 ## Published Domain Event Examples

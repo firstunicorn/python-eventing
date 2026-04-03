@@ -15,6 +15,6 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /autoapi/eventing/core/events/index
+   /autoapi/eventing/core/contracts/index
 
 

@@ -1,7 +1,7 @@
-eventing.core.events.dispatcher_setup
-=====================================
+eventing.core.contracts.dispatcher_setup
+========================================
 
-.. py:module:: eventing.core.events.dispatcher_setup
+.. py:module:: eventing.core.contracts.dispatcher_setup
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Classes
 
 .. autoapisummary::
 
-   eventing.core.events.dispatcher_setup.HandlerRegistration
+   eventing.core.contracts.dispatcher_setup.HandlerRegistration
 
 
 Functions
@@ -22,8 +22,8 @@ Functions
 
 .. autoapisummary::
 
-   eventing.core.events.dispatcher_setup.build_dispatcher
-   eventing.core.events.dispatcher_setup.build_event_bus
+   eventing.core.contracts.dispatcher_setup.build_dispatcher
+   eventing.core.contracts.dispatcher_setup.build_event_bus
 
 
 Module Contents
@@ -35,11 +35,11 @@ Module Contents
 
 
    .. py:attribute:: event_type
-      :type:  type[eventing.core.events.base_event.BaseEvent]
+      :type:  type[eventing.core.contracts.base_event.BaseEvent]
 
 
    .. py:attribute:: handler
-      :type:  python_domain_events.IDomainEventHandler[eventing.core.events.base_event.BaseEvent]
+      :type:  python_domain_events.IDomainEventHandler[eventing.core.contracts.base_event.BaseEvent]
 
 
 .. py:function:: build_dispatcher(registrations)

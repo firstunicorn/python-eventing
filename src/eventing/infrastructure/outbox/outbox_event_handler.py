@@ -1,6 +1,6 @@
 """In-process handler that writes domain events to the transactional outbox."""
 
-from eventing.core.events import BaseEvent
+from eventing.core.contracts import BaseEvent
 from python_domain_events import IDomainEventHandler
 from python_outbox_core import IOutboxRepository
 

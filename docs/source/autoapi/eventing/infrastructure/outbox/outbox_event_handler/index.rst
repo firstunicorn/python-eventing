@@ -22,7 +22,7 @@ Module Contents
 
 .. py:class:: OutboxEventHandler(repository)
 
-   Bases: :py:obj:`python_domain_events.IDomainEventHandler`\ [\ :py:obj:`eventing.core.events.BaseEvent`\ ]
+   Bases: :py:obj:`python_domain_events.IDomainEventHandler`\ [\ :py:obj:`eventing.core.contracts.BaseEvent`\ ]
 
 
    Persist dispatched domain events into the outbox.

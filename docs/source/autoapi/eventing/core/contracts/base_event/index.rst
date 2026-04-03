@@ -1,7 +1,7 @@
-eventing.core.events.base_event
-===============================
+eventing.core.contracts.base_event
+==================================
 
-.. py:module:: eventing.core.events.base_event
+.. py:module:: eventing.core.contracts.base_event
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Classes
 
 .. autoapisummary::
 
-   eventing.core.events.base_event.BaseEvent
+   eventing.core.contracts.base_event.BaseEvent
 
 
 Module Contents
