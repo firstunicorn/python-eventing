@@ -13,7 +13,6 @@ gamification-specific reward rules or producer-specific business handlers.
 
 event-catalog
 integration-guide
-api/index
 ```
 
 The manual pages in this guide explain the stable contracts and wiring points.
