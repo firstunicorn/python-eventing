@@ -23,10 +23,12 @@ CloudEvents 1.0 payload before publication.
 
 ## Published Domain Event Examples
 
+> **Note:** The events below are purely illustrative examples. The `python-eventing` library does *not* contain any hardcoded business payloads or domains (like gamification).
+
 The eventing service does not define producer-specific business payloads.
 Instead, it provides the reusable base contract that other services extend. The
-rows below show the currently documented gamification domain events published
-through that shared contract.
+rows below show how a theoretical gamification service might structure its domain
+events using that shared contract.
 
 | Event type | Producer | Payload fields |
 | --- | --- | --- |
@@ -35,6 +37,8 @@ through that shared contract.
 | `gamification.StreakUpdated` | `gamification-service` | `userId`, `streakDays`, `action` |
 
 ## Trusted Backend Fact Examples
+
+> **Note:** Similarly, these are purely theoretical examples of how other microservices might use the eventing contracts.
 
 Producer services can also publish facts for downstream consumers without
 embedding reward decisions in the payload. These events still use the shared
