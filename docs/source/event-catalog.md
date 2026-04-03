@@ -1,4 +1,4 @@
-# Event Catalog
+# Event catalog
 
 The canonical event contract is defined by the installable `eventing` import
 package via `eventing.core.contracts.BaseEvent`.
@@ -21,7 +21,7 @@ The transport envelope is produced through
 `eventing.core.contracts.EventEnvelopeFormatter`, which wraps each event as a
 CloudEvents 1.0 payload before publication.
 
-## Published Domain Event Examples
+## Published domain event examples
 
 > **Note:** The events below are purely illustrative examples. The `python-eventing` library does *not* contain any hardcoded business payloads or domains (like gamification).
 
@@ -36,7 +36,7 @@ events using that shared contract.
 | `gamification.LevelUpAchieved` | `gamification-service` | `userId`, `oldLevel`, `newLevel` |
 | `gamification.StreakUpdated` | `gamification-service` | `userId`, `streakDays`, `action` |
 
-## Trusted Backend Fact Examples
+## Trusted backend fact examples
 
 > **Note:** Similarly, these are purely theoretical examples of how other microservices might use the eventing contracts.
 
@@ -54,7 +54,7 @@ Facts-only means producers send stable identifiers, timestamps, and transport
 metadata. They do not send XP amounts, streak deltas, or level changes. Those
 effects are computed by the consuming domain service.
 
-## Storage Contract
+## Storage contract
 
 The outbox table persists:
 
