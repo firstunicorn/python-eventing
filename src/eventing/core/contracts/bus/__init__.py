@@ -1,4 +1,26 @@
-"""Public exports for the event bus facade internals."""
+"""Event bus facade and dispatch backend abstractions.
+
+The event bus provides a decorator-style API for subscriber registration
+with pluggable dispatch backends, hooks, and tracing.
+
+Key Classes
+-----------
+EventBus
+    High-level facade for decorator-style registration, dispatch hooks,
+    and backend-agnostic event routing.
+
+DispatchBackend
+    Abstract interface for dispatch strategies. Implementations control
+    how events are routed to handlers (sequential, parallel, etc.).
+
+SequentialDispatchBackend
+    Default backend that dispatches events to handlers one at a time.
+
+See Also
+--------
+- eventing.core.contracts.dispatch_hooks : Hook definitions and settings
+- eventing.core.contracts.dispatcher_setup : Mediator integration
+"""
 
 from eventing.core.contracts.bus.backends import DispatchBackend, SequentialDispatchBackend
 from eventing.core.contracts.bus.event_bus import EventBus
