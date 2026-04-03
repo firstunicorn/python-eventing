@@ -1,0 +1,49 @@
+name: Validate Dependencies
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pip install poetry==2.3.3
+
+      - name: Check pyproject.toml validity
+        run: poetry check
+
+      - name: Verify lock file is up to date
+        run: poetry check --lock
+
+      - name: Verify lock file is properly synced
+        run: |
+          cp poetry.lock poetry.lock.original
+          poetry lock
+
+          if ! diff -q poetry.lock.original poetry.lock; then
+            echo "ERROR: poetry.lock is out of sync with pyproject.toml"
+            echo ""
+            echo "Differences found:"
+            diff poetry.lock.original poetry.lock || true
+            echo ""
+            echo "Please run 'poetry lock' locally and commit the updated lock file."
+            exit 1
+          fi
+
+          echo "Lock file is properly synced"
+
+      - name: Test clean installation
+        run: |
+          rm -rf .venv
+          poetry install --with dev,test,docs --sync
+          poetry show
