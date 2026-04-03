@@ -1,12 +1,26 @@
 # Eventing
 
-Package-first universal event infrastructure for GridFlow microservices.
+Package-first universal event infrastructure for microservices.
 
-| Package | Transactional outbox | Kafka support | Typed cross-service contracts | Idempotent consumer patterns | Developer ergonomics |
-| --- | --- | --- | --- | --- | --- |
-| `python-eventing` | Yes | Yes | Yes | Yes | Facade, decorators, hooks |
-| [`pyventus`](https://github.com/mdapena/pyventus) | No | No built-in Kafka data plane | General event abstractions | No built-in durable consumer pattern | Strong |
-| [`fastapi-events`](https://github.com/melvinkcx/fastapi-events) | No | No Kafka data plane | Request-local event payloads | No | Strong inside FastAPI |
+Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
+
+| Capability | `python-eventing` | [`pyventus`](https://github.com/mdapena/pyventus) | [`fastapi-events`](https://github.com/melvinkcx/fastapi-events) | Notes |
+| --- | --- | --- | --- | --- |
+| Transactional outbox | ✅✅✅ | ❌ | ❌ | Durable local DB plus outbox boundary is a core feature here |
+| Kafka data plane | ✅✅✅ | ❌ | ❌ | This package is built for Kafka-backed microservice messaging |
+| DLQ handling | ✅✅✅ | ❌ | ❌ | Native part of the durable eventing layer here |
+| Health checks for eventing runtime | ✅✅✅ | ❌ | ❌ | Outbox and runtime health belong to this package |
+| Typed cross-service event contracts | ✅✅ | ✅ | ✅✅ | `python-eventing` and `fastapi-events` are stronger on explicit payload modeling |
+| Decorator subscriber registration | ✅✅ | ✅✅✅ | ✅✅ | `EventBus.subscriber(...)` exists now; `pyventus` is still the most polished here |
+| In-process dispatch backend abstraction | ✅✅ | ✅✅✅ | ✅ | `DispatchBackend` exists here; `pyventus` offers a broader processor model |
+| Lifecycle hooks / callbacks | ✅✅ | ✅✅✅ | ✅ | `DispatchHooks` covers dispatch, success, failure, disabled, and debug |
+| Debug / disable controls | ✅✅ | ✅✅ | ✅✅✅ | `DispatchSettings(enabled, debug)` is implemented; `fastapi-events` is strongest for app-level toggling |
+| Observability / telemetry polish | ✅ | ✅ | ✅✅✅ | This package is hook-ready; `fastapi-events` has stronger native OTEL support |
+| Producer / outbox batch publish | ✅✅✅ | ❌ | ❌ | `ScheduledOutboxWorker` publishes outbox events in batches already |
+| FastAPI-local event flow | ❌ | ✅ | ✅✅✅ | This package intentionally avoids request-lifecycle middleware eventing |
+| Consumer batch handling | ❌ | ❌ | ✅✅✅ | `fastapi-events` supports `handle_many(...)`; this package stays one-message-per-consume today |
+| Consumer dedup helper | ✅ | ❌ | ❌ | `IdempotentConsumerBase` exists here |
+| Durable cross-service idempotency | ❌ | ❌ | ❌ | None of these libraries solve durable dedup out of the box today |
 
 ## Scope
 
