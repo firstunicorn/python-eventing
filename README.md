@@ -19,8 +19,8 @@ Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 | Producer / outbox batch publish | ✅✅✅ | ❌ | ❌ | `ScheduledOutboxWorker` publishes outbox events in batches already |
 | FastAPI-local event flow | ❌ | ✅ | ✅✅✅ | This package intentionally avoids request-lifecycle middleware eventing |
 | Consumer batch handling | ❌ | ❌ | ✅✅✅ | `fastapi-events` supports `handle_many(...)`; this package stays one-message-per-consume today |
-| Consumer dedup helper | ✅ | ❌ | ❌ | `IdempotentConsumerBase` exists here |
-| Durable cross-service idempotency | ❌ | ❌ | ❌ | None of these libraries solve durable dedup out of the box today |
+| Consumer dedup helper | ✅✅✅ | ❌ | ❌ | `IdempotentConsumerBase` now uses a durable processed-message store instead of process memory |
+| Durable cross-service idempotency | ✅✅✅ | ❌ | ❌ | `IProcessedMessageStore` plus `SqlAlchemyProcessedMessageStore` provide transactional duplicate protection |
 
 ## Scope
 
