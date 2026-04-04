@@ -6,7 +6,8 @@ from typing import Any
 
 import pytest
 
-from eventing.infrastructure.messaging import IdempotentConsumerBase, IProcessedMessageStore
+from messaging.infrastructure.pubsub import IdempotentConsumerBase
+from messaging.infrastructure.pubsub import IProcessedMessageStore
 
 
 class FakeProcessedMessageStore(IProcessedMessageStore):

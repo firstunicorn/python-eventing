@@ -6,7 +6,7 @@ authors = ["firstunicorn"]
 readme = "README.md"
 homepage = "https://github.com/firstunicorn/python-eventing"
 repository = "https://github.com/firstunicorn/python-eventing"
-packages = [{include = "eventing", from = "src"}]
+packages = [{include = "messaging", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -37,7 +37,6 @@ python-dto-mappers = "^0.1.0"
 python-app-exceptions = "^0.1.0"
 python-infrastructure-exceptions = "^0.1.0"
 python-input-validation = "^0.1.0"
-python-structlog-config = "^0.1.0"
 sqlalchemy-async-repositories = "^0.1.0"
 sqlalchemy-async-session-factory = "^0.1.0"
 fastapi-config-patterns = "^0.1.0"
@@ -280,7 +279,7 @@ min_confidence = 80
 
 [tool.deptry]
 extend_exclude = ["docs"]
-known_first_party = ["eventing"]
+known_first_party = ["messaging"]
 per_rule_ignores = { DEP002 = ["uvicorn", "asyncpg", "alembic"] }
 
 [tool.pydocstyle]
@@ -289,6 +288,6 @@ add-ignore = ["D100", "D104", "D107"]
 
 [tool.isort]
 profile = "black"
-known_first_party = ["eventing"]
+known_first_party = ["messaging"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 line_length = 100

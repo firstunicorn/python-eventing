@@ -5,7 +5,7 @@ from __future__ import annotations
 from hypothesis import given
 from hypothesis import strategies as st
 
-from eventing.core.contracts import BaseEvent, EventEnvelopeFormatter, EventRegistry
+from messaging.core.contracts import BaseEvent, EventEnvelopeFormatter, EventRegistry
 
 
 class ExampleEvent(BaseEvent):  # pylint: disable=too-many-ancestors

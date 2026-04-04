@@ -6,7 +6,7 @@ from collections.abc import Awaitable, Callable
 
 import pytest
 
-from eventing.core.contracts import (
+from messaging.core.contracts import (
     BaseEvent,
     DispatchHooks,
     DispatchSettings,
@@ -14,7 +14,7 @@ from eventing.core.contracts import (
     SequentialDispatchBackend,
     build_event_bus,
 )
-from eventing.core.contracts.event_bus import DispatchBackend, EventBus, RegisteredHandler
+from messaging.core.contracts.event_bus import DispatchBackend, EventBus, RegisteredHandler
 from python_domain_events import IDomainEventHandler
 
 

@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from eventing.infrastructure.persistence.orm_base import Base
+from messaging.infrastructure.persistence.orm_models.orm_base import Base
 
 
 def _configure_hypothesis_profiles() -> None:

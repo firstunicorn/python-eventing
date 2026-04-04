@@ -9,10 +9,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
-from eventing.infrastructure.outbox import build_outbox_config
-from eventing.infrastructure.persistence.session import create_session_factory
-from eventing.main import create_app, lifespan
-from eventing.presentation.router import outbox_health
+from messaging.infrastructure.outbox import build_outbox_config
+from messaging.infrastructure.persistence.session import create_session_factory
+from messaging.main import create_app, lifespan
+from messaging.presentation.router import outbox_health
 
 
 class DummyChecker:
@@ -68,20 +68,24 @@ class FakeWorker:
 
 @pytest.mark.asyncio
 async def test_outbox_health_returns_unavailable_without_checker() -> None:
-    """Route should report unavailable when lifespan has not set a checker."""
+    """Route should raise 503 when lifespan has not set a checker."""
+    from fastapi import HTTPException
+    from messaging.presentation.dependencies import get_outbox_health_check
+
     request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace()))
 
-    result = await outbox_health(request)  # type: ignore[arg-type]
+    with pytest.raises(HTTPException) as exc_info:
+        await get_outbox_health_check(request)  # type: ignore[arg-type]
 
-    assert result == {"status": "unavailable", "checks": {}}
+    assert exc_info.value.status_code == 503
+    assert "not initialized" in exc_info.value.detail
 
 
 @pytest.mark.asyncio
 async def test_outbox_health_uses_checker_when_present() -> None:
     """Route should delegate to the configured checker."""
-    request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(outbox_health_check=DummyChecker())))
 
-    result = await outbox_health(request)  # type: ignore[arg-type]
+    result = await outbox_health(checker=DummyChecker())  # type: ignore[call-arg]
 
     assert result["status"] == "healthy"
 
@@ -127,16 +131,16 @@ async def test_lifespan_initializes_state_without_worker(monkeypatch: pytest.Mon
     """Lifespan should initialize infrastructure state even when worker is disabled."""
     engine = FakeEngine()
     broker = FakeBroker()
-    monkeypatch.setattr("eventing.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=False))
-    monkeypatch.setattr("eventing.main.create_session_factory", lambda _: (engine, object()))
-    monkeypatch.setattr("eventing.main.EventRegistry", lambda: object())
-    monkeypatch.setattr("eventing.main.create_kafka_broker", lambda _: broker)
-    monkeypatch.setattr("eventing.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo")
-    monkeypatch.setattr("eventing.main.KafkaEventPublisher", lambda broker: "publisher")
-    monkeypatch.setattr("eventing.main.build_outbox_config", lambda _: "config")
-    monkeypatch.setattr("eventing.main.DeadLetterHandler", lambda repository, publisher: "dlq")
-    monkeypatch.setattr("eventing.main.ScheduledOutboxWorker", lambda **kwargs: FakeWorker())
-    monkeypatch.setattr("eventing.main.EventingHealthCheck", lambda repository, broker: "health")
+    monkeypatch.setattr("messaging.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=False))
+    monkeypatch.setattr("messaging.main.create_session_factory", lambda _: (engine, object()))
+    monkeypatch.setattr("messaging.main.EventRegistry", lambda: object())
+    monkeypatch.setattr("messaging.main.create_kafka_broker", lambda _: broker)
+    monkeypatch.setattr("messaging.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo")
+    monkeypatch.setattr("messaging.main.KafkaEventPublisher", lambda broker: "publisher")
+    monkeypatch.setattr("messaging.main.build_outbox_config", lambda _: "config")
+    monkeypatch.setattr("messaging.main.DeadLetterHandler", lambda repository, publisher: "dlq")
+    monkeypatch.setattr("messaging.main.ScheduledOutboxWorker", lambda **kwargs: FakeWorker())
+    monkeypatch.setattr("messaging.main.EventingHealthCheck", lambda repository, broker: "health")
     app = FastAPI()
 
     async with lifespan(app):
@@ -153,16 +157,16 @@ async def test_lifespan_starts_and_stops_worker_when_enabled(monkeypatch: pytest
     engine = FakeEngine()
     broker = FakeBroker()
     worker = FakeWorker()
-    monkeypatch.setattr("eventing.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=True))
-    monkeypatch.setattr("eventing.main.create_session_factory", lambda _: (engine, object()))
-    monkeypatch.setattr("eventing.main.EventRegistry", lambda: object())
-    monkeypatch.setattr("eventing.main.create_kafka_broker", lambda _: broker)
-    monkeypatch.setattr("eventing.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo")
-    monkeypatch.setattr("eventing.main.KafkaEventPublisher", lambda broker: "publisher")
-    monkeypatch.setattr("eventing.main.build_outbox_config", lambda _: "config")
-    monkeypatch.setattr("eventing.main.DeadLetterHandler", lambda repository, publisher: "dlq")
-    monkeypatch.setattr("eventing.main.ScheduledOutboxWorker", lambda **kwargs: worker)
-    monkeypatch.setattr("eventing.main.EventingHealthCheck", lambda repository, broker: "health")
+    monkeypatch.setattr("messaging.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=True))
+    monkeypatch.setattr("messaging.main.create_session_factory", lambda _: (engine, object()))
+    monkeypatch.setattr("messaging.main.EventRegistry", lambda: object())
+    monkeypatch.setattr("messaging.main.create_kafka_broker", lambda _: broker)
+    monkeypatch.setattr("messaging.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo")
+    monkeypatch.setattr("messaging.main.KafkaEventPublisher", lambda broker: "publisher")
+    monkeypatch.setattr("messaging.main.build_outbox_config", lambda _: "config")
+    monkeypatch.setattr("messaging.main.DeadLetterHandler", lambda repository, publisher: "dlq")
+    monkeypatch.setattr("messaging.main.ScheduledOutboxWorker", lambda **kwargs: worker)
+    monkeypatch.setattr("messaging.main.EventingHealthCheck", lambda repository, broker: "health")
     app = FastAPI()
 
     async with lifespan(app):

@@ -1,5 +1,6 @@
 # Eventing
 
+[![Documentation Status](https://readthedocs.org/projects/python-eventing/badge/?version=latest)](https://python-eventing.readthedocs.io/en/latest/?badge=latest)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/firstunicorn/python-eventing/actions)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -7,6 +8,8 @@
 [![Validate Dependencies](https://github.com/firstunicorn/python-eventing/actions/workflows/validate-dependencies.yml/badge.svg)](https://github.com/firstunicorn/python-eventing/actions/workflows/validate-dependencies.yml)
 
 Package-first universal event infrastructure for microservices.
+
+📚 **[Full Documentation](https://python-eventing.readthedocs.io/en/latest/)** - Comprehensive guides and API reference
 
 Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 
@@ -34,6 +37,21 @@ Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 - Event contracts and registry
 - Kafka publishing and consumer base classes
 - In-process emitter/subscriber facade and hooks
+
+## Documentation
+
+📖 **[Integration Guide](https://python-eventing.readthedocs.io/en/latest/integration-guide.html)** - Step-by-step integration instructions
+
+🔍 **[API Reference](https://python-eventing.readthedocs.io/en/latest/autoapi/index.html)** - Complete API documentation
+
+📋 **[Event Catalog](https://python-eventing.readthedocs.io/en/latest/event-catalog.html)** - Available event types and contracts
+
+### Key Topics
+
+- [Transactional Outbox Pattern](https://python-eventing.readthedocs.io/en/latest/transactional-outbox.html) - Guaranteed event delivery
+- [Idempotent Consumers](https://python-eventing.readthedocs.io/en/latest/consumer-transactions.html) - Duplicate message handling
+- [Dead Letter Queue](https://python-eventing.readthedocs.io/en/latest/dlq-handlers.html) - Failed event handling
+- [Health Checks](https://python-eventing.readthedocs.io/en/latest/autoapi/eventing/infrastructure/health/index.html) - Monitoring outbox and broker status
 
 ## Distribution
 

@@ -13,6 +13,9 @@ gamification-specific reward rules or producer-specific business handlers.
 
 event-catalog
 integration-guide
+transactional-outbox
+dlq-handlers
+consumer-transactions
 ```
 
 The manual pages in this guide explain the stable contracts and wiring points.

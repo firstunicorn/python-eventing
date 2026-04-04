@@ -12,12 +12,12 @@ from aiokafka import AIOKafkaConsumer  # type: ignore[import-untyped]
 from testcontainers.kafka import KafkaContainer  # type: ignore[import-untyped]
 from testcontainers.postgres import PostgresContainer  # type: ignore[import-untyped]
 
-from eventing.config import Settings
-from eventing.core.contracts import BaseEvent, EventRegistry
-from eventing.infrastructure.messaging import KafkaEventPublisher, create_kafka_broker
-from eventing.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
-from eventing.infrastructure.persistence.orm_base import Base
-from eventing.infrastructure.persistence.session import create_session_factory
+from messaging.config import Settings
+from messaging.core.contracts import BaseEvent, EventRegistry
+from messaging.infrastructure.pubsub import KafkaEventPublisher, create_kafka_broker
+from messaging.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
+from messaging.infrastructure.persistence.orm_models.orm_base import Base
+from messaging.infrastructure.persistence.session import create_session_factory
 
 
 TEST_TOPIC = "gamification.XPAwarded"

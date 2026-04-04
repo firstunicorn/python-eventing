@@ -1,32 +1,31 @@
 ---
 name: Code verification plan
-initialprompt: Verify code against best practices@c:\coding\gridflow-microservices-codex-taskmaster\docs\initial 
 overview: Comprehensive verification of the eventing microservice against best practices documentation covering architecture, code quality, testing, outbox pattern implementation, and SOLID principles.
 todos:
   - id: review-file-sizes
     content: Identify all files >100 lines and create refactoring plan for each (priority - split event_bus.py into HandlerResolver, DispatchExecutor, thin EventBus coordinator)
-    status: pending
+    status: completed
   - id: add-logging
     content: Add library logging (logging.getLogger with NullHandler only) to infrastructure, worker, repository, health checks
-    status: pending
+    status: completed
   - id: fix-outbox-transaction
     content: Refactor outbox repository to accept external session for true transactional outbox
-    status: pending
+    status: completed
   - id: add-dependencies
     content: Create FastAPI Depends() functions for database, outbox, health checks
-    status: pending
+    status: completed
   - id: fix-dip-violation
     content: Create universal DLQ handler (IEventPublisher interface) AND Kafka-specific DLQ handler (KafkaEventPublisher), keep explicitly separate
-    status: pending
+    status: completed
   - id: narrow-exceptions
     content: Replace broad Exception catches with specific exception types
-    status: pending
+    status: completed
   - id: clarify-consumer-transactions
     content: Document and enforce transaction boundaries in kafka_consumer_base
-    status: pending
+    status: completed
   - id: verify-tests
     content: Review test structure, run full test suite, verify property-based test profiles work
-    status: pending
+    status: completed
 isProject: false
 ---
 

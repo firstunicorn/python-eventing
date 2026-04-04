@@ -1,12 +1,12 @@
 [importlinter]
-root_package = eventing
+root_package = messaging
 
 [importlinter:contract:layers]
 name = Clean Architecture layer independence
 type = layers
 layers =
-    eventing.presentation
-    eventing.infrastructure
-    eventing.application
-    eventing.domain
-    eventing.core
+    messaging.presentation
+    messaging.infrastructure
+    messaging.application
+    messaging.domain
+    messaging.core

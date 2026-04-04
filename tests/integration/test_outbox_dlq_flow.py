@@ -8,11 +8,11 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from eventing.core.contracts import BaseEvent, EventRegistry
-from eventing.infrastructure.messaging import DeadLetterHandler
-from eventing.infrastructure.outbox import ScheduledOutboxWorker
-from eventing.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
-from eventing.infrastructure.persistence.outbox_orm import OutboxEventRecord
+from messaging.core.contracts import BaseEvent, EventRegistry
+from messaging.infrastructure.pubsub import DeadLetterHandler
+from messaging.infrastructure.outbox import ScheduledOutboxWorker
+from messaging.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
+from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
 from python_outbox_core import OutboxConfig
 from tests.integration.test_outbox_worker_flow import RecordingPublisher
 

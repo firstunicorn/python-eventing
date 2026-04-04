@@ -2,7 +2,7 @@
 
 from fastapi.testclient import TestClient
 
-from eventing.main import app
+from messaging.main import app
 
 
 def test_health() -> None:
