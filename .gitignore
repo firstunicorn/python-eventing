@@ -1,77 +1,102 @@
-# Python
+# Python / Byte-compiled / optimized / DLL files / C extensions
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
 
-# Virtual environments
+# Virtual environments / Environments
 .venv/
+.venv
 venv/
 env/
 ENV/
 env.bak/
 venv.bak/
+tmp_venv/
 
-# Build and distribution
+# Build and distribution / Distribution / packaging
 build/
+develop-eggs/
 dist/
-*.egg-info/
+dist2/
+dist*/
+downloads/
+eggs/
 .eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
 wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
 *.egg
 MANIFEST
 
-# Testing and coverage
+# Testing and coverage / Unit test / coverage reports
 .pytest_cache/
 .hypothesis/
 .coverage
 .coverage.*
 htmlcov/
 .tox/
+.nox/
 coverage.xml
 *.cover
 *.py,cover
 .cache
+.cache/
 nosetests.xml
 .mutmut-cache/
 
-# Linting and type checking caches
+# Linting and type checking caches / MyPy / Ruff / Other Type checkers / linters
 .mypy_cache/
 .ruff_cache/
 .import_linter_cache/
 .dmypy.json
 dmypy.json
+.pyre/
+.pytype/
 
-# Documentation builds
+# Documentation builds / Sphinx docs
 docs/_build/
 docs/.doctrees/
 docs/source/autoapi/
+docs/autoapi/
 site/
 
-# IDE and editors
+# IDE and editors / IDEs / Editor directories and files
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sw?
 *~
 .project
 .pydevproject
 .settings/
 
-# Environment and secrets
+# Environment and secrets / Environment variables
 .env
+.env.*
 .env.local
 .env.*.local
+*.local
 *.pem
 *.key
 credentials.json
 
-# Logs
+# Logs / Installer logs
 *.log
 logs/
+pip-log.txt
+pip-delete-this-directory.txt
+dev-debug.log
 
-# OS-specific
+# OS-specific / OS files
 .DS_Store
 Thumbs.db
 desktop.ini
@@ -88,9 +113,18 @@ alembic/versions/__pycache__/
 *.prof
 *.lprof
 
-# Jupyter Notebooks
+# Jupyter Notebooks / Jupyter Notebook
 .ipynb_checkpoints/
 *.ipynb
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Archives and distribution artifacts / Archives / Distribution artifacts
+*.tar.gz
+*.zip
+*.whl
 
 # Temporary files
 *.tmp
