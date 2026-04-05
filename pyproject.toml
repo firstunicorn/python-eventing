@@ -280,7 +280,24 @@ min_confidence = 80
 [tool.deptry]
 extend_exclude = ["docs"]
 known_first_party = ["messaging"]
-per_rule_ignores = { DEP002 = ["uvicorn", "asyncpg", "alembic"] }
+
+[tool.deptry.per_rule_ignores]
+# dev/CLI tools and runtime-only drivers not imported by src/ code
+DEP002 = [
+    # CLI tools: invoked via poetry run
+    "safety", "pylint", "flake8", "interrogate", "deptry", "mypy", "bandit", "vulture", "import-linter",
+    # Runtime-only: uvicorn (ASGI server), asyncpg (SQLAlchemy driver), alembic (migrations CLI)
+    "uvicorn", "asyncpg", "alembic",
+    # Unused local packages (placeholder/optional):
+    "python-cqrs-core", "python-cqrs-dispatcher", "gridflow-python-mediator",
+    "python-dto-mappers", "python-app-exceptions", "python-infrastructure-exceptions",
+    "python-input-validation", "sqlalchemy-async-repositories",
+    "pydantic-response-models", "postgres-data-sanitizers",
+    "python-technical-primitives",
+]
+# pydantic_core is a transitive dependency of pydantic; importing it
+# directly avoids adding a second direct dep, but triggers DEP003.
+DEP003 = ["pydantic_core"]
 
 [tool.pydocstyle]
 convention = "google"

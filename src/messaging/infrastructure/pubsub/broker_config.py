@@ -3,7 +3,7 @@
 This module provides `create_kafka_broker`, a utility that builds and configures
 a FastStream `KafkaBroker` instance using the application settings.
 
-See also
+See Also
 --------
 - messaging.config.Settings : The application settings
 - messaging.infrastructure.pubsub.kafka_publisher : The publisher that uses this broker

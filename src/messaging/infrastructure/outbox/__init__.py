@@ -22,7 +22,7 @@ then publishing them asynchronously to Kafka.
   4. OutboxWorker polls table and publishes to Kafka
   5. Published events marked as published_at timestamp
 
-See also
+See Also
 --------
 - messaging.core : Domain event definitions
 - messaging.infrastructure.messaging : KafkaEventPublisher used by worker

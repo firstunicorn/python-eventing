@@ -10,9 +10,7 @@ from typing import TYPE_CHECKING
 
 from messaging.core.contracts import BaseEvent
 from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler import helpers
-from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.execution import (
-    execute_dlq,
-)
+from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.execution import execute_dlq
 from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.logging import (
     log_dlq_published,
     log_dlq_routing,
@@ -57,16 +55,14 @@ class KafkaDeadLetterHandleMixin:
         - Partition key preservation for ordered processing
         - Timestamp preservation for accurate event timeline
 
-        Parameters
-        ----------
-        event : BaseEvent
-            The domain event that failed to publish
-        error_message : str
-            Description of the failure reason
-        retry_count : int, optional
-            Number of retry attempts before DLQ routing (default: 0)
-        original_topic : str | None, optional
-            The original topic where the event should have been published
+        Args:
+            self: The class instance
+            event (BaseEvent): The domain event that failed to publish
+            error_message (str): Description of the failure reason
+            retry_count (int, optional): Number of retry attempts before DLQ routing
+                (default: 0)
+            original_topic (str | None, optional): The original topic where the event
+                should have been published
         """
         log_dlq_routing(event, error_message, retry_count)
 

@@ -1,7 +1,4 @@
 """Consume method implementation for idempotent Kafka consumers.
-
-Extracted from IdempotentConsumerBase to keep the class definition concise
-while preserving transaction management documentation.
 """
 
 from __future__ import annotations
@@ -11,9 +8,7 @@ from typing import TYPE_CHECKING, Any
 from messaging.infrastructure.pubsub.consumer_base.consumer_validators import extract_event_id
 
 if TYPE_CHECKING:
-    from messaging.infrastructure.pubsub.processed_message_store import (
-        IProcessedMessageStore,
-    )
+    from messaging.infrastructure.pubsub.processed_message_store import IProcessedMessageStore
 
 
 async def consume_event(
@@ -52,29 +47,22 @@ async def consume_event(
             await session.rollback()  # Already processed, no work done
     ```
 
-    Parameters
-    ----------
-    message : dict[str, Any]
-        The deserialized message from Kafka, must contain eventId or event_id
-    consumer_name : str
-        Name of this consumer instance
-    processed_message_store : IProcessedMessageStore
-        Store used for idempotency tracking
-    handle_event_coro : Any
-        Coroutine function to call with the message (handle_event method)
+    Args:
+        message (dict[str, Any]): The deserialized message from Kafka,
+            must contain eventId or event_id
+        consumer_name (str): Name of this consumer instance
+        processed_message_store (IProcessedMessageStore): Store used for
+            idempotency tracking
+        handle_event_coro (Any): Coroutine function to call with the message
 
-    Returns
-    -------
-    bool
-        True if the event was processed (handle_event was called)
-        False if the event was already processed (duplicate, skipped)
+    Returns:
+        bool: True if the event was processed (handle_event was called),
+            False if the event was already processed (duplicate, skipped).
 
-    Raises
-    ------
-    ValueError
-        If message is missing event_id or event_id is empty
-    Exception
-        Any exception raised by handle_event propagates to caller
+    Raises:
+        ValueError: If message is missing event_id or event_id is empty.
+            Propagated from extract_event_id via consumer_validators.
+        Exception: Any exception raised by handle_event propagates to caller.
     """
     event_id = extract_event_id(message)
     claimed = await processed_message_store.claim(

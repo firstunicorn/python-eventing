@@ -5,9 +5,10 @@ events have already been processed by specific consumers. It uses a composite
 primary key of `(consumer_name, event_id)` to ensure an event is only processed
 once per consumer group.
 
-See also
+See Also
 --------
-- messaging.infrastructure.persistence.processed_message_store : The store that manages these records
+- messaging.infrastructure.persistence.processed_message_store : Store
+      that manages these records
 """
 
 # pylint: disable=too-many-ancestors

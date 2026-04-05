@@ -4,7 +4,7 @@ This module defines `DispatchHooks` and `DispatchSettings` which allow you to
 tap into the event bus lifecycle (dispatch, success, failure) for observability,
 metrics, logging, or debugging without coupling it to the core dispatch logic.
 
-See also
+See Also
 --------
 - messaging.core.contracts.bus.event_bus : The event bus that emits these traces
 """

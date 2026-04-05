@@ -5,7 +5,7 @@ events have been processed by specific consumers. Implementations of this protoc
 ensure that consumer event handlers are idempotent, even if the underlying message
 broker (e.g., Kafka) delivers the same message multiple times.
 
-See also
+See Also
 --------
 - messaging.infrastructure.pubsub.kafka_consumer_base : The consumer base class that uses this
 - messaging.infrastructure.persistence.processed_message_store : The SQLAlchemy implementation

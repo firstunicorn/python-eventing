@@ -4,7 +4,7 @@ This module provides `OutboxQueryOperations` which handles read-only
 queries for outbox status, including unpublished event retrieval,
 counts, and lag metrics.
 
-See also
+See Also
 --------
 - messaging.infrastructure.outbox.outbox_crud : Create and update operations
 - messaging.infrastructure.outbox.outbox_repository : The facade repository

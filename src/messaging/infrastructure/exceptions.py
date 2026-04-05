@@ -4,7 +4,7 @@ This module defines specific exception types for different failure scenarios
 in the event publishing pipeline. Using specific exceptions enables better
 error handling, monitoring, and debugging.
 
-See also
+See Also
 --------
 - messaging.infrastructure.outbox.outbox_worker : Uses these exceptions
 - messaging.infrastructure.health.outbox_health_check : Reports on these errors

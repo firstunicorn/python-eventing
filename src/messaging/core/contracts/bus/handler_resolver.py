@@ -3,7 +3,7 @@
 This module provides utilities for extracting handler names and callbacks
 from handler instances or raw async functions.
 
-See also
+See Also
 --------
 - messaging.core.contracts.bus.event_bus : The EventBus that uses this resolver
 - messaging.core.contracts.bus.types : Handler type definitions
@@ -21,15 +21,11 @@ class HandlerResolver:
     def resolve_name(handler: HandlerLike) -> str:
         """Extract handler name from class or function.
 
-        Parameters
-        ----------
-        handler : HandlerLike
-            Handler instance (with .handle method) or async callback
+        Args:
+            handler (HandlerLike): Handler instance (with .handle method) or async callback
 
-        Returns
-        -------
-        str
-            Class name for handler instances, function name for callbacks
+        Returns:
+            str: Class name for handler instances, function name for callbacks.
         """
         if hasattr(handler, "handle"):
             return handler.__class__.__name__
@@ -39,14 +35,10 @@ class HandlerResolver:
     def extract_callback(handler: HandlerLike) -> EventCallback:
         """Extract callable from handler instance or return callback directly.
 
-        Parameters
-        ----------
-        handler : HandlerLike
-            Handler instance (with .handle method) or async callback
+        Args:
+            handler (HandlerLike): Handler instance (with .handle method) or async callback
 
-        Returns
-        -------
-        EventCallback
-            The async callable that will be invoked for events
+        Returns:
+            EventCallback: The async callable that will be invoked for events.
         """
         return handler.handle if hasattr(handler, "handle") else handler

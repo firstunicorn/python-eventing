@@ -1,7 +1,4 @@
-"""Database session dependency injection.
-
-Extracted from dependencies.py to follow the Single Responsibility Principle.
-"""
+"""Database session dependency injection."""
 
 from __future__ import annotations
 
@@ -34,20 +31,14 @@ async def get_db_session(request: Request) -> AsyncIterator[AsyncSession]:
         return response
     ```
 
-    Parameters
-    ----------
-    request : Request
-        The incoming FastAPI request object
+    Args:
+        request (Request): The incoming FastAPI request object
 
-    Yields
-    ------
-    AsyncSession
-        A database session valid for the request duration
+    Yields:
+        AsyncSession: A database session valid for the request duration.
 
-    Raises
-    ------
-    HTTPException
-        503 if the session factory is not initialized
+    Raises:
+        HTTPException: 503 if the session factory is not initialized.
     """
     session_factory = getattr(request.app.state, "session_factory", None)
     if session_factory is None:

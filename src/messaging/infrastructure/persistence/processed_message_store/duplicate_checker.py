@@ -16,15 +16,11 @@ def is_duplicate_claim(error: IntegrityError) -> bool:
     Examines the error message for database-specific duplicate key violation
     indicators like "duplicate" or "unique" constraint violations.
 
-    Parameters
-    ----------
-    error : IntegrityError
-        The SQLAlchemy IntegrityError to inspect
+    Args:
+        error (IntegrityError): The SQLAlchemy IntegrityError to inspect
 
-    Returns
-    -------
-    bool
-        True if the error indicates a duplicate claim, False otherwise
+    Returns:
+        bool: True if the error indicates a duplicate claim, False otherwise.
     """
     message = str(error.orig).lower() if error.orig is not None else str(error).lower()
     return "duplicate" in message or "unique" in message

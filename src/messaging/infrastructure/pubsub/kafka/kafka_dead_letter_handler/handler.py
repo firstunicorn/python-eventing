@@ -9,9 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.config import (
-    KafkaDLQConfig,
-)
+from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.config import KafkaDLQConfig
 from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.handler_mixin import (
     KafkaDeadLetterHandleMixin,
 )
@@ -49,16 +47,15 @@ class KafkaDeadLetterHandler(KafkaDeadLetterHandleMixin):
     ) -> None:
         """Initialize the Kafka-specific DLQ handler.
 
-        Parameters
-        ----------
-        repository : IOutboxRepository
-            Repository for marking events as failed
-        publisher : KafkaEventPublisher
-            Kafka event publisher (concrete type for Kafka features)
-        include_headers : bool, optional
-            Whether to add Kafka headers with error metadata (default: True)
-        preserve_partition_key : bool, optional
-            Whether to use the same partition key as the original event (default: True)
+        Args:
+            self: The class instance
+            repository (IOutboxRepository): Repository for marking events as failed
+            publisher (KafkaEventPublisher): Kafka event publisher (concrete type for
+                Kafka features)
+            include_headers (bool, optional): Whether to add Kafka headers with error
+                metadata (default: True)
+            preserve_partition_key (bool, optional): Whether to use the same partition
+                key as the original event (default: True)
         """
         self._repository = repository
         self._publisher = publisher

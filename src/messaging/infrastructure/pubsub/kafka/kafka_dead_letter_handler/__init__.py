@@ -1,11 +1,7 @@
 """Kafka dead-letter handler module."""
 
-from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.config import (
-    KafkaDLQConfig,
-)
-from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.execution import (
-    execute_dlq,
-)
+from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.config import KafkaDLQConfig
+from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.execution import execute_dlq
 from messaging.infrastructure.pubsub.kafka.kafka_dead_letter_handler.handler import (
     KafkaDeadLetterHandler,
 )

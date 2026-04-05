@@ -15,20 +15,16 @@ def extract_event_id(message: dict[str, Any]) -> str:
     Checks for both 'eventId' (camelCase) and 'event_id' (snake_case) keys.
     The extracted value is stripped of whitespace and validated for emptiness.
 
-    Parameters
-    ----------
-    message : dict[str, Any]
-        Kafka message payload (deserialized) containing event identifier
+    Args:
+        message (dict[str, Any]): Kafka message payload (deserialized)
+            containing event identifier
 
-    Returns
-    -------
-    str
-        The cleaned and validated event_id string
+    Returns:
+        str: The cleaned and validated event_id string
 
-    Raises
-    ------
-    ValueError
-        If message is missing event identifier or the value is empty after stripping
+    Raises:
+        ValueError: If message is missing event identifier or the value
+            is empty after stripping
     """
     raw_event_id = message.get("eventId") or message.get("event_id")
     if raw_event_id is None:

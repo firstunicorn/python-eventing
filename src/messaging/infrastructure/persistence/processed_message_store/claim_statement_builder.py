@@ -16,7 +16,9 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.dml import Insert
 
-from messaging.infrastructure.persistence.orm_models.processed_message_orm import ProcessedMessageRecord
+from messaging.infrastructure.persistence.orm_models.processed_message_orm import (
+    ProcessedMessageRecord,
+)
 
 
 def build_claim_statement(
@@ -31,24 +33,16 @@ def build_claim_statement(
     PostgreSQL uses postgres_insert with unique constraint index, SQLite uses
     sqlite_insert with the same pattern, and fallback works with generic insert.
 
-    Parameters
-    ----------
-    session : AsyncSession
-        SQLAlchemy async session to determine the database dialect
-    consumer_name : str
-        Name of the consumer claiming the event
-    event_id : str
-        Unique identifier of the event
+    Args:
+        session (AsyncSession): SQLAlchemy async session to determine the database dialect
+        consumer_name (str): Name of the consumer claiming the event
+        event_id (str): Unique identifier of the event
 
-    Returns
-    -------
-    Insert
-        Dialect-specific INSERT statement with on_conflict_do_nothing
+    Returns:
+        Insert: Dialect-specific INSERT statement with on_conflict_do_nothing
 
-    Raises
-    ------
-    RuntimeError
-        If database dialect is not supported (not PostgreSQL or SQLite)
+    Raises:
+        RuntimeError: If database dialect is not supported (not PostgreSQL or SQLite)
     """
     values = {
         "consumer_name": consumer_name,
@@ -71,4 +65,8 @@ def build_claim_statement(
                 index_elements=["consumer_name", "event_id"]
             ),
         )
-    return table.insert().values(**values)
+    msg = (
+        f"Unsupported database dialect: {dialect_name!r}. "
+        "Only postgresql and sqlite are supported for ON CONFLICT DO NOTHING."
+    )
+    raise RuntimeError(msg)

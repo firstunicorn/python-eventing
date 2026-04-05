@@ -12,20 +12,16 @@ from typing import Any
 def validate_consumer_name(consumer_name: str) -> str:
     """Normalize and validate a consumer name.
 
-    Parameters
-    ----------
-    consumer_name : str
-        Raw consumer name to validate
+    Trims whitespace and rejects empty strings.
 
-    Returns
-    -------
-    str
-        Validated and stripped consumer name
+    Args:
+        consumer_name (str): Raw consumer name to validate
 
-    Raises
-    ------
-    ValueError
-        If consumer_name is empty after stripping
+    Returns:
+        str: Validated and stripped consumer name
+
+    Raises:
+        ValueError: If consumer_name is empty after stripping
     """
     normalized_name = consumer_name.strip()
     if not normalized_name:
@@ -40,20 +36,16 @@ def extract_event_id(message: dict[str, Any]) -> str:
     Checks for both 'eventId' (camelCase) and 'event_id' (snake_case) keys.
     The extracted value is stripped of whitespace and validated for emptiness.
 
-    Parameters
-    ----------
-    message : dict[str, Any]
-        Kafka message payload (deserialized) containing event identifier
+    Args:
+        message (dict[str, Any]): Kafka message payload (deserialized)
+            containing event identifier
 
-    Returns
-    -------
-    str
-        The cleaned and validated event_id string
+    Returns:
+        str: The cleaned and validated event_id string
 
-    Raises
-    ------
-    ValueError
-        If message is missing event identifier or the value is empty after stripping
+    Raises:
+        ValueError: If message is missing event identifier or the value
+            is empty after stripping
     """
     raw_event_id = message.get("eventId") or message.get("event_id")
     if raw_event_id is None:

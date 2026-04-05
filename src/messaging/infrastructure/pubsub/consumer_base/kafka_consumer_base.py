@@ -5,7 +5,7 @@ consumers that ensures each event is processed exactly once. It extracts the
 `event_id` from incoming messages and attempts to claim it via the configured
 processed message store before delegating to `handle_event`.
 
-See also
+See Also
 --------
 - messaging.infrastructure.pubsub.consumer_validators : Event_id and name validation
 - messaging.infrastructure.pubsub.consumer_consume : Consume method implementation

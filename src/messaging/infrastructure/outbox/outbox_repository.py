@@ -4,7 +4,7 @@ This module provides `SqlAlchemyOutboxRepository` which implements the CRUD
 operations for storing domain events in the database transactionally alongside
 business data. It delegates to specialized CRUD and query operation classes.
 
-See also
+See Also
 --------
 - messaging.infrastructure.outbox.outbox_crud : Create and update operations
 - messaging.infrastructure.outbox.outbox_queries : Query and metrics operations
@@ -67,4 +67,3 @@ class SqlAlchemyOutboxRepository(IOutboxRepository):
     async def oldest_unpublished_age_seconds(self) -> float:
         """Return the age of the oldest pending event in seconds."""
         return await self._queries.oldest_unpublished_age_seconds()
-

@@ -1,7 +1,4 @@
-"""Health check dependency injection.
-
-Extracted from dependencies.py to follow the Single Responsibility Principle.
-"""
+"""Health check dependency injection."""
 
 from __future__ import annotations
 
@@ -19,20 +16,14 @@ async def get_outbox_health_check(request: Request) -> EventingHealthCheck:
     that was initialized during application lifespan. If the health check
     is not available (e.g., worker disabled), raises 503 Service Unavailable.
 
-    Parameters
-    ----------
-    request : Request
-        The incoming FastAPI request object
+    Args:
+        request (Request): The incoming FastAPI request object
 
-    Returns
-    -------
-    EventingHealthCheck
-        The initialized health check instance
+    Returns:
+        EventingHealthCheck: The initialized health check instance
 
-    Raises
-    ------
-    HTTPException
-        503 if the health check infrastructure is not initialized
+    Raises:
+        HTTPException: 503 if the health check infrastructure is not initialized
     """
     checker: EventingHealthCheck | None = getattr(
         request.app.state, "outbox_health_check", None

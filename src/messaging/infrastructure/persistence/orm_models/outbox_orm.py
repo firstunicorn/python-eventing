@@ -4,7 +4,7 @@ This module defines `OutboxEventRecord`, which represents a domain event stored
 in the database waiting to be published to Kafka. It includes fields for the
 event payload, metadata, and tracking columns for publication status.
 
-See also
+See Also
 --------
 - messaging.infrastructure.outbox.outbox_repository : The repository that manages these records
 """

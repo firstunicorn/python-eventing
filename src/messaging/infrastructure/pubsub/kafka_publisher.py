@@ -4,7 +4,7 @@ This module provides the `KafkaEventPublisher` which handles routing
 events to their corresponding Kafka topics based on their event types,
 along with serialization and partition key extraction.
 
-See also
+See Also
 --------
 - messaging.infrastructure.pubsub.broker_config : Kafka broker setup
 - messaging.infrastructure.outbox.outbox_worker : Background publisher

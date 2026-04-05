@@ -4,7 +4,7 @@ This module provides the `api_router` that exposes HTTP endpoints.
 It includes liveness probes and the specialized `/health/outbox`
 endpoint that reports on the underlying broker and database infrastructure.
 
-See also
+See Also
 --------
 - messaging.infrastructure.health.outbox_health_check : Health checking logic
 - messaging.presentation.dependencies : Dependency injection functions
@@ -15,9 +15,9 @@ from typing import Any
 
 from fastapi import APIRouter
 
+from fastapi_middleware_toolkit import create_health_check_endpoint
 from messaging.config import settings
 from messaging.presentation.dependencies import OutboxHealthCheckDep
-from fastapi_middleware_toolkit import create_health_check_endpoint
 
 api_router = APIRouter()
 _base_health = create_health_check_endpoint(settings.service_name)

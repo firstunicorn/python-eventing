@@ -5,7 +5,7 @@ manager. It wires together the database session, Kafka broker, outbox repository
 and background worker, ensuring all infrastructure is properly initialized
 and gracefully shut down.
 
-See also
+See Also
 --------
 - messaging.presentation.router : API routes registered with the application
 - messaging.config.Settings : Configuration used during initialization
@@ -17,6 +17,7 @@ from contextlib import asynccontextmanager, suppress
 
 from fastapi import APIRouter, FastAPI
 
+from fastapi_middleware_toolkit import setup_cors_middleware, setup_error_handlers
 from messaging.config import settings
 from messaging.core.contracts import EventRegistry
 from messaging.infrastructure import (
@@ -30,7 +31,6 @@ from messaging.infrastructure import (
     create_session_factory,
 )
 from messaging.presentation.router import api_router
-from fastapi_middleware_toolkit import setup_cors_middleware, setup_error_handlers
 
 
 def create_app() -> FastAPI:

@@ -4,7 +4,7 @@ This module provides `EventingHealthCheck`, which aggregates health signals from
 the database, the Kafka broker, and the outbox worker's lag metrics. It helps
 ensure that the event publishing pipeline is healthy and events aren't piling up.
 
-See also
+See Also
 --------
 - messaging.infrastructure.health : The health check namespace
 - messaging.infrastructure.outbox.outbox_repository : Used to measure outbox lag

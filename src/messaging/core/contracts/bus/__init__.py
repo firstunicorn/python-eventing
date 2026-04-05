@@ -16,7 +16,7 @@ DispatchBackend
 SequentialDispatchBackend
     Default backend that dispatches events to handlers one at a time.
 
-See also
+See Also
 --------
 - messaging.core.contracts.dispatch_hooks : Hook definitions and settings
 - messaging.core.contracts.dispatcher_setup : Mediator integration

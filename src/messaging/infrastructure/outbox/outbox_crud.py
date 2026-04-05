@@ -4,7 +4,7 @@ This module provides `OutboxCrudOperations` which handles create and update
 operations for outbox events. It supports both standalone mode (auto-commit)
 and transactional mode (external session) for the outbox pattern.
 
-See also
+See Also
 --------
 - messaging.infrastructure.outbox.outbox_queries : Query operations
 - messaging.infrastructure.outbox.outbox_repository : The facade repository
@@ -38,12 +38,20 @@ class OutboxCrudOperations:
 
         For transactional outbox: pass an external session to commit atomically
         with business data. For standalone use: omit session to auto-commit.
+
+        Args:
+            event (IOutboxEvent): The serialized event to store
+            session (AsyncSession | None): External session for transactional
+                outbox, or None to auto-commit in a new session
         """
         logger.debug("Adding event %s (type=%s) to outbox", event.event_id, event.event_type)
 
         if session is not None:
             session.add(self._to_record(event))
-            logger.debug("Event %s added to external session (caller controls commit)", event.event_id)
+            logger.debug(
+                "Event %s added to external session (caller controls commit)",
+                event.event_id,
+            )
         else:
             async with self._session_factory() as new_session:
                 new_session.add(self._to_record(event))

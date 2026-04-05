@@ -1,7 +1,4 @@
-"""Outbox repository dependency injection.
-
-Extracted from dependencies.py to follow the Single Responsibility Principle.
-"""
+"""Outbox repository dependency injection."""
 
 from __future__ import annotations
 
@@ -18,20 +15,14 @@ async def get_outbox_repository(request: Request) -> SqlAlchemyOutboxRepository:
     This dependency provides access to the SqlAlchemyOutboxRepository
     that was initialized during application lifespan.
 
-    Parameters
-    ----------
-    request : Request
-        The incoming FastAPI request object
+    Args:
+        request (Request): The incoming FastAPI request object
 
-    Returns
-    -------
-    SqlAlchemyOutboxRepository
-        The initialized outbox repository
+    Returns:
+        SqlAlchemyOutboxRepository: The initialized outbox repository
 
-    Raises
-    ------
-    HTTPException
-        503 if the repository is not initialized
+    Raises:
+        HTTPException: 503 if the repository is not initialized
     """
     repository: SqlAlchemyOutboxRepository | None = getattr(
         request.app.state, "outbox_repository", None

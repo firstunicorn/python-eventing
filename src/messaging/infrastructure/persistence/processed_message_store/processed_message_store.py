@@ -5,7 +5,7 @@ the `IProcessedMessageStore` protocol using SQLAlchemy. It attempts to insert a
 record for a given event and consumer, returning True if successful (meaning the
 event hasn't been processed yet) and False if the record already exists.
 
-See also
+See Also
 --------
 - messaging.infrastructure.persistence.processed_message_orm : The underlying ORM model
 - messaging.infrastructure.pubsub.kafka_consumer_base : The consumer that uses this store
@@ -16,11 +16,11 @@ from __future__ import annotations
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from messaging.infrastructure.pubsub import IProcessedMessageStore
 from messaging.infrastructure.persistence.processed_message_store.claim_helpers import (
     build_claim_statement,
     is_duplicate_claim,
 )
+from messaging.infrastructure.pubsub import IProcessedMessageStore
 
 
 class SqlAlchemyProcessedMessageStore(IProcessedMessageStore):
@@ -49,25 +49,18 @@ class SqlAlchemyProcessedMessageStore(IProcessedMessageStore):
 
         This design ensures atomicity between the claim and business logic side effects.
 
-        Parameters
-        ----------
-        consumer_name : str
-            Name of the consumer claiming the event (must not be empty)
-        event_id : str
-            Unique identifier of the event (must not be empty)
+        Args:
+            consumer_name (str): Name of the consumer claiming the event
+                (must not be empty)
+            event_id (str): Unique identifier of the event (must not be empty)
 
-        Returns
-        -------
-        bool
-            True if the event was claimed (first processing attempt)
-            False if the event was already claimed (duplicate, idempotent skip)
+        Returns:
+            bool: True if the event was claimed (first processing attempt),
+                False if the event was already claimed (duplicate, idempotent skip).
 
-        Raises
-        ------
-        ValueError
-            If consumer_name or event_id is empty
-        IntegrityError
-            If a database constraint is violated (non-duplicate case)
+        Raises:
+            ValueError: If consumer_name or event_id is empty.
+            IntegrityError: If a database constraint is violated (non-duplicate case).
         """
         if not consumer_name.strip():
             msg = "consumer_name must not be empty"

@@ -1,7 +1,7 @@
 """Health checkers for database, broker, and outbox lag.
 
-Extracted functions for individual health checks, preserving full logging and
-error-handling behavior from the original EventingHealthCheck class.
+Individual async functions for health checks: database ping, broker ping,
+and outbox lag monitoring.
 """
 
 from __future__ import annotations
@@ -56,11 +56,19 @@ async def check_outbox_lag(
     if pending_count > lag_threshold or oldest_age > stale_after_seconds:
         status = HealthStatus.DEGRADED
         logger.warning(
-            "Outbox lag detected: pending_count=%d (threshold=%d), oldest_age=%.2fs (threshold=%ds)",
-            pending_count, lag_threshold, oldest_age, stale_after_seconds,
+            "Outbox lag detected: pending_count=%d (threshold=%d), "
+            "oldest_age=%.2fs (threshold=%ds)",
+            pending_count,
+            lag_threshold,
+            oldest_age,
+            stale_after_seconds,
         )
     else:
-        logger.debug("Outbox lag check passed: pending_count=%d, oldest_age=%.2fs", pending_count, oldest_age)
+        logger.debug(
+            "Outbox lag check passed: pending_count=%d, oldest_age=%.2fs",
+            pending_count,
+            oldest_age,
+        )
     return {
         "status": status,
         "pending_count": pending_count,

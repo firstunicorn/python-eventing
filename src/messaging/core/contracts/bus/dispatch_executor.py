@@ -4,7 +4,7 @@ This module provides the `DispatchExecutor` which invokes event handlers
 with tracing and error handling. It emits lifecycle hooks before, during,
 and after handler execution.
 
-See also
+See Also
 --------
 - messaging.core.contracts.bus.event_bus : The EventBus that uses this executor
 - messaging.core.contracts.dispatch_hooks : Lifecycle hooks emitted during dispatch
@@ -23,12 +23,9 @@ class DispatchExecutor:
     def __init__(self, hooks: DispatchHooks, backend_name: str) -> None:
         """Initialize the executor with hooks and backend name.
 
-        Parameters
-        ----------
-        hooks : DispatchHooks
-            Lifecycle hooks to emit during dispatch
-        backend_name : str
-            Name of the dispatch backend for tracing
+        Args:
+            hooks: Lifecycle hooks to emit during dispatch
+            backend_name: Name of the dispatch backend for tracing
         """
         self._hooks = hooks
         self._backend_name = backend_name
@@ -44,17 +41,12 @@ class DispatchExecutor:
         or on_failure after the handler completes. Exceptions are re-raised
         after hooks are emitted.
 
-        Parameters
-        ----------
-        event : BaseEvent
-            The event being dispatched
-        handler : RegisteredHandler
-            The registered handler to invoke
+        Args:
+            event: The event being dispatched
+            handler: The registered handler to invoke
 
-        Raises
-        ------
-        Exception
-            Any exception raised by the handler is re-raised after logging
+        Raises:
+            Exception: Any exception raised by the handler is re-raised after logging
         """
         dispatch_trace = DispatchTrace("dispatch", event, self._backend_name, handler.name)
         self._emit_hook("on_dispatch", dispatch_trace)

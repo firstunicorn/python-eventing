@@ -1,8 +1,7 @@
 """Helper functions for Kafka DLQ message construction.
 
 Pure functions for building DLQ messages and Kafka headers with error metadata.
-Extracted from KafkaDeadLetterHandler to keep the handler class focused on
-orchestration while message-building logic remains pure and testable.
+Message-building logic is pure and testable.
 """
 
 from __future__ import annotations
@@ -22,21 +21,17 @@ def build_dlq_message(
 ) -> dict[str, Any]:
     """Build DLQ message payload with event and error context.
 
-    Parameters
-    ----------
-    event : BaseEvent
-        The domain event that failed to publish
-    error_message : str
-        Description of the failure reason
-    retry_count : int, optional
-        Number of retry attempts before DLQ routing (default: 0)
-    original_topic : str | None, optional
-        The original topic where the event should have been published
+    Args:
+        event (BaseEvent): The domain event that failed to publish
+        error_message (str): Description of the failure reason
+        retry_count (int, optional): Number of retry attempts before DLQ routing
+            (default: 0)
+        original_topic (str | None, optional): The original topic where the event
+            should have been published
 
-    Returns
-    -------
-    dict[str, Any]
-        DLQ message with event data, error info, and optional original_topic
+    Returns:
+        dict[str, Any]: DLQ message with event data, error info, and optional
+            original_topic
     """
     message = {
         "event": event.to_message(),
@@ -58,21 +53,16 @@ def build_kafka_headers(
 ) -> dict[str, str]:
     """Build Kafka headers for DLQ messages with error metadata.
 
-    Parameters
-    ----------
-    event : BaseEvent
-        The domain event being routed to DLQ
-    error_message : str
-        Description of the failure reason
-    retry_count : int, optional
-        Number of retry attempts before DLQ routing (default: 0)
-    original_topic : str | None, optional
-        The original topic where the event should have been published
+    Args:
+        event (BaseEvent): The domain event being routed to DLQ
+        error_message (str): Description of the failure reason
+        retry_count (int, optional): Number of retry attempts before DLQ routing
+            (default: 0)
+        original_topic (str | None, optional): The original topic where the event
+            should have been published
 
-    Returns
-    -------
-    dict[str, str]
-        Kafka headers for error tracking and monitoring
+    Returns:
+        dict[str, str]: Kafka headers for error tracking and monitoring
     """
     headers = {
         "x-dlq-reason": error_message,

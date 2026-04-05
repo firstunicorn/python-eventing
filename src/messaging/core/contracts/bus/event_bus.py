@@ -4,7 +4,7 @@ This module provides the `EventBus` class which acts as the main
 emitter and subscriber facade. It coordinates handler resolution,
 dispatch execution, and hook emission through specialized components.
 
-See also
+See Also
 --------
 - messaging.core.contracts.bus.backends : Dispatch backends used by the bus
 - messaging.core.contracts.bus.handler_resolver : Handler name and callback extraction
@@ -74,7 +74,8 @@ class EventBus:
         """Dispatch one event through the configured backend."""
         handlers = list(self._handlers.get(type(event), []))
         if not self._settings.enabled:
-            self._hooks_emitter.emit("on_disabled", DispatchTrace("disabled", event, self._backend.name))
+            trace = DispatchTrace("disabled", event, self._backend.name)
+            self._hooks_emitter.emit("on_disabled", trace)
             return
 
         async def invoke_one(handler: RegisteredHandler) -> None:

@@ -4,7 +4,7 @@ This module provides `build_outbox_config`, a utility function that translates
 the application's Pydantic `Settings` into the `OutboxConfig` model expected by
 the `python-outbox-core` library.
 
-See also
+See Also
 --------
 - messaging.config.Settings : The application settings
 - messaging.infrastructure.outbox.outbox_worker : The worker that uses this config

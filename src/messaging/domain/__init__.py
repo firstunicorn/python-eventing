@@ -3,7 +3,7 @@
 This layer contains business logic and domain entities. Currently empty -
 event domain logic is in ``messaging.core.contracts``.
 
-See also
+See Also
 --------
 - messaging.core.contracts : Event schemas, registry, and envelope formatting
 - messaging.infrastructure : Technical implementations

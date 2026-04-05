@@ -20,7 +20,7 @@ This layer provides concrete implementations of technical concerns:
 **Health Checks**
   - EventingHealthCheck : Outbox staleness monitoring
 
-See also
+See Also
 --------
 - messaging.core : Domain-agnostic event contracts
 - messaging.infrastructure.outbox : Outbox pattern implementation
@@ -29,13 +29,6 @@ See also
 """
 
 from messaging.infrastructure.health import EventingHealthCheck
-from messaging.infrastructure.pubsub import (
-    DeadLetterHandler,
-    IdempotentConsumerBase,
-    IProcessedMessageStore,
-    KafkaEventPublisher,
-    create_kafka_broker,
-)
 from messaging.infrastructure.outbox import (
     OutboxEventHandler,
     ScheduledOutboxWorker,
@@ -47,6 +40,13 @@ from messaging.infrastructure.persistence import (
     ProcessedMessageRecord,
     SqlAlchemyProcessedMessageStore,
     create_session_factory,
+)
+from messaging.infrastructure.pubsub import (
+    DeadLetterHandler,
+    IdempotentConsumerBase,
+    IProcessedMessageStore,
+    KafkaEventPublisher,
+    create_kafka_broker,
 )
 
 __all__ = [

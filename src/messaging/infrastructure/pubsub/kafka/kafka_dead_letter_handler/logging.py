@@ -22,14 +22,10 @@ def log_dlq_routing(
 ) -> None:
     """Log warning about routing event to DLQ.
 
-    Parameters
-    ----------
-    event : BaseEvent
-        The domain event being routed to DLQ
-    error_message : str
-        Description of the failure reason
-    retry_count : int
-        Number of retry attempts before DLQ routing
+    Args:
+        event (BaseEvent): The domain event being routed to DLQ
+        error_message (str): Description of the failure reason
+        retry_count (int): Number of retry attempts before DLQ routing
     """
     logger.warning(
         "Routing event %s (type=%s) to Kafka DLQ after %d retries: %s",
@@ -47,14 +43,10 @@ def log_dlq_published(
 ) -> None:
     """Log info about event published to DLQ.
 
-    Parameters
-    ----------
-    event_id : str | UUID
-        Unique identifier of the routed event
-    dlq_topic : str
-        The DLQ topic where the event was published
-    include_headers : bool
-        Whether Kafka headers were included in the message
+    Args:
+        event_id (str | UUID): Unique identifier of the routed event
+        dlq_topic (str): The DLQ topic where the event was published
+        include_headers (bool): Whether Kafka headers were included in the message
     """
     logger.info(
         "Event %s published to Kafka DLQ topic '%s' with headers=%s",

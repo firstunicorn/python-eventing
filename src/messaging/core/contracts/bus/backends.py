@@ -4,7 +4,7 @@ This module provides the `DispatchBackend` protocol and the default
 `SequentialDispatchBackend` implementation. Backends control how the event bus
 routes events to their registered handlers (e.g., sequentially, concurrently).
 
-See also
+See Also
 --------
 - messaging.core.contracts.bus.event_bus : The event bus that uses these backends
 """
@@ -43,6 +43,7 @@ class SequentialDispatchBackend:
         handlers: list[RegisteredHandler],
         invoke_one: Callable[[RegisteredHandler], Awaitable[None]],
     ) -> None:
+        """Run the provided handlers for one event."""
         _ = event
         for handler in handlers:
             await invoke_one(handler)

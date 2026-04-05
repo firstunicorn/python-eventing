@@ -3,7 +3,7 @@
 This module provides the main event-bus facade for the application.
 The actual implementation lives in the ``messaging.core.contracts.bus`` package.
 
-See also
+See Also
 --------
 - messaging.core.contracts.bus : Actual event bus implementations
 """

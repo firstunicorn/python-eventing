@@ -14,18 +14,20 @@ This module provides SQLAlchemy-based persistence for:
 **Session Management**
   - create_session_factory : Async SQLAlchemy session configuration
 
-See also
+See Also
 --------
 - messaging.infrastructure.outbox : Outbox repository and worker
 - messaging.infrastructure.messaging : Kafka consumer base with idempotency
 """
 
+from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
+from messaging.infrastructure.persistence.orm_models.processed_message_orm import (
+    ProcessedMessageRecord,
+)
 from messaging.infrastructure.persistence.processed_message_store.claim_helpers import (
     build_claim_statement,
     is_duplicate_claim,
 )
-from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
-from messaging.infrastructure.persistence.orm_models.processed_message_orm import ProcessedMessageRecord
 from messaging.infrastructure.persistence.processed_message_store.processed_message_store import (
     SqlAlchemyProcessedMessageStore,
 )

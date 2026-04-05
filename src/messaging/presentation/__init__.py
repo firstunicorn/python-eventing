@@ -3,7 +3,7 @@
 The presentation layer handles HTTP API endpoints and external interfaces.
 Currently empty - FastAPI routes live in ``messaging.presentation.router``.
 
-See also
+See Also
 --------
 - messaging.presentation.router : Health check and status endpoints
 """
