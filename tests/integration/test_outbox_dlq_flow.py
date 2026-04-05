@@ -9,10 +9,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from messaging.core.contracts import BaseEvent, EventRegistry
-from messaging.infrastructure.pubsub import DeadLetterHandler
 from messaging.infrastructure.outbox import ScheduledOutboxWorker
 from messaging.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
 from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
+from messaging.infrastructure.pubsub import DeadLetterHandler
 from python_outbox_core import OutboxConfig
 from tests.integration.test_outbox_worker_flow import RecordingPublisher
 

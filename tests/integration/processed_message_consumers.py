@@ -6,8 +6,8 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from messaging.infrastructure.pubsub import IdempotentConsumerBase
 from messaging.infrastructure.persistence import SqlAlchemyProcessedMessageStore
+from messaging.infrastructure.pubsub import IdempotentConsumerBase
 
 
 class RecordingConsumer(IdempotentConsumerBase):

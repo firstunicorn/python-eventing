@@ -7,8 +7,8 @@ from typing import Any, cast
 
 import pytest
 
-from messaging.infrastructure.pubsub import DeadLetterHandler
 from messaging.infrastructure.outbox import ScheduledOutboxWorker
+from messaging.infrastructure.pubsub import DeadLetterHandler
 from python_outbox_core import OutboxConfig
 from tests.unit.infrastructure.conftest import ExampleEvent, FakePublisher, FakeRepository
 

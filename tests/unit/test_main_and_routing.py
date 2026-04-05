@@ -70,6 +70,7 @@ class FakeWorker:
 async def test_outbox_health_returns_unavailable_without_checker() -> None:
     """Route should raise 503 when lifespan has not set a checker."""
     from fastapi import HTTPException
+
     from messaging.presentation.dependencies import get_outbox_health_check
 
     request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace()))
@@ -110,7 +111,9 @@ def test_build_outbox_config_maps_settings_values() -> None:
 @pytest.mark.asyncio
 async def test_create_session_factory_creates_async_engine() -> None:
     """Session helper should return an engine and a session factory."""
-    engine, factory = create_session_factory("postgresql+asyncpg://postgres:postgres@localhost:5432/eventing")
+    engine, factory = create_session_factory(
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/eventing"
+    )
 
     assert factory.kw["expire_on_commit"] is False
     await engine.dispose()
@@ -131,11 +134,15 @@ async def test_lifespan_initializes_state_without_worker(monkeypatch: pytest.Mon
     """Lifespan should initialize infrastructure state even when worker is disabled."""
     engine = FakeEngine()
     broker = FakeBroker()
-    monkeypatch.setattr("messaging.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=False))
+    monkeypatch.setattr(
+        "messaging.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=False)
+    )
     monkeypatch.setattr("messaging.main.create_session_factory", lambda _: (engine, object()))
     monkeypatch.setattr("messaging.main.EventRegistry", lambda: object())
     monkeypatch.setattr("messaging.main.create_kafka_broker", lambda _: broker)
-    monkeypatch.setattr("messaging.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo")
+    monkeypatch.setattr(
+        "messaging.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo"
+    )
     monkeypatch.setattr("messaging.main.KafkaEventPublisher", lambda broker: "publisher")
     monkeypatch.setattr("messaging.main.build_outbox_config", lambda _: "config")
     monkeypatch.setattr("messaging.main.DeadLetterHandler", lambda repository, publisher: "dlq")
@@ -152,16 +159,22 @@ async def test_lifespan_initializes_state_without_worker(monkeypatch: pytest.Mon
 
 
 @pytest.mark.asyncio
-async def test_lifespan_starts_and_stops_worker_when_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_lifespan_starts_and_stops_worker_when_enabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Lifespan should start broker/worker and close them on shutdown."""
     engine = FakeEngine()
     broker = FakeBroker()
     worker = FakeWorker()
-    monkeypatch.setattr("messaging.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=True))
+    monkeypatch.setattr(
+        "messaging.main.settings", SimpleNamespace(database_url="db", outbox_worker_enabled=True)
+    )
     monkeypatch.setattr("messaging.main.create_session_factory", lambda _: (engine, object()))
     monkeypatch.setattr("messaging.main.EventRegistry", lambda: object())
     monkeypatch.setattr("messaging.main.create_kafka_broker", lambda _: broker)
-    monkeypatch.setattr("messaging.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo")
+    monkeypatch.setattr(
+        "messaging.main.SqlAlchemyOutboxRepository", lambda session_factory, registry: "repo"
+    )
     monkeypatch.setattr("messaging.main.KafkaEventPublisher", lambda broker: "publisher")
     monkeypatch.setattr("messaging.main.build_outbox_config", lambda _: "config")
     monkeypatch.setattr("messaging.main.DeadLetterHandler", lambda repository, publisher: "dlq")

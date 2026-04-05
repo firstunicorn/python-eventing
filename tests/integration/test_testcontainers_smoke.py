@@ -14,11 +14,10 @@ from testcontainers.postgres import PostgresContainer  # type: ignore[import-unt
 
 from messaging.config import Settings
 from messaging.core.contracts import BaseEvent, EventRegistry
-from messaging.infrastructure.pubsub import KafkaEventPublisher, create_kafka_broker
 from messaging.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository
 from messaging.infrastructure.persistence.orm_models.orm_base import Base
 from messaging.infrastructure.persistence.session import create_session_factory
-
+from messaging.infrastructure.pubsub import KafkaEventPublisher, create_kafka_broker
 
 TEST_TOPIC = "gamification.XPAwarded"
 TEST_MESSAGE = {
