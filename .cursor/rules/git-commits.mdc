@@ -1,0 +1,93 @@
+---
+description: Git commit message standards - sentence case, organic narrative, technical detail
+globs: .git/COMMIT_EDITMSG
+alwaysApply: true
+---
+
+# Commit message standards
+
+## Format
+
+```
+type(scope): subject in sentence case
+
+## Starting point
+[Context that prompted this work]
+
+## Changes
+[What changed and why, with technical specifics]
+
+## Result
+[What works now, what remains unchanged]
+```
+
+## Type prefixes
+
+- `feat` - new feature
+- `fix` - bug fix
+- `refactor` - restructuring
+- `docs` - documentation
+- `test` - tests
+- `chore` - maintenance
+
+Use `!` for breaking changes: `feat!` or `refactor!`
+
+## Critical rules
+
+1. **Sentence case** - capitalize first word only (except proper names)
+2. **Organic narrative** - write naturally, avoid "user did X" phrasing
+3. **Start with context** - explain the starting point
+4. **Technical specifics** - include file paths, function names
+5. **Explain decisions** - not just what changed, but why
+
+## Examples
+
+### ✅ Good
+
+```
+feat(eventbus): integrate in-process domain event dispatcher into production
+
+## Starting point: tests without integration
+
+While reviewing the architecture, we noticed EventBus had comprehensive
+test coverage (tests/unit/core/test_event_bus.py) but wasn't wired into
+the production application (main.py).
+
+## Integration work
+
+### Wired into application (src/messaging/main.py)
+- Import build_event_bus from messaging.core.contracts
+- Initialize EventBus in lifespan() with empty handler list
+- Expose via app.state.event_bus for route handlers
+
+## Result
+
+EventBus now available for multiple handlers, lifecycle hooks, and
+testing isolation. Direct outbox approach remains primary pattern.
+```
+
+### ❌ Avoid
+
+```
+Feat(EventBus): Add EventBus Integration
+
+User requested EventBus integration.
+Added EventBus to main.py.
+Updated documentation.
+```
+
+**Problems:**
+- Title Case in subject and headers
+- "User requested" - robotic language
+- No starting context
+- Vague changes without technical detail
+- No explanation of decisions or philosophy
+
+## Checklist
+
+- [ ] Sentence case throughout (except proper names)
+- [ ] Natural narrative flow
+- [ ] Starts with context
+- [ ] Technical specifics included
+- [ ] Design decisions explained
+- [ ] Breaking changes marked if applicable
