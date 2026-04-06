@@ -17,15 +17,15 @@ Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 | --- | --- | --- | --- | --- |
 | Transactional outbox | ✅✅✅ | ❌ | ❌ | Durable local DB plus outbox boundary is a core feature here |
 | Kafka data plane | ✅✅✅ | ❌ | ❌ | This package is built for Kafka-backed microservice messaging |
-| DLQ handling | ✅✅✅ | ❌ | ❌ | Native part of the durable eventing layer here |
-| Health checks for eventing runtime | ✅✅✅ | ❌ | ❌ | Outbox and runtime health belong to this package |
+| DLQ handling | ✅✅✅ | ❌ | ❌ | Leverages native RabbitMQ DLX and Kafka Connect DLQ SMT with database bookkeeping |
+| Health checks for eventing runtime | ✅✅✅ | ❌ | ❌ | Outbox health checks plus FastStream ASGI broker health endpoint |
 | Typed cross-service event contracts | ✅✅ | ✅ | ✅✅ | `python-eventing` and `fastapi-events` are stronger on explicit payload modeling |
 | Decorator subscriber registration | ✅✅ | ✅✅✅ | ✅✅ | `EventBus.subscriber(...)` exists now; `pyventus` is still the most polished here |
 | In-process dispatch backend abstraction | ✅✅ | ✅✅✅ | ✅ | `DispatchBackend` exists here; `pyventus` offers a broader processor model |
 | Lifecycle hooks / callbacks | ✅✅ | ✅✅✅ | ✅ | `DispatchHooks` covers dispatch, success, failure, disabled, and debug |
 | Debug / disable controls | ✅✅ | ✅✅ | ✅✅✅ | `DispatchSettings(enabled, debug)` is implemented; `fastapi-events` is strongest for app-level toggling |
-| Observability / telemetry polish | ✅ | ✅ | ✅✅✅ | This package is hook-ready; `fastapi-events` has stronger native OTEL support |
-| Producer / outbox batch publish | ✅✅✅ | ❌ | ❌ | `ScheduledOutboxWorker` publishes outbox events in batches already |
+| Observability / telemetry polish | ✅✅ | ✅ | ✅✅✅ | FastStream native middlewares (KafkaTelemetryMiddleware, KafkaPrometheusMiddleware) integrated |
+| CDC-based outbox publishing | ✅✅✅ | ❌ | ❌ | Kafka Connect with Debezium CDC handles outbox-to-Kafka publishing |
 | Consumer dedup helper | ✅✅✅ | ❌ | ❌ | `IdempotentConsumerBase` now uses a durable processed-message store instead of process memory |
 | Durable cross-service idempotency | ✅✅✅ | ❌ | ❌ | `IProcessedMessageStore` plus `SqlAlchemyProcessedMessageStore` provide transactional duplicate protection |
 | Consumer batch handling | ❌ | ❌ | ✅✅✅ | `fastapi-events` supports `handle_many(...)`; this package stays one-message-per-consume today |
@@ -33,10 +33,12 @@ Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 
 ## Scope
 
-- Transactional outbox primitives
+- Transactional outbox primitives (write-side only; CDC handles publishing)
 - Event contracts and registry
-- Kafka publishing and consumer base classes
+- Kafka/RabbitMQ consumer base classes with idempotency
+- Native broker integration (Kafka Connect CDC, RabbitMQ DLX, FastStream middlewares)
 - In-process emitter/subscriber facade and hooks
+- DLQ bookkeeping consumer for database flag synchronization
 
 ## Documentation
 
@@ -50,8 +52,9 @@ Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 
 - [Transactional Outbox Pattern](https://python-eventing.readthedocs.io/en/latest/transactional-outbox.html) - Guaranteed event delivery (PRIMARY)
 - [Idempotent Consumers](https://python-eventing.readthedocs.io/en/latest/consumer-transactions.html) - Duplicate message handling
-- [Dead Letter Queue](https://python-eventing.readthedocs.io/en/latest/dlq-handlers.html) - Failed event handling
 - [Health Checks](https://python-eventing.readthedocs.io/en/latest/autoapi/eventing/infrastructure/health/index.html) - Monitoring outbox and broker status
+
+**Architecture Note**: This package handles the **write side** of the outbox pattern (persisting events transactionally with business data). **Publishing** is delegated to Kafka Connect with Debezium CDC, which captures outbox table changes and publishes to Kafka. Dead letter handling leverages native broker mechanisms (RabbitMQ DLX, Kafka Connect DLQ SMT) with a minimal bookkeeping consumer to maintain database failed-event flags.
 
 ## Quick Start: Transactional Outbox
 
@@ -93,7 +96,7 @@ async def create_user(
     # 3. Commit both atomically
     await session.commit()
 
-    # 4. Outbox worker publishes to Kafka asynchronously
+    # 4. Kafka Connect (Debezium CDC) detects the outbox insert and publishes to Kafka
     return {"user_id": user.id}
 ```
 
