@@ -19,11 +19,12 @@ from fastapi import APIRouter, FastAPI
 
 from fastapi_middleware_toolkit import setup_cors_middleware, setup_error_handlers
 from messaging.config import settings
-from messaging.core.contracts import EventRegistry
+from messaging.core.contracts import EventRegistry, HandlerRegistration, build_event_bus
 from messaging.infrastructure import (
     DeadLetterHandler,
     EventingHealthCheck,
     KafkaEventPublisher,
+    OutboxEventHandler,
     ScheduledOutboxWorker,
     SqlAlchemyOutboxRepository,
     build_outbox_config,
@@ -55,12 +56,30 @@ def create_app() -> FastAPI:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Initialize and tear down outbox infrastructure for the service."""
+    """Initialize and tear down outbox infrastructure and EventBus for the service.
+    
+    This lifespan manager wires up the complete event infrastructure:
+    1. Database session factory for persistence
+    2. EventBus for domain event dispatch (handlers registered per-route as needed)
+    3. Kafka broker for external messaging
+    4. Outbox worker for reliable event publishing
+    
+    The EventBus enables decoupled domain event dispatch within the service.
+    Handlers can register for specific event types using:
+        app.state.event_bus.register(EventType, handler)
+    Or use decorator syntax:
+        @app.state.event_bus.subscriber(EventType)
+        async def handle_event(event: EventType): ...
+    """
     engine, session_factory = create_session_factory(settings.database_url)
     registry = EventRegistry()
     broker = create_kafka_broker(settings)
     repository = SqlAlchemyOutboxRepository(session_factory, registry)
     publisher = KafkaEventPublisher(broker)
+    
+    # Initialize EventBus (handlers registered per-domain as needed)
+    event_bus = build_event_bus([])
+    
     worker = ScheduledOutboxWorker(
         repository=repository,
         publisher=publisher,
@@ -70,6 +89,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.session_factory = session_factory
     app.state.outbox_health_check = EventingHealthCheck(repository, broker)
     app.state.outbox_repository = repository
+    app.state.event_bus = event_bus  # Expose EventBus for API handlers
     task: asyncio.Task[None] | None = None
     try:
         if settings.outbox_worker_enabled:
