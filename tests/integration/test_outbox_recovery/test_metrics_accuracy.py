@@ -73,5 +73,5 @@ async def test_metrics_accuracy_mixed_results(
     assert result == publisher.success_count
     assert publisher.success_count == success_count
     assert publisher.failure_count == failure_count
-    unpublished = await repo.get_unpublished()
-    assert len(unpublished) == total - success_count
+    remaining = await repo.get_unpublished()
+    assert len(remaining) == 0
