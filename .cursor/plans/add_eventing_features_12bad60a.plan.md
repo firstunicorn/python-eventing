@@ -1,9 +1,12 @@
 ---
 name: Add eventing resilience, observability, and admin features
-overview: "Add 11 features to eventing system via TDD: schema registry extension, FastStream OpenTelemetry wiring (simplified to built-in TelemetryMiddleware), circuit breaker, Kafka consumer group config, event replay API, rate limiting (aiolimiter), DLQ inspection/retry API, event contract testing, Prometheus/Grafana metrics (simplified to FastStream KafkaPrometheusMiddleware + custom for RabbitMQ), and Kafka-to-RabbitMQ bridge for integrated routing with native backpressure. Scope reduced from original after discovering FastStream and broker plugins cover Features 2 and 12 via middleware -- no custom OTel/Prometheus boilerplate needed."
+overview: "Add 11 features to eventing system via TDD: schema registry extension, FastStream OpenTelemetry wiring (simplified to built-in TelemetryMiddleware), circuit breaker, Kafka consumer group config, event replay API, rate limiting (aiolimiter), DLQ inspection/retry API, event contract testing, Prometheus/Grafana metrics (simplified to FastStream KafkaPrometheusMiddleware + custom for RabbitMQ), and Kafka-to-RabbitMQ bridge for integrated routing with native backpressure. Scope reduced from original after discovering FastStream and broker plugins cover Features 2 and 12 via middleware -- no custom OTel/Prometheus boilerplate needed. Also includes legacy code cleanup (removing generic DLQ) and outbox polling performance optimizations based on audit."
 todos:
   - id: tdd-tests-first
     content: "Phase 0: Write ALL tests first (features 1-12), run to confirm failures"
+    status: pending
+  - id: audit-simplifications
+    content: "Phase 0.5: Apply Audit Simplifications (Outbox performance, DLQ cleanup)"
     status: pending
   - id: 01-schema-registry
     content: "Feature 1: Schema registry extending CloudEvents + data_version (JSON schema validation)"
@@ -277,6 +280,30 @@ module = [
 ]
 ignore_missing_imports = true
 ```
+
+---
+
+## Phase 0.5: Apply Audit Simplifications
+
+Before starting the main features, we will apply the findings from the codebase audit (`removal_plan.md` and `removal_simplification_plan.md`) to streamline the existing code.
+
+### 1. Remove Generic DLQ Handler
+- **Action**: Delete `src/messaging/infrastructure/pubsub/dead_letter_handler.py` (generic DLQ).
+- **Migration**: Update `src/messaging/infrastructure/outbox/outbox_worker/publish_logic.py` and `src/messaging/main.py` to use `KafkaDeadLetterHandler` instead. Kafka DLQ provides superior header enrichment and partition preservation.
+
+### 2. Remove `EventRegistry` Overhead in Outbox Path
+- **Context**: The outbox worker currently deserializes database payloads back into full Pydantic `BaseEvent` models via `EventRegistry` just to re-serialize them to dictionaries for `KafkaEventPublisher`. This is a massive performance overhead. FastStream's `broker.publish()` natively accepts Python dictionaries.
+- **Action**: 
+  - Modify `OutboxQueryOperations.get_unpublished()` to yield a lightweight wrapper (e.g., `RawOutboxEvent`) containing the raw `dict[str, Any]` from the database.
+  - Completely remove `EventRegistry` dependency from `SqlAlchemyOutboxRepository` and `OutboxQueryOperations`.
+
+### 3. Simplify Health Checks (`check_broker`)
+- **Context**: `check_broker` manually calls `await broker.ping()`.
+- **Action**: Keep `EventingHealthCheck` for aggregating DB/Lag/Broker health, but consider mounting FastStream's native ASGI `make_ping_asgi` if broker-only readiness probes are needed. Otherwise, rely on FastStream's native broker ping capabilities.
+
+### 4. Remove Manual Consumer Deserialization
+- **Context**: `IdempotentConsumerBase` currently accepts raw `message: dict[str, Any]` and extracts `event_id` manually.
+- **Action**: Update consumer documentation/examples to show that downstream services should rely entirely on FastStream's native Pydantic injection instead of manual deserialization using our `EventRegistry`. The custom `SchemaRegistry` (Feature 1) will be used for schema evolution validation, but FastStream handles Pydantic routing natively.
 
 ---
 
@@ -600,6 +627,10 @@ kafka_rate_limit: int = Field(default=1000, description="Max Kafka messages per 
 kafka_rate_interval: float = Field(default=60.0, description="Kafka rate window seconds")
 rabbitmq_rate_limit: int = Field(default=500, description="Max RabbitMQ messages per interval")
 rabbitmq_rate_interval: float = Field(default=60.0, description="RabbitMQ rate window seconds")
+
+# Kafka Native Quotas for defense-in-depth (optional, configured at deployment via kafka-configs.sh)
+kafka_producer_byte_rate: int = Field(default=104857600, description="Producer byte rate quota (100MB/sec)")
+kafka_consumer_byte_rate: int = Field(default=104857600, description="Consumer byte rate quota (100MB/sec)")
 ```
 
 Wire limiters in broker factories: Add `RateLimiterMiddleware` to `middlewares` list in `create_kafka_broker()` and `create_rabbit_broker()`.

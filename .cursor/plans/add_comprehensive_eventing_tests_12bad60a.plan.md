@@ -2,6 +2,9 @@
 name: Add comprehensive eventing tests
 overview: "Add 10 new test groups covering eventing system best practices: event ordering, poison messages, event contract validation, consumer groups, outbox recovery, e2e flow, health degradation, chaos resilience, serialization edge cases, and concurrency."
 todos:
+  - id: apply-audit-updates
+    content: "Review tests logic to reflect audit decisions (e.g. generic DLQ removal)"
+    status: done
   - id: unit-infrastructure-untested
     content: "Add unit tests: consumer_validators, consumer_helpers, dead_letter_handler, outbox_queries, outbox_config"
     status: done
@@ -94,9 +97,11 @@ Test `src/messaging/infrastructure/pubsub/consumer_base/consumer_helpers.py`:
 
 **Files: `tests/unit/infrastructure/test_dead_letter_handler.py`**
 
-Test `src/messaging/infrastructure/pubsub/dead_letter_handler.py`:
-- `DeadLetterHandler.handle_failure(event, error)` routes to `{eventType}.DLQ` topic
+Test `src/messaging/infrastructure/pubsub/kafka/kafka_dead_letter_handler/handler.py`:
+- `KafkaDeadLetterHandler.handle_failure(event, error)` routes to `{eventType}.DLQ` topic
 - Test with valid event, malformed event, missing eventType
+- Verify header enrichment (retry_count, error_message, original_topic, failure_timestamp)
+- Verify partition key preservation
 
 **Files: `tests/unit/infrastructure/test_outbox_queries.py`**
 

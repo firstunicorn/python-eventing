@@ -1,5 +1,7 @@
 # Plan for Removing/Simplifying Code Native to FastStream
 
+> **STATUS: INCORPORATED** - The removals and simplifications outlined here have been fully integrated into the main feature plan (`add_eventing_features_12bad60a.plan.md`) under Phase 0.5.
+
 Based on a deep analysis of the `python-eventing` codebase, the full FastStream documentation, and your universal broker-agnostic architecture principles, here is the plan for removing redundant code and simplifying the system.
 
 ## What MUST Stay (Broker-Agnostic Core)

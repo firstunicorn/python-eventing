@@ -1,5 +1,7 @@
 # Verification Consolidated Summary
 
+> **STATUS: INCORPORATED** - The verification findings have been fully integrated into the main feature plan (`add_eventing_features_12bad60a.plan.md`).
+
 ## Executive Summary
 
 All 8 features have been verified against 5 coverage sources (Kafka native, Kafka plugins, RabbitMQ native, RabbitMQ plugins, FastStream). The final verdict for each feature is summarized below.

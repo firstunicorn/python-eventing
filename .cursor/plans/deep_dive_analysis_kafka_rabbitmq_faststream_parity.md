@@ -1,5 +1,7 @@
 # Deep-dive analysis: Kafka plugins, RabbitMQ plugins, FastStream parity
 
+> **STATUS: INCORPORATED** - The findings from this deep dive have been fully integrated into the main feature plan (`add_eventing_features_12bad60a.plan.md`). FastStream middleware patterns are now the standard approach across the board.
+
 ## Findings summary
 
 After reviewing all three layers -- Kafka ecosystem, RabbitMQ ecosystem, and FastStream integration -- the following picture emerges:

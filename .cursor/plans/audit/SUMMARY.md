@@ -1,5 +1,7 @@
 # Audit complete: Executive summary
 
+> **STATUS: INCORPORATED** - The audit findings have been fully integrated into the main feature plan (`add_eventing_features_12bad60a.plan.md`) under Phase 0.5.
+
 **Date**: 2026-04-06  
 **Audit type**: Existing code redundancy analysis  
 **Methodology**: Complete documentation review (NOT keyword search)
