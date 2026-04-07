@@ -36,7 +36,7 @@ todos:
     content: "Feature 12: Prometheus metrics via FastStream KafkaPrometheusMiddleware + custom RabbitMQ Prometheus middleware (simplified from original)"
     status: pending
   - id: run-all-checks
-    content: "Run all linters and tests to verify everything passes"
+    content: Run all linters and tests to verify everything passes
     status: pending
 isProject: false
 ---
@@ -335,78 +335,41 @@ Wire into `EventRegistry.deserialize()`: after Pydantic validation, call `JsonSc
 ### Tests to write first
 
 **`tests/unit/observability/test_opentelemetry_hooks.py`** (under 100 lines):
-- `TelemetryMiddleware` added to KafkaBroker, assert `broker.middlewares` contains it
-- `TelemetryMiddleware` added to RabbitBroker, assert same
+- Test `FastStreamInstrumentator` instrumentation works without errors
 - Use InMemorySpanExporter, publish message, assert span created with correct attributes (topic/queue, operation)
 
 **`tests/integration/test_opentelemetry_wiring.py`** (under 100 lines):
 - Full pipeline: Kafka publish -> bridge consume -> RabbitMQ publish, assert trace_id shared across spans
 - Assert span links bridge Kafka consume span to RabbitMQ publish span
-- No custom span creation -- only FastStream's built-in middleware creates spans
+- No custom span creation -- only FastStream's built-in instrumentation creates spans
 
 ### Code to add (simplified from original plan)
 
-**No new files needed** for OTel setup. Delete the planned `otel_setup.py` and replace with direct middleware wiring.
-
-Modify [src/messaging/infrastructure/pubsub/broker_config.py](src/messaging/infrastructure/pubsub/broker_config.py):
-```python
-from faststream.opentelemetry import TelemetryMiddleware
-
-def create_kafka_broker(
-    settings: Settings,
-    telemetry: TelemetryMiddleware | None = None,
-) -> KafkaBroker:
-    broker = KafkaBroker(
-        bootstrap_servers=settings.kafka_bootstrap_servers,
-        client_id=settings.kafka_client_id,
-        enable_idempotence=True,
-    )
-    if telemetry:
-        broker.add_middleware(telemetry)
-    return broker
-```
-
-New file: `src/messaging/infrastructure/pubsub/rabbit_broker_config.py` (under 75 lines):
-```python
-from faststream.rabbit import RabbitBroker
-from faststream.opentelemetry import TelemetryMiddleware
-
-from messaging.config import Settings
-
-def create_rabbit_broker(
-    settings: Settings,
-    telemetry: TelemetryMiddleware | None = None,
-) -> RabbitBroker:
-    """Create RabbitMQ broker with optional telemetry middleware."""
-    broker = RabbitBroker(settings.rabbitmq_url, publisher_confirms=True)
-    if telemetry:
-        broker.add_middleware(telemetry)
-    return broker
-```
+**No new files needed** for OTel setup. Delete the planned `otel_setup.py` and replace with direct auto-instrumentation wiring.
 
 Modify [src/messaging/main.py](src/messaging/main.py) `lifespan()`:
 ```python
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
-from faststream.opentelemetry import TelemetryMiddleware
+from opentelemetry.instrumentation.faststream import FastStreamInstrumentator
 
 # Configure global TracerProvider (required before creating middleware)
 provider = TracerProvider()
 trace.set_tracer_provider(provider)
 
-# Single middleware instance works for both brokers
-telemetry = TelemetryMiddleware()
+# Auto-instrument all FastStream brokers
+FastStreamInstrumentator().instrument()
 
-kafka_broker = create_kafka_broker(settings, telemetry=telemetry)
-rabbit_broker = create_rabbit_broker(settings, telemetry=telemetry)
+kafka_broker = create_kafka_broker(settings)
+rabbit_broker = create_rabbit_broker(settings)
 ```
 
-**Key simplification vs original plan**: No separate custom `KafkaTelemetryMiddleware` and `RabbitTelemetryMiddleware` classes, no custom `otel_setup.py` file, no custom span creation or header manipulation. FastStream's single `TelemetryMiddleware` handles everything.
+**Key simplification vs original plan**: No separate custom `KafkaTelemetryMiddleware` and `RabbitTelemetryMiddleware` classes, no custom `otel_setup.py` file, no custom span creation or header manipulation. `opentelemetry-instrumentation-faststream` handles everything automatically for all brokers.
 
 ### FastStream OTel reference (Context7 MCP verified)
 
 FastStream's OTel integration:
-- Single `TelemetryMiddleware` from `faststream.opentelemetry`
+- Uses `opentelemetry-instrumentation-faststream` for auto-instrumentation
 - Works with KafkaBroker, RabbitBroker, NatsBroker, RedisBroker
 - Auto-propagates trace context via message headers
 - Creates spans for consume and publish operations
@@ -468,7 +431,7 @@ class CircuitBreakerMiddleware(BaseMiddleware):
     """FastStream middleware wrapping CircuitBreaker."""
     def __init__(self, failure_threshold: int, reset_timeout: float = 30.0):
         self._breaker = CircuitBreaker(failure_threshold, reset_timeout)
-    
+
     async def consume_scope(self, call_next, msg: StreamMessage):
         try:
             result = await self._breaker.call(call_next, msg)
@@ -590,7 +553,7 @@ async def replay_events(
 
 **Context**: No rate limiting exists. Outbox can flood Kafka. Bridge can flood RabbitMQ. FastStream middleware `consume_scope` is the correct hook for rate limiting (gates message processing before handler executes).
 
-**⚠️ Critical Note - Kafka Quotas vs Application Rate Limiting**: 
+**⚠️ Critical Note - Kafka Quotas vs Application Rate Limiting**:
 
 Kafka HAS native quotas (producer/consumer byte rate, request percentage), BUT these protect the **Kafka broker**, NOT downstream systems like RabbitMQ. Our aiolimiter protects RabbitMQ in the bridge architecture. Both layers are needed (defense-in-depth).
 
@@ -625,7 +588,7 @@ class RateLimiterMiddleware(BaseMiddleware):
     """FastStream middleware for rate limiting via aiolimiter."""
     def __init__(self, max_rate: int, time_period: float = 1.0):
         self._limiter = AsyncLimiter(max_rate, time_period)
-    
+
     async def consume_scope(self, call_next, msg: StreamMessage):
         async with self._limiter:
             return await call_next(msg)
@@ -783,7 +746,6 @@ from faststream.kafka.prometheus import KafkaPrometheusMiddleware
 
 def create_kafka_broker(
     settings: Settings,
-    telemetry: TelemetryMiddleware | None = None,
 ) -> KafkaBroker:
     broker = KafkaBroker(
         bootstrap_servers=settings.kafka_bootstrap_servers,
@@ -791,8 +753,6 @@ def create_kafka_broker(
         enable_idempotence=True,
         middlewares=[KafkaPrometheusMiddleware()],
     )
-    if telemetry:
-        broker.add_middleware(telemetry)
     return broker
 ```
 
@@ -803,7 +763,7 @@ from prometheus_client import Counter
 
 class RabbitPrometheusMiddleware(BaseMiddleware):
     """Minimal Prometheus metrics for RabbitMQ via FastStream middleware."""
-    
+
     async def consume_scope(self, call_next, msg: StreamMessage):
         counter = Counter("events_consume_total", "", ["broker", "status"])
         try:
@@ -819,17 +779,14 @@ Modify [src/messaging/infrastructure/pubsub/rabbit_broker_config.py](src/messagi
 ```python
 def create_rabbit_broker(
     settings: Settings,
-    telemetry: TelemetryMiddleware | None = None,
 ) -> RabbitBroker:
     from .rabbit_prometheus_middleware import RabbitPrometheusMiddleware
-    
+
     broker = RabbitBroker(
         settings.rabbitmq_url,
         publisher_confirms=True,
         middlewares=[RabbitPrometheusMiddleware()],
     )
-    if telemetry:
-        broker.add_middleware(telemetry)
     return broker
 ```
 
@@ -840,7 +797,7 @@ from fastapi import Response
 
 @api_router.get("/metrics", tags=["observability"])
 async def metrics() -> Response:
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 ```
 
 **Key simplification vs original plan**: No custom `PrometheusExporter` class, no custom dispatch hook wiring, no manual metric recording. FastStream's middleware handles all metric collection automatically. Only need: (1) add `KafkaPrometheusMiddleware()` to Kafka broker, (2) write ~30 lines of custom `RabbitPrometheusMiddleware`, (3) expose `/metrics` endpoint.
