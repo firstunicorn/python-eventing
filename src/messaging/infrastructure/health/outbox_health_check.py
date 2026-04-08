@@ -17,7 +17,7 @@ import logging
 from datetime import UTC, datetime
 from typing import Any
 
-from faststream.kafka import KafkaBroker
+from faststream.confluent import KafkaBroker
 
 from messaging.infrastructure.health.checkers import check_database, check_outbox_lag
 from messaging.infrastructure.outbox.outbox_repository import SqlAlchemyOutboxRepository

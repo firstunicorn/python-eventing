@@ -20,7 +20,7 @@ async def test_outbox_health_returns_unavailable_without_checker() -> None:
     request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace()))
 
     with pytest.raises(HTTPException) as exc_info:
-        await get_outbox_health_check(request)  # type: ignore[arg-type]
+        await get_outbox_health_check(request)  # type: ignore[arg-type] # Mock Request type compatibility with FastAPI
 
     assert exc_info.value.status_code == 503
     assert "not initialized" in exc_info.value.detail
@@ -30,6 +30,6 @@ async def test_outbox_health_returns_unavailable_without_checker() -> None:
 async def test_outbox_health_uses_checker_when_present() -> None:
     """Route should delegate to the configured checker."""
 
-    result = await outbox_health(checker=DummyChecker())  # type: ignore[arg-type]
+    result = await outbox_health(checker=DummyChecker())  # type: ignore[arg-type] # DummyChecker implements IOutboxHealthCheck protocol
 
     assert result["status"] == "healthy"

@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from faststream.kafka import KafkaBroker
+from faststream.confluent import KafkaBroker
 
 from python_outbox_core import IEventPublisher
 

@@ -25,6 +25,8 @@ from messaging.infrastructure import (
     create_session_factory,
 )
 from messaging.presentation.router import api_router
+from messaging.presentation.dlq_routes import router as dlq_router
+from messaging.presentation.replay_routes import router as replay_router
 
 
 def create_app() -> FastAPI:
@@ -43,6 +45,8 @@ def create_app() -> FastAPI:
     setup_error_handlers(app)
     root_router = APIRouter(prefix=settings.api_prefix)
     root_router.include_router(api_router)
+    root_router.include_router(dlq_router)
+    root_router.include_router(replay_router)
     app.include_router(root_router)
     return app
 
@@ -60,8 +64,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     The EventBus enables decoupled domain event dispatch within the service.
     Handlers can register for specific event types using:
-        app.state.event_bus.register(EventType, handler)
-    Or use decorator syntax:
+        app.state.session_factory = session_factory
         @app.state.event_bus.subscriber(EventType)
         async def handle_event(event: EventType): ...
 
@@ -71,24 +74,39 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     Yields:
         None: Control flow during application runtime
     """
-    engine, session_factory = create_session_factory(settings.database_url)
+    import os
+
+    # Use pre-set test session factory if available (for testing)
+    if hasattr(app.state, "session_factory"):
+        session_factory = app.state.session_factory
+        engine = None  # Test fixture manages engine lifecycle
+    else:
+        engine, session_factory = create_session_factory(settings.database_url)
+        app.state.session_factory = session_factory
+
     broker = create_kafka_broker(settings)
     repository = SqlAlchemyOutboxRepository(session_factory)
 
     # Initialize EventBus (handlers registered per-domain as needed)
     event_bus = build_event_bus([])
 
-    app.state.session_factory = session_factory
+    app.state.broker = broker
     app.state.outbox_health_check = EventingHealthCheck(repository, broker)
     app.state.outbox_repository = repository
     app.state.event_bus = event_bus  # Expose EventBus for API handlers
+
+    skip_broker = os.getenv("TESTING_SKIP_BROKER") == "true"
+
     try:
-        await broker.connect()
-        await broker.start()
+        if not skip_broker:
+            await broker.connect()
+            await broker.start()
         yield
     finally:
-        await broker.close()
-        await engine.dispose()
+        if not skip_broker:
+            await broker.close()
+        if engine is not None:
+            await engine.dispose()
 
 
 app = create_app()

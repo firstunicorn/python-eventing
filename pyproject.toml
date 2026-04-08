@@ -17,8 +17,15 @@ pydantic-settings = "^2.6.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.36"}
 asyncpg = "^0.30.0"
 alembic = "^1.14.0"
-faststream = {extras = ["kafka", "rabbit"], version = "^0.6.7"}
+# Using confluent backend (confluent-kafka-python, Apache 2.0 licensed open source library)
+# NOT the proprietary Confluent Platform - just the open source Python client
+faststream = {extras = ["confluent", "rabbit"], version = "^0.6.7"}
+jsonschema = "^4.17.0"
+aiolimiter = "^1.2.1"
 opentelemetry-api = "^1.24.0"
+opentelemetry-sdk = "^1.24.0"
+opentelemetry-exporter-otlp = "^1.24.0"
+opentelemetry-instrumentation-faststream = "^0.1.3"
 prometheus-client = "^0.21.0"
 
 # python-web-toolkit packages: Use PyPI versions (^0.1.0), NOT local paths.
@@ -76,7 +83,7 @@ pytest-asyncio = "^0.24.0"
 pytest-cov = "^6.0.0"
 pytest-timeout = "^2.3.1"
 hypothesis = "^6.122.3"
-testcontainers = {extras = ["kafka", "postgres"], version = "^4.9.0"}
+testcontainers = {extras = ["kafka", "rabbitmq"], version = "^4.9.0"}
 pytest-httpx = "^0.35.0"
 mutmut = "^3.2.0"
 aiosqlite = "^0.21.0"
@@ -236,6 +243,7 @@ python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 timeout = 300
 addopts = [
     "--cov=src",
@@ -252,6 +260,7 @@ markers = [
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
     "chaos: marks tests as chaos/fault-injection tests",
+    "property_based: marks tests as property-based tests using Hypothesis",
 ]
 
 [tool.coverage.run]

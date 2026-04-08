@@ -39,6 +39,20 @@ class Settings(BaseFastAPISettings, BaseDatabaseSettings):  # pylint: disable=to
         description="Kafka bootstrap servers for the event broker.",
     )
     kafka_client_id: str = Field(default="eventing", description="Kafka client identifier.")
+    kafka_consumer_conf: dict[str, str] = Field(
+        default_factory=lambda: {
+            "group.id": "eventing-consumers",
+            "partition.assignment.strategy": "cooperative-sticky",
+            "max.poll.interval.ms": "300000",
+            "session.timeout.ms": "45000",
+            "heartbeat.interval.ms": "15000",
+        },
+        description=(
+            "Kafka consumer group configuration for confluent-kafka-python (open source). "
+            "Passed to KafkaBroker via 'config' parameter. Uses librdkafka configuration format. "
+            "See: https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md"
+        ),
+    )
 
 
 settings = Settings()
