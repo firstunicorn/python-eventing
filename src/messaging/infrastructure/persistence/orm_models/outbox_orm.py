@@ -35,6 +35,7 @@ class OutboxEventRecord(Base):
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     published: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     failed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    attempt_count: Mapped[int] = mapped_column(default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

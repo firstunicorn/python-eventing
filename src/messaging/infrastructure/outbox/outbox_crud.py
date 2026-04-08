@@ -73,6 +73,34 @@ class OutboxCrudOperations:
             error_message=error_message,
         )
 
+    async def reset_failed(self, event_id: UUID) -> None:
+        """Reset failed event for retry: clear failed status, error, and increment attempt counter.
+        
+        Args:
+            event_id: UUID of the failed event to reset
+        """
+        logger.info("Resetting failed status for event %s (incrementing attempt counter)", event_id)
+
+        # Get current attempt count
+        from sqlalchemy import select
+        async with self._session_factory() as session:
+            result = await session.execute(
+                select(OutboxEventRecord.attempt_count).where(
+                    OutboxEventRecord.event_id == str(event_id)
+                )
+            )
+            current_attempts = result.scalar_one_or_none() or 0
+
+        # Reset with incremented counter
+        await self._mark(
+            str(event_id),
+            published=False,
+            failed=False,
+            failed_at=None,
+            error_message=None,
+            attempt_count=current_attempts + 1,
+        )
+
     async def _mark(self, event_id: str, **values: object) -> None:
         """Generic update helper for status changes."""
         statement = (
