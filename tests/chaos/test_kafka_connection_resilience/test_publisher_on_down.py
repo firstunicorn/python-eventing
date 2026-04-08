@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from uuid import uuid4
 
 import pytest
-from aiokafka import AIOKafkaProducer
+from confluent_kafka import Producer
 from testcontainers.kafka import KafkaContainer
 
 
@@ -16,14 +17,33 @@ from testcontainers.kafka import KafkaContainer
 async def test_publisher_raises_on_kafka_down(
     docker_or_skip: None,
 ) -> None:
+    """Test that producer fails when Kafka goes down during publish."""
     del docker_or_skip
-    kafka = KafkaContainer()
-    kafka.start(timeout=1800)
+    
+    kafka = KafkaContainer("confluentinc/cp-kafka:7.6.1")
+    kafka.start(timeout=300)
+    
     bootstrap = kafka.get_bootstrap_server()
-    producer = AIOKafkaProducer(bootstrap_servers=bootstrap)
-    await producer.start()
+    
+    producer = Producer({
+        'bootstrap.servers': bootstrap,
+        'client.id': 'chaos-test-producer',
+    })
+    
+    # Verify producer works initially
+    topic = f"test-{uuid4()}"
+    producer.produce(topic, value=b"test-before-shutdown")
+    producer.flush(timeout=10)
+    
+    # Stop Kafka
     kafka.stop()
-    await asyncio.sleep(2)
-    with pytest.raises(Exception):  # noqa: B017,PT011 - any error acceptable for chaos test
-        await asyncio.wait_for(producer.send_and_wait(f"test-{uuid4()}", value=b"test"), timeout=10)
-    await producer.stop()
+    await asyncio.sleep(3)  # Longer wait for full disconnect
+    
+    # Attempt to produce - messages get queued locally
+    producer.produce(topic, value=b"test-after-shutdown")
+    
+    # Flush returns number of messages still in queue
+    # >0 means delivery failed (expected when broker is down)
+    remaining = producer.flush(timeout=10)
+    assert remaining > 0, f"Expected flush to fail with messages remaining, got {remaining}"
+

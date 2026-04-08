@@ -10,6 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import pytest
+from httpx import ASGITransport, AsyncClient
 from hypothesis import HealthCheck, settings
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -49,7 +50,7 @@ def _docker_available() -> bool:
         [docker_binary, "version", "--format", "{{.Server.Version}}"],
         capture_output=True,
         text=True,
-        timeout=5,
+        timeout=30,  # Increased from 5 to 30 seconds for slow Docker daemon
         check=False,
     )
     return result.returncode == 0
@@ -59,6 +60,125 @@ def pytest_configure(config: pytest.Config) -> None:
     """Configure shared test settings once per test session."""
     _ = config
     _configure_hypothesis_profiles()
+
+
+def pytest_sessionstart(session: pytest.Session) -> None:
+    """Cleanup testcontainers BEFORE tests start to ensure clean state.
+    
+    Removes any orphaned containers from previous failed/interrupted runs.
+    Uses two-step process: stop first, then remove after fully stopped.
+    """
+    import structlog
+    import time
+    
+    _ = session
+    logger = structlog.get_logger()
+    
+    try:
+        result = subprocess.run(
+            ["docker", "ps", "-a", "-q", "--filter", "label=org.testcontainers=true"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        
+        if result.returncode != 0:
+            return
+        
+        container_ids = [cid.strip() for cid in result.stdout.strip().split('\n') if cid.strip()]
+        
+        if container_ids:
+            logger.info(
+                "Cleaning stale testcontainers before test run",
+                count=len(container_ids),
+            )
+            
+            # Step 1: Stop running containers first
+            subprocess.run(
+                ["docker", "stop", *container_ids],
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            logger.debug("Stopped containers, waiting for full shutdown")
+            time.sleep(2)  # Wait for containers to fully stop
+            
+            # Step 2: Remove stopped containers
+            subprocess.run(
+                ["docker", "rm", *container_ids],
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            
+            # Give Docker daemon time to clean up
+            logger.info("Waiting for Docker daemon to stabilize after cleanup")
+            time.sleep(5)
+    except Exception as e:
+        logger.debug("Pre-test cleanup skipped", error=str(e))
+
+
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    """Cleanup ALL testcontainers on session end to prevent accumulation.
+    
+    This hook runs after ALL tests complete (or are interrupted), ensuring
+    orphaned containers don't accumulate and overwhelm Docker daemon.
+    
+    Uses two-step process: stop containers first, then remove after fully stopped.
+    Targets ONLY containers with org.testcontainers=true label for safety.
+    """
+    import structlog
+    import time
+    
+    logger = structlog.get_logger()
+    
+    try:
+        # Find all testcontainers (safe - only testcontainers-labeled)
+        result = subprocess.run(
+            ["docker", "ps", "-a", "-q", "--filter", "label=org.testcontainers=true"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        
+        if result.returncode != 0:
+            logger.debug("Docker not available for cleanup")
+            return
+        
+        container_ids = [cid.strip() for cid in result.stdout.strip().split('\n') if cid.strip()]
+        
+        if container_ids:
+            logger.warning(
+                "Cleaning up testcontainers",
+                count=len(container_ids),
+                container_ids=container_ids[:5],  # Log first 5 for debugging
+            )
+            
+            # Step 1: Stop running containers first
+            subprocess.run(
+                ["docker", "stop", *container_ids],
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            logger.debug("Stopped containers, waiting for full shutdown")
+            time.sleep(2)  # Wait for containers to fully stop
+            
+            # Step 2: Remove stopped containers
+            subprocess.run(
+                ["docker", "rm", *container_ids],
+                capture_output=True,
+                timeout=30,
+                check=False,
+            )
+            
+            logger.info("Testcontainers cleanup complete", removed=len(container_ids))
+    except subprocess.TimeoutExpired:
+        logger.warning("Docker cleanup timed out - Docker daemon may be slow")
+    except Exception as e:
+        logger.debug("Testcontainers cleanup skipped", error=str(e))
 
 
 @pytest.fixture(scope="session")
@@ -80,3 +200,121 @@ async def sqlite_session_factory(
     factory = async_sessionmaker(engine, expire_on_commit=False)
     yield engine, factory
     await engine.dispose()
+
+
+@pytest.fixture
+def skip_broker_in_tests(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Skip broker connection for HTTP-only unit/integration tests.
+    
+    This fixture uses monkeypatch to set TESTING_SKIP_BROKER environment variable,
+    which tells the lifespan manager to skip Kafka broker initialization.
+    This is appropriate for tests that only exercise HTTP endpoints and database logic.
+    
+    For tests that need real Kafka, use async_client_with_kafka instead.
+    """
+    monkeypatch.setenv("TESTING_SKIP_BROKER", "true")
+
+
+@pytest.fixture(scope="session")
+def kafka_container(docker_or_skip):
+    """Provide a Kafka container for integration tests using Testcontainers.
+    
+    Requires Docker to be running. Uses confluent-kafka-python compatible container.
+    Session-scoped for efficiency - container is reused across tests.
+    
+    Note: Kafka startup configured with 300-second timeout.
+    """
+    from testcontainers.kafka import KafkaContainer
+    
+    kafka = KafkaContainer("confluentinc/cp-kafka:7.6.1")
+    kafka.start(timeout=300)
+    
+    yield kafka
+    
+    kafka.stop()
+
+
+@pytest.fixture(scope="session")
+def rabbitmq_container(docker_or_skip):
+    """Provide a RabbitMQ container for integration tests using Testcontainers.
+    
+    Requires Docker to be running.
+    Session-scoped for efficiency - container is reused across tests.
+    """
+    from testcontainers.rabbitmq import RabbitMqContainer
+
+    with RabbitMqContainer("rabbitmq:3.13-management-alpine") as rabbitmq:
+        yield rabbitmq
+
+
+@pytest.fixture
+async def async_client(
+    skip_broker_in_tests: None,
+    sqlite_session_factory: tuple[AsyncEngine, async_sessionmaker[AsyncSession]],
+) -> AsyncIterator[AsyncClient]:
+    """Create async HTTP client for HTTP-only tests (no external brokers).
+    
+    This fixture is suitable for testing:
+    - HTTP API endpoints (health, DLQ admin, event replay)
+    - Database operations
+    - Business logic that doesn't require actual message brokers
+    
+    For tests requiring real Kafka/RabbitMQ, use async_client_with_kafka.
+    """
+    from messaging.main import create_app
+
+    app = create_app()
+
+    # Override with test database
+    engine, session_factory = sqlite_session_factory
+    app.state.session_factory = session_factory
+
+    # Initialize lifespan manually for tests
+    async with app.router.lifespan_context(app):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            yield client
+
+
+@pytest.fixture
+async def async_client_with_kafka(
+    kafka_container,
+    rabbitmq_container,
+    sqlite_session_factory: tuple[AsyncEngine, async_sessionmaker[AsyncSession]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> AsyncIterator[AsyncClient]:
+    """Create async HTTP client with real Kafka and RabbitMQ for integration tests.
+    
+    This fixture spins up actual broker containers and configures the app to use them.
+    Suitable for testing:
+    - Full event flow (publish -> consume -> process)
+    - Consumer group behavior, rebalancing, partition assignment
+    - Kafka-to-RabbitMQ bridge
+    - Circuit breaker resilience with broker failures
+    
+    Note: Slower than async_client due to container startup. Use selectively.
+    """
+    from messaging.main import create_app
+
+    # Configure app to use test containers
+    kafka_bootstrap = kafka_container.get_bootstrap_server()
+    rabbitmq_url = (
+        f"amqp://{rabbitmq_container.username}:{rabbitmq_container.password}"
+        f"@{rabbitmq_container.get_container_host_ip()}"
+        f":{rabbitmq_container.get_exposed_port(5672)}//"
+    )
+
+    monkeypatch.setenv("KAFKA_BOOTSTRAP_SERVERS", kafka_bootstrap)
+    monkeypatch.setenv("RABBITMQ_URL", rabbitmq_url)
+
+    app = create_app()
+
+    # Override with test database
+    engine, session_factory = sqlite_session_factory
+    app.state.session_factory = session_factory
+
+    # Initialize lifespan with real brokers
+    async with app.router.lifespan_context(app):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            yield client
