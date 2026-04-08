@@ -26,7 +26,7 @@ class FakeKafkaBroker:
         self,
         message: dict[str, object],
         *,
-        topic: str = "",
+        topic: str,
         key: bytes | None = None,
         partition: int | None = None,
         timestamp_ms: int | None = None,

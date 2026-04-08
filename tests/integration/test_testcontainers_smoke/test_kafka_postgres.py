@@ -8,7 +8,7 @@ import os
 from uuid import uuid4
 
 import pytest
-from aiokafka import AIOKafkaConsumer
+from confluent_kafka import Consumer, KafkaException
 from testcontainers.kafka import KafkaContainer
 from testcontainers.postgres import PostgresContainer
 
@@ -26,53 +26,86 @@ from tests.integration.test_testcontainers_smoke.fixtures import (
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(1800)
+@pytest.mark.integration
 async def test_postgres_and_kafka_testcontainers_support_eventing_smoke(
     docker_or_skip: None,
 ) -> None:
     """A live broker and database should support storage plus real FastStream publishing."""
     del docker_or_skip
-    kafka = KafkaContainer()
+    
+    kafka = KafkaContainer("confluentinc/cp-kafka:7.6.1")
+    
     with PostgresContainer(
         "postgres:16",
         username="postgres",
         password=os.getenv("TESTCONTAINERS_POSTGRES_PASSWORD", "postgres"),
         dbname="eventing",
     ) as postgres:
-        kafka.start(timeout=1800)
+        kafka.start(timeout=300)
+        
         engine, session_factory = create_session_factory(
             postgres.get_connection_url(driver="asyncpg")
         )
         async with engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
+        
         bootstrap_servers = kafka.get_bootstrap_server()
+        
         broker = create_kafka_broker(
             Settings(
                 kafka_bootstrap_servers=bootstrap_servers,
                 kafka_client_id="eventing-test",
             )
         )
+        
         repository = SqlAlchemyOutboxRepository(session_factory)
         publisher = KafkaEventPublisher(broker)
-        consumer = AIOKafkaConsumer(
-            TEST_TOPIC,
-            bootstrap_servers=bootstrap_servers,
-            group_id=f"eventing-test-{uuid4()}",
-            auto_offset_reset="earliest",
-            enable_auto_commit=False,
-        )
+        
+        consumer = Consumer({
+            'bootstrap.servers': bootstrap_servers,
+            'group.id': f"eventing-test-{uuid4()}",
+            'auto.offset.reset': 'earliest',
+            'enable.auto.commit': False,
+        })
+        consumer.subscribe([TEST_TOPIC])
+        
         try:
-            await consumer.start()
             await broker.connect()
             await broker.start()
+            
             await repository.add_event(ExampleEvent(xp_delta=15))
+            
             assert await broker.ping(1.0) is True
+            
             await publisher.publish(TEST_MESSAGE)
-            record = await asyncio.wait_for(consumer.getone(), timeout=30)
-            assert record.topic == TEST_TOPIC
-            assert record.key == b"user-123"
-            assert json.loads(record.value.decode("utf-8"))["eventType"] == TEST_TOPIC
+            
+            # Poll for message with timeout
+            start_time = asyncio.get_event_loop().time()
+            message_received = False
+            
+            while (asyncio.get_event_loop().time() - start_time) < 30:
+                msg = consumer.poll(timeout=1.0)
+                if msg is None:
+                    await asyncio.sleep(0.1)
+                    continue
+                if msg.error():
+                    raise KafkaException(msg.error())
+                
+                assert msg.topic() == TEST_TOPIC
+                assert msg.key() == b"user-123"
+                
+                value = msg.value()
+                assert value is not None
+                payload = json.loads(value.decode("utf-8"))
+                assert payload["eventType"] == TEST_TOPIC
+                
+                message_received = True
+                break
+            
+            assert message_received, "Message not received within timeout"
+            
         finally:
-            await consumer.stop()
+            consumer.close()
             await broker.stop()
             await engine.dispose()
             kafka.stop()

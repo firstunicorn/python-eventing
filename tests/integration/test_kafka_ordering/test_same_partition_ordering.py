@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from uuid import uuid4
 
 import pytest
-from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
+from confluent_kafka import Consumer, Producer, KafkaException
 from testcontainers.kafka import KafkaContainer
 
 SAME_KEY = "order-123"
@@ -14,35 +15,66 @@ SAME_KEY = "order-123"
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(1800)
+@pytest.mark.integration
 async def test_same_partition_key_preserves_ordering(
     docker_or_skip: None,
 ) -> None:
+    """Test that messages with same partition key preserve ordering."""
     del docker_or_skip
-    kafka = KafkaContainer()
-    kafka.start(timeout=1800)
+    
+    kafka = KafkaContainer("confluentinc/cp-kafka:7.6.1")
+    kafka.start(timeout=300)
+    
     bootstrap = kafka.get_bootstrap_server()
     topic = f"test-ordering-{uuid4()}"
     group = f"ordering-test-{uuid4()}"
-    producer = AIOKafkaProducer(bootstrap_servers=bootstrap)
-    consumer = AIOKafkaConsumer(
-        topic,
-        bootstrap_servers=bootstrap,
-        group_id=group,
-        auto_offset_reset="earliest",
-        enable_auto_commit=False,
-    )
-    await producer.start()
-    await consumer.start()
+    
+    producer = Producer({
+        'bootstrap.servers': bootstrap,
+        'client.id': 'ordering-test-producer',
+    })
+    
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap,
+        'group.id': group,
+        'auto.offset.reset': 'earliest',
+        'enable.auto.commit': False,
+    })
+    consumer.subscribe([topic])
+    
     try:
+        # Produce 50 messages with same key
         for i in range(50):
-            await producer.send_and_wait(topic, value=f"msg-{i}".encode(), key=SAME_KEY.encode())
+            producer.produce(
+                topic,
+                value=f"msg-{i}".encode(),
+                key=SAME_KEY.encode()
+            )
+        producer.flush(timeout=30)
+        
+        # Consume and verify order
         received: list[str] = []
-        for _ in range(50):
-            record = await asyncio.wait_for(consumer.getone(), timeout=10)
-            received.append(record.value.decode())
+        start_time = asyncio.get_event_loop().time()
+        
+        while len(received) < 50 and (asyncio.get_event_loop().time() - start_time) < 60:
+            msg = consumer.poll(timeout=1.0)
+            if msg is None:
+                await asyncio.sleep(0.1)
+                continue
+            if msg.error():
+                raise KafkaException(msg.error())
+            
+            value = msg.value()
+            if value is not None:
+                received.append(value.decode())
+        
+        assert len(received) == 50, f"Expected 50 messages, got {len(received)}"
+        
+        # Extract sequence numbers and verify order
         values = [r.split("-")[1] for r in received]
-        assert values == [str(i) for i in range(50)]
+        expected = [str(i) for i in range(50)]
+        assert values == expected, f"Message order violated. Expected {expected}, got {values}"
+        
     finally:
-        await consumer.stop()
-        await producer.stop()
+        consumer.close()
         kafka.stop()

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, cast
 
 import pytest
-from faststream.kafka import KafkaBroker
+from faststream.confluent import KafkaBroker
 
 from messaging.infrastructure.pubsub import KafkaEventPublisher
 from tests.unit.infrastructure.conftest import FakeKafkaBroker, FakePublisher

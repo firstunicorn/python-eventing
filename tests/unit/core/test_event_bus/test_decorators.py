@@ -15,7 +15,7 @@ async def test_event_bus_decorator_registers_async_subscribers() -> None:
 
     @event_bus.subscriber(ExampleEvent)
     async def capture(event: BaseEvent) -> None:
-        seen.append(event.xp_delta)  # type: ignore[attr-defined]
+        seen.append(event.xp_delta)  # type: ignore[attr-defined] # xp_delta is dynamically added test attribute
 
     await event_bus.dispatch(ExampleEvent(xp_delta=20))
 

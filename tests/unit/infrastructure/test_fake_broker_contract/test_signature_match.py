@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import inspect
 
-from faststream.kafka import KafkaBroker
+from faststream.confluent import KafkaBroker
 
 from tests.unit.infrastructure.conftest import FakeKafkaBroker
 from tests.unit.infrastructure.test_fake_broker_contract.helpers import normalize_annotation
