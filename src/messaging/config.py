@@ -53,6 +53,18 @@ class Settings(BaseFastAPISettings, BaseDatabaseSettings):  # pylint: disable=to
             "See: https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md"
         ),
     )
+    rate_limiter_enabled: bool = Field(
+        default=False,
+        description="Enable rate limiting middleware for message consumption"
+    )
+    rate_limiter_max_rate: int = Field(
+        default=100,
+        description="Maximum number of messages to process per time period"
+    )
+    rate_limiter_time_period: float = Field(
+        default=1.0,
+        description="Time period in seconds for rate limiting"
+    )
 
 
 settings = Settings()

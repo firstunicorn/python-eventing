@@ -84,7 +84,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         engine, session_factory = create_session_factory(settings.database_url)
         app.state.session_factory = session_factory
 
-    broker = create_kafka_broker(settings)
+    broker = create_kafka_broker(
+        settings,
+        enable_rate_limiter=settings.rate_limiter_enabled,
+        rate_limit_max_rate=settings.rate_limiter_max_rate,
+        rate_limit_time_period=settings.rate_limiter_time_period,
+    )
     repository = SqlAlchemyOutboxRepository(session_factory)
 
     # Initialize EventBus (handlers registered per-domain as needed)

@@ -30,6 +30,9 @@ from messaging.core.contracts.circuit_breaker import CircuitBreaker
 from messaging.infrastructure.resilience.circuit_breaker_middleware import (
     CircuitBreakerMiddleware,
 )
+from messaging.infrastructure.resilience.rate_limiter_middleware import (
+    RateLimiterMiddleware,
+)
 
 
 def create_kafka_broker(
@@ -38,6 +41,9 @@ def create_kafka_broker(
     tracer_provider: trace.TracerProvider | None = None,
     circuit_breaker_threshold: int = 5,
     circuit_breaker_timeout: float = 30.0,
+    enable_rate_limiter: bool = False,
+    rate_limit_max_rate: int = 100,
+    rate_limit_time_period: float = 1.0,
 ) -> KafkaBroker:
     """Create a Kafka broker configured with resilience and observability middlewares.
 
@@ -47,8 +53,9 @@ def create_kafka_broker(
 
     Middlewares are applied in order:
     1. Circuit Breaker (resilience) - Protects against cascading failures
-    2. Prometheus (metrics) - Collects broker metrics
-    3. OpenTelemetry (tracing) - Distributed tracing
+    2. Rate Limiter (optional resilience) - Throttles message consumption
+    3. Prometheus (metrics) - Collects broker metrics
+    4. OpenTelemetry (tracing) - Distributed tracing
 
     Note:
         Consumer group configuration from settings.kafka_consumer_conf is passed at
@@ -61,6 +68,9 @@ def create_kafka_broker(
         tracer_provider: Optional OpenTelemetry tracer provider for tracing
         circuit_breaker_threshold: Number of failures before circuit opens (default: 5)
         circuit_breaker_timeout: Seconds before half-open state (default: 30.0)
+        enable_rate_limiter: Enable rate limiting middleware (default: False)
+        rate_limit_max_rate: Maximum messages per time period (default: 100)
+        rate_limit_time_period: Time period in seconds (default: 1.0)
 
     Returns:
         KafkaBroker: Configured FastStream Kafka broker with middlewares
@@ -86,6 +96,15 @@ def create_kafka_broker(
         return middleware
     
     middlewares.append(circuit_breaker_factory)
+
+    # Add Rate Limiter middleware if enabled
+    if enable_rate_limiter:
+        middlewares.append(
+            RateLimiterMiddleware(
+                max_rate=rate_limit_max_rate,
+                time_period=rate_limit_time_period,
+            )
+        )
 
     # Add Prometheus middleware if registry provided
     if prometheus_registry is not None:
