@@ -53,6 +53,7 @@ pydantic-response-models = "^0.1.0"
 postgres-data-sanitizers = "^0.1.0"
 python-technical-primitives = "^0.1.0"
 opentelemetry-semantic-conventions = "^0.61b0"
+structlog = "^25.5.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.4"
@@ -149,6 +150,14 @@ ignore = [
     "DTZ001",  # Naive datetime construction is intentional in validation tests.
     "PLR2004", # Magic values (test data)
     "S101",    # Assertions are the canonical pytest style.
+    "S603",    # subprocess call - docker commands in testcontainers fixtures
+    "S607",    # subprocess with partial path - docker is in PATH for testcontainers
+    "S110",    # try-except-pass - valid for test cleanup/teardown
+    "SIM105",  # try-except-pass pattern - valid for test cleanup/teardown
+    "PT011",   # pytest.raises too broad - acceptable for testing error conditions
+    "EM101",   # Exception string literals - acceptable in tests
+    "C901",    # Complexity - integration tests can be complex
+    "RUF003",  # Ambiguous characters - can appear in test comments
 ]
 
 [tool.ruff.lint.mccabe]
@@ -261,6 +270,7 @@ markers = [
     "unit: marks tests as unit tests",
     "chaos: marks tests as chaos/fault-injection tests",
     "property_based: marks tests as property-based tests using Hypothesis",
+    "requires_rabbitmq: marks tests requiring RabbitMQ (known issues with testcontainers on Windows)",
 ]
 
 [tool.coverage.run]
