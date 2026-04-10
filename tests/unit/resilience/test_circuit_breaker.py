@@ -4,11 +4,7 @@ import asyncio
 
 import pytest
 
-from messaging.core.contracts.circuit_breaker import (
-    CircuitBreaker,
-    CircuitOpenError,
-    CircuitState,
-)
+from messaging.core.contracts.circuit_breaker import CircuitBreaker, CircuitOpenError, CircuitState
 
 
 class TestCircuitBreakerStateMachine:
@@ -32,7 +28,8 @@ class TestCircuitBreakerStateMachine:
         breaker = CircuitBreaker(failure_threshold=3)
 
         async def failing_func() -> None:
-            raise ValueError("Broker down")
+            msg = "Broker down"
+            raise ValueError(msg)
 
         for _ in range(3):
             with pytest.raises(ValueError):
@@ -49,7 +46,8 @@ class TestCircuitBreakerStateMachine:
         async def failing_func() -> None:
             nonlocal call_count
             call_count += 1
-            raise ValueError("down")
+            msg = "down"
+            raise ValueError(msg)
 
         for _ in range(2):
             with pytest.raises(ValueError):
@@ -68,7 +66,8 @@ class TestCircuitBreakerStateMachine:
         breaker = CircuitBreaker(failure_threshold=2, reset_timeout=0.1)
 
         async def failing_func() -> None:
-            raise ValueError("down")
+            msg = "down"
+            raise ValueError(msg)
 
         for _ in range(2):
             with pytest.raises(ValueError):
@@ -91,7 +90,8 @@ class TestCircuitBreakerStateMachine:
             return "recovered"
 
         async def always_fails() -> None:
-            raise ValueError("down")
+            msg = "down"
+            raise ValueError(msg)
 
         for _ in range(2):
             with pytest.raises(ValueError):
@@ -109,7 +109,8 @@ class TestCircuitBreakerStateMachine:
         breaker = CircuitBreaker(failure_threshold=2, reset_timeout=0.1)
 
         async def failing_func() -> None:
-            raise ValueError("still down")
+            msg = "still down"
+            raise ValueError(msg)
 
         for _ in range(2):
             with pytest.raises(ValueError):
@@ -131,7 +132,8 @@ class TestCircuitBreakerStateMachine:
         breaker = CircuitBreaker(failure_threshold=2, reset_timeout=0.1)
 
         async def failing_func() -> None:
-            raise ValueError("down")
+            msg = "down"
+            raise ValueError(msg)
 
         for _ in range(2):
             with pytest.raises(ValueError):

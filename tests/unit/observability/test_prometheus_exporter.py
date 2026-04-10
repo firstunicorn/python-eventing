@@ -6,9 +6,7 @@ import pytest
 from faststream import StreamMessage
 from prometheus_client import CollectorRegistry
 
-from messaging.infrastructure.pubsub.rabbit_prometheus_middleware import (
-    RabbitPrometheusMiddleware,
-)
+from messaging.infrastructure.pubsub.rabbit_prometheus_middleware import RabbitPrometheusMiddleware
 
 
 class TestPrometheusExporter:
@@ -57,7 +55,8 @@ class TestPrometheusExporter:
         middleware = RabbitPrometheusMiddleware(registry=registry)
 
         async def call_next(msg: StreamMessage[Any]) -> None:
-            raise ValueError("processing failed")
+            msg = "processing failed"
+            raise ValueError(msg)
 
         msg = StreamMessage(raw_message=b"test", body={"test": "data"})
 

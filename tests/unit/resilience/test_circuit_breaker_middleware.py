@@ -6,9 +6,7 @@ import pytest
 from faststream import PublishCommand, PublishType, StreamMessage
 
 from messaging.core.contracts.circuit_breaker import CircuitOpenError, CircuitState
-from messaging.infrastructure.resilience.circuit_breaker_middleware import (
-    CircuitBreakerMiddleware,
-)
+from messaging.infrastructure.resilience.circuit_breaker_middleware import CircuitBreakerMiddleware
 
 
 class TestCircuitBreakerMiddleware:
@@ -38,7 +36,8 @@ class TestCircuitBreakerMiddleware:
         middleware = CircuitBreakerMiddleware(failure_threshold=2)
 
         async def failing_call_next(msg: StreamMessage[Any]) -> None:
-            raise ValueError("Kafka connection failed")
+            msg = "Kafka connection failed"
+            raise ValueError(msg)
 
         msg = StreamMessage(raw_message=b"test", body={"test": "data"})
 
@@ -57,7 +56,8 @@ class TestCircuitBreakerMiddleware:
         async def failing_call_next(msg: StreamMessage[Any]) -> None:
             nonlocal call_count
             call_count += 1
-            raise ValueError("down")
+            msg = "down"
+            raise ValueError(msg)
 
         msg = StreamMessage(raw_message=b"test", body={"test": "data"})
 
@@ -99,7 +99,8 @@ class TestCircuitBreakerMiddleware:
         middleware = CircuitBreakerMiddleware(failure_threshold=2)
 
         async def failing_publish(cmd: PublishCommand) -> None:
-            raise ConnectionError("Kafka broker down")
+            msg = "Kafka broker down"
+            raise ConnectionError(msg)
 
         cmd = PublishCommand(
             {"test": "data"},

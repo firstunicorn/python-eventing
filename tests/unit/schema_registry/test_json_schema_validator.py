@@ -3,10 +3,7 @@
 import pytest
 
 from messaging.core.contracts.schema_registry import SchemaRegistry
-from messaging.core.contracts.schema_validator import (
-    JsonSchemaValidator,
-    SchemaValidationError,
-)
+from messaging.core.contracts.schema_validator import JsonSchemaValidator, SchemaValidationError
 
 
 class TestJsonSchemaValidation:

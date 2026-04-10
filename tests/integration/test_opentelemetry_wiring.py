@@ -3,8 +3,8 @@
 import pytest
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
 
 @pytest.fixture
@@ -53,9 +53,9 @@ class TestOpenTelemetryWiring:
         spans = exporter.get_finished_spans()
         assert len(spans) == 3
 
-        kafka_span = [s for s in spans if s.name == "kafka_publish"][0]
-        bridge_span = [s for s in spans if s.name == "bridge_consume"][0]
-        rabbit_span = [s for s in spans if s.name == "rabbitmq_publish"][0]
+        kafka_span = next(s for s in spans if s.name == "kafka_publish")
+        bridge_span = next(s for s in spans if s.name == "bridge_consume")
+        rabbit_span = next(s for s in spans if s.name == "rabbitmq_publish")
 
         assert kafka_span is not None
         assert bridge_span is not None

@@ -37,7 +37,7 @@ def test_deserialize_rejects_bad_event_type_values(bad_type: Any) -> None:
     registry = EventRegistry()
     registry.register(ExampleEvent)
     payload = {"eventType": bad_type}
-    with pytest.raises(Exception):  # noqa: B017,PT011 - any exception acceptable
+    with pytest.raises(Exception):  # noqa: B017 - any exception acceptable
         registry.deserialize(payload)
 
 
@@ -62,5 +62,5 @@ def test_deserialize_accepts_valid_payload_with_extra_fields() -> None:
 
 def test_from_dict_rejects_missing_event_type() -> None:
     """BaseEvent should reject payloads without eventType."""
-    with pytest.raises(Exception):  # noqa: B017,PT011 - pydantic validation error type varies
+    with pytest.raises(Exception):  # noqa: B017 - pydantic validation error type varies
         BaseEvent.model_validate({"aggregateId": "x"})

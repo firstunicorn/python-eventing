@@ -3,7 +3,10 @@
 import asyncio
 
 import pytest
-from confluent_kafka.admin import AdminClient, NewTopic  # type: ignore[attr-defined] # confluent_kafka stubs incomplete in typeshed
+from confluent_kafka.admin import (  # type: ignore[attr-defined] # confluent_kafka stubs incomplete in typeshed
+    AdminClient,
+    NewTopic,
+)
 
 
 @pytest.fixture
@@ -45,7 +48,7 @@ class TestConsumerGroupConfig:
 
         # Poll until assignment completes (max 20 attempts)
         initial_assignment = []
-        for attempt in range(20):
+        for _attempt in range(20):
             consumer.poll(timeout=1.0)
             initial_assignment = consumer.assignment()
             if initial_assignment:
@@ -60,10 +63,10 @@ class TestConsumerGroupConfig:
         # Restart consumer with same group.instance.id
         consumer2 = Consumer(consumer_config)
         consumer2.subscribe(["multi-partition-topic"])
-        
+
         # Poll until assignment completes (max 20 attempts)
         final_assignment = []
-        for attempt in range(20):
+        for _attempt in range(20):
             consumer2.poll(timeout=1.0)
             final_assignment = consumer2.assignment()
             if final_assignment:

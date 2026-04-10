@@ -1,6 +1,5 @@
 """Chaos tests for circuit breaker resilience under broker failures."""
 
-import os
 from datetime import UTC, datetime
 
 import pytest
@@ -25,9 +24,10 @@ async def kafka_for_chaos(docker_or_skip):
 @pytest.fixture
 async def kafka_broker_with_circuit_breaker(kafka_for_chaos):
     """Create Kafka broker with circuit breaker for chaos testing."""
-    from messaging.infrastructure.pubsub.broker_config import create_kafka_broker
-    from messaging.config import Settings
     import asyncio
+
+    from messaging.config import Settings
+    from messaging.infrastructure.pubsub.broker_config import create_kafka_broker
 
     # Create settings pointing to test Kafka
     settings = Settings(
@@ -44,7 +44,7 @@ async def kafka_broker_with_circuit_breaker(kafka_for_chaos):
 
     await broker.connect()
     await broker.start()
-    
+
     # Give broker time to establish connection
     await asyncio.sleep(1)
 
@@ -62,14 +62,13 @@ class TestCircuitBreakerResilience:
         self, kafka_broker_with_circuit_breaker
     ) -> None:
         """Kill Kafka container, circuit opens after publish failures."""
-        from messaging.infrastructure.pubsub.kafka_publisher import KafkaEventPublisher
-        from messaging.core.contracts.base_event import BaseEvent
-        from messaging.core.contracts.circuit_breaker import CircuitOpenError
-        from uuid import uuid4
         import asyncio
 
+        from messaging.core.contracts.circuit_breaker import CircuitOpenError
+        from messaging.infrastructure.pubsub.kafka_publisher import KafkaEventPublisher
+
         broker, kafka_container = kafka_broker_with_circuit_breaker
-        publisher = KafkaEventPublisher(broker)
+        KafkaEventPublisher(broker)
 
         # Get circuit breaker from broker middleware
         # The middleware is created by factory, need to get actual instance
@@ -103,7 +102,7 @@ class TestCircuitBreakerResilience:
         # THIS TEST VERIFIES:
         # Circuit breaker state machine logic (open after N failures, reject calls)
         # by simulating the failure detection that production code would implement.
-        
+
         # Simulate middleware detecting broker failures (via callbacks/health checks)
         for _ in range(4):
             await circuit_breaker.record_failure()
@@ -112,7 +111,7 @@ class TestCircuitBreakerResilience:
         # Verify circuit breaker opened after threshold failures
         assert circuit_breaker.state.value == "open", \
             f"Expected circuit open after failures, got {circuit_breaker.state.value}"
-        
+
         # Verify circuit rejects calls (protecting from cascading failures)
         with pytest.raises(CircuitOpenError):
             await circuit_breaker.call(lambda: None)
@@ -123,6 +122,7 @@ class TestCircuitBreakerResilience:
     ) -> None:
         """After timeout, circuit transitions to half-open state."""
         import asyncio
+
         from messaging.core.contracts.circuit_breaker import CircuitState
 
         broker, kafka_container = kafka_broker_with_circuit_breaker
@@ -150,10 +150,11 @@ class TestCircuitBreakerResilience:
     ) -> None:
         """Successful publish after recovery closes circuit."""
         import asyncio
-        from messaging.infrastructure.pubsub.kafka_publisher import KafkaEventPublisher
+        from uuid import uuid4
+
         from messaging.core.contracts.base_event import BaseEvent
         from messaging.core.contracts.circuit_breaker import CircuitState
-        from uuid import uuid4
+        from messaging.infrastructure.pubsub.kafka_publisher import KafkaEventPublisher
 
         broker, kafka_container = kafka_broker_with_circuit_breaker
         publisher = KafkaEventPublisher(broker)

@@ -1,4 +1,8 @@
-"""Integration tests for Kafka-to-RabbitMQ bridge."""
+"""Integration tests for Kafka-to-RabbitMQ bridge.
+
+Note: These tests require a running RabbitMQ instance and have known issues
+with testcontainers on Windows. They can be skipped with `-m "not requires_rabbitmq"`.
+"""
 
 import asyncio
 import json
@@ -7,6 +11,7 @@ import pytest
 
 
 @pytest.mark.integration
+@pytest.mark.requires_rabbitmq
 class TestKafkaRabbitMQBridge:
     """Test the Kafka-to-RabbitMQ bridge integration."""
 
@@ -44,8 +49,8 @@ class TestKafkaRabbitMQBridge:
         self, kafka_container, rabbitmq_container, async_client_with_kafka
     ) -> None:
         """Bridge publishes consumed Kafka events to RabbitMQ with routing key."""
-        from confluent_kafka import Producer
         import aio_pika
+        from confluent_kafka import Producer
 
         # Publish to Kafka
         producer_config = {
@@ -53,7 +58,7 @@ class TestKafkaRabbitMQBridge:
         }
         producer = Producer(producer_config)
 
-        test_message = {"event_id": "bridge-test-2", "type": "user.created"}
+        test_message = {"event_id": "bridge-test-2", "event_type": "user.created"}
         producer.produce(
             "events",
             key=b"user-123",
@@ -65,19 +70,26 @@ class TestKafkaRabbitMQBridge:
         rabbitmq_url = (
             f"amqp://{rabbitmq_container.username}:{rabbitmq_container.password}"
             f"@{rabbitmq_container.get_container_host_ip()}"
-            f":{rabbitmq_container.get_exposed_port(5672)}//"
+            f":{rabbitmq_container.get_exposed_port(rabbitmq_container.port)}//"
         )
 
         connection = await aio_pika.connect_robust(rabbitmq_url)
         channel = await connection.channel()
 
         # Declare queue and bind to exchange
+        exchange = await channel.declare_exchange("events", type="topic", durable=True)
         queue = await channel.declare_queue("test-queue", auto_delete=True)
+        await queue.bind(exchange, routing_key="user.created")
 
         await asyncio.sleep(2)  # Give bridge time to process
 
         # Verify queue received message
-        # This is a placeholder - actual bridge needs to be running
+        message = await queue.get(timeout=5)
+        assert message is not None
+        body = json.loads(message.body.decode())
+        assert body["event_id"] == "bridge-test-2"
+        assert body["event_type"] == "user.created"
+
         await connection.close()
 
     @pytest.mark.asyncio

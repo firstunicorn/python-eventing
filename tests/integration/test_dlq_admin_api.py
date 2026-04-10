@@ -39,13 +39,12 @@ class TestDLQAdminAPI:
         self, async_client: AsyncClient, sqlite_session_factory
     ) -> None:
         """POST /dlq/{event_id}/retry resets failed status, re-enqueues."""
-        from messaging.infrastructure.persistence.orm_models.outbox_orm import (
-            OutboxEventRecord,
-        )
         from datetime import UTC, datetime
-        
+
+        from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
+
         test_event_id = str(uuid4())
-        
+
         # Seed a failed outbox event
         _, session_factory = sqlite_session_factory
         async with session_factory() as session:
@@ -84,11 +83,10 @@ class TestDLQAdminAPI:
         self, async_client: AsyncClient, sqlite_session_factory
     ) -> None:
         """Retry increments attempt counter in outbox record."""
-        from messaging.infrastructure.persistence.orm_models.outbox_orm import (
-            OutboxEventRecord,
-        )
-        from sqlalchemy import select
         import structlog
+        from sqlalchemy import select
+
+        from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
 
         logger = structlog.get_logger()
         test_event_id = str(uuid4())  # Use valid UUID format
@@ -97,7 +95,7 @@ class TestDLQAdminAPI:
         _, session_factory = sqlite_session_factory
         async with session_factory() as session:
             from datetime import UTC, datetime
-            
+
             failed_event = OutboxEventRecord(
                 event_id=test_event_id,
                 event_type="test.event",

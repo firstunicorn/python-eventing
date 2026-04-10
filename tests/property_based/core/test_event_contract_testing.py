@@ -1,7 +1,8 @@
 """Property-based tests for event contract testing with version enforcement."""
 
 import pytest
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
 from messaging.core.contracts.contract_validator import (
     ContractViolationError,

@@ -2,10 +2,7 @@
 
 import pytest
 
-from messaging.core.contracts.schema_registry import (
-    SchemaRegistry,
-    UnknownSchemaVersionError,
-)
+from messaging.core.contracts.schema_registry import SchemaRegistry, UnknownSchemaVersionError
 
 
 class TestSchemaRegistryBasics:
