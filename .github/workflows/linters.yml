@@ -83,7 +83,7 @@ jobs:
       - name: Run vulture
         run: |
           echo "::group::vulture Dead Code Check"
-          poetry run vulture src/ tests/ --exclude .venv --min-confidence 80
+          poetry run vulture src/ tests/ .vulture-whitelist.py --exclude .venv --min-confidence 80
           echo "::endgroup::"
 
       - name: Run radon
