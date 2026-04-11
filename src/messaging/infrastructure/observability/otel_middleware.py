@@ -16,9 +16,7 @@ class OpenTelemetryMiddleware(BaseMiddleware):
         """Initialize middleware with tracer."""
         self._tracer = trace.get_tracer(tracer_name)
 
-    async def consume_scope(
-        self, call_next: Any, msg: StreamMessage[Any]
-    ) -> Any:
+    async def consume_scope(self, call_next: Any, msg: StreamMessage[Any]) -> Any:
         """Wrap consume with OpenTelemetry span."""
         with self._tracer.start_as_current_span("faststream.consume") as span:
             span.set_attribute("messaging.system", "faststream")

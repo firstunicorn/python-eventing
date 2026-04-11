@@ -8,7 +8,5 @@ class HealthStatus(StrEnum):
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
 
-
 class OutboxHealthCheck:
-    async def check_health(self) -> dict[str, Any]:
-        ...
+    async def check_health(self) -> dict[str, Any]: ...

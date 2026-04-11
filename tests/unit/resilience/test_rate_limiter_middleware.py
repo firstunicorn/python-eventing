@@ -44,10 +44,7 @@ class TestRateLimiterMiddleware:
             StreamMessage(raw_message=b"3", body={"seq": 3}),
         ]
 
-        await asyncio.gather(*[
-            middleware.consume_scope(call_next, msg)
-            for msg in messages
-        ])
+        await asyncio.gather(*[middleware.consume_scope(call_next, msg) for msg in messages])
 
         assert len(processed) == 3
 
@@ -66,9 +63,6 @@ class TestRateLimiterMiddleware:
             StreamMessage(raw_message=b"3", body={"seq": 3}),
         ]
 
-        await asyncio.gather(*[
-            middleware.consume_scope(call_next, msg)
-            for msg in messages
-        ])
+        await asyncio.gather(*[middleware.consume_scope(call_next, msg) for msg in messages])
 
         assert len(processed) == 3

@@ -57,9 +57,7 @@ class EventingHealthCheck(OutboxHealthCheck):
         }
         statuses = {check["status"] for check in checks.values()}
         status = (
-            HealthStatus.HEALTHY
-            if statuses == {HealthStatus.HEALTHY}
-            else HealthStatus.DEGRADED
+            HealthStatus.HEALTHY if statuses == {HealthStatus.HEALTHY} else HealthStatus.DEGRADED
         )
         if HealthStatus.UNHEALTHY in statuses:
             status = HealthStatus.UNHEALTHY

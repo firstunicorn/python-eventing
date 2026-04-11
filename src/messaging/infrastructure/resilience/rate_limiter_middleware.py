@@ -15,9 +15,7 @@ class RateLimiterMiddleware(BaseMiddleware):
         """Initialize middleware with rate limiter."""
         self._limiter = AsyncLimiter(max_rate, time_period)
 
-    async def consume_scope(
-        self, call_next: Any, msg: StreamMessage[Any]
-    ) -> Any:
+    async def consume_scope(self, call_next: Any, msg: StreamMessage[Any]) -> Any:
         """Gate message consumption with rate limiter."""
         async with self._limiter:
             return await call_next(msg)

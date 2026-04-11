@@ -17,9 +17,7 @@ class CircuitBreakerMiddleware(BaseMiddleware):
         """Initialize middleware with circuit breaker."""
         self._breaker = CircuitBreaker(failure_threshold, reset_timeout)
 
-    async def consume_scope(
-        self, call_next: Any, msg: StreamMessage[Any]
-    ) -> Any:
+    async def consume_scope(self, call_next: Any, msg: StreamMessage[Any]) -> Any:
         """Wrap consume with circuit breaker."""
         return await self._breaker.call(call_next, msg)
 

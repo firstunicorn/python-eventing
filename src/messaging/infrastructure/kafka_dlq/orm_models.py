@@ -10,7 +10,14 @@ from messaging.infrastructure.persistence.orm_models.orm_base import Base
 
 
 class FailedKafkaMessage(Base):
-    """Failed Kafka message stored in DLQ."""
+    """Failed Kafka message stored in DLQ.
+
+    LINTER NOTE (PF002): flake8-pydantic warnings suppressed in setup.cfg for this file.
+    RATIONALE: This is a SQLAlchemy ORM model using Mapped[] syntax, NOT a Pydantic model.
+               mapped_column(default=...) is SQLAlchemy's column default syntax.
+               Pydantic's Field() is incompatible with SQLAlchemy's declarative base.
+               The PF002 check incorrectly flags SQLAlchemy defaults as Pydantic violations.
+    """
 
     __tablename__ = "failed_kafka_messages"
 

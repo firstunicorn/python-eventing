@@ -28,27 +28,27 @@ async def test_same_partition_key_preserves_ordering(
     topic = f"test-ordering-{uuid4()}"
     group = f"ordering-test-{uuid4()}"
 
-    producer = Producer({
-        "bootstrap.servers": bootstrap,
-        "client.id": "ordering-test-producer",
-    })
+    producer = Producer(
+        {
+            "bootstrap.servers": bootstrap,
+            "client.id": "ordering-test-producer",
+        }
+    )
 
-    consumer = Consumer({
-        "bootstrap.servers": bootstrap,
-        "group.id": group,
-        "auto.offset.reset": "earliest",
-        "enable.auto.commit": False,
-    })
+    consumer = Consumer(
+        {
+            "bootstrap.servers": bootstrap,
+            "group.id": group,
+            "auto.offset.reset": "earliest",
+            "enable.auto.commit": False,
+        }
+    )
     consumer.subscribe([topic])
 
     try:
         # Produce 50 messages with same key
         for i in range(50):
-            producer.produce(
-                topic,
-                value=f"msg-{i}".encode(),
-                key=SAME_KEY.encode()
-            )
+            producer.produce(topic, value=f"msg-{i}".encode(), key=SAME_KEY.encode())
         producer.flush(timeout=30)
 
         # Consume and verify order

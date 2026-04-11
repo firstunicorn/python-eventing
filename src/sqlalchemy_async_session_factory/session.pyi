@@ -7,8 +7,6 @@ def create_async_session_maker(
     expire_on_commit: bool = ...,
     **kwargs: object,
 ) -> async_sessionmaker[AsyncSession]: ...
-
-
 def create_session_dependency(
     session_maker: async_sessionmaker[AsyncSession],
 ) -> Callable[[], AsyncGenerator[AsyncSession, None]]: ...

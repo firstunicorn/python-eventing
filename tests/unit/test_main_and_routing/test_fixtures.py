@@ -34,8 +34,10 @@ class FakeBroker:
 
     def subscriber(self, topic: str):
         """Mock subscriber decorator that returns the decorated function unchanged."""
+
         def decorator(func):
             return func
+
         return decorator
 
 

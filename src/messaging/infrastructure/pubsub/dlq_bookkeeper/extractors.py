@@ -40,10 +40,7 @@ def extract_event_id(msg: dict[str, Any]) -> UUID:
     raise ValueError(error_msg)
 
 
-def extract_error_reason(
-    msg: dict[str, Any],
-    headers: dict[str, Any]
-) -> str:
+def extract_error_reason(msg: dict[str, Any], headers: dict[str, Any]) -> str:
     """Extract error reason from DLQ message or headers.
 
     Args:

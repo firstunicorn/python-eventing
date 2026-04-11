@@ -68,9 +68,7 @@ class TestDLQAdminAPI:
         assert "retried" in data
 
     @pytest.mark.asyncio
-    async def test_retry_non_failed_event_raises_400(
-        self, async_client: AsyncClient
-    ) -> None:
+    async def test_retry_non_failed_event_raises_400(self, async_client: AsyncClient) -> None:
         """POST /dlq/{event_id}/retry on non-failed event raises 400."""
         non_failed_id = uuid4()
 
@@ -120,9 +118,7 @@ class TestDLQAdminAPI:
         # Verify attempt counter was incremented
         async with session_factory() as session:
             result = await session.execute(
-                select(OutboxEventRecord).where(
-                    OutboxEventRecord.event_id == test_event_id
-                )
+                select(OutboxEventRecord).where(OutboxEventRecord.event_id == test_event_id)
             )
             event = result.scalar_one()
             assert event.attempt_count == 2

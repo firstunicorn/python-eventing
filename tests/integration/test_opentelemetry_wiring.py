@@ -74,8 +74,7 @@ class TestOpenTelemetryWiring:
 
             # RabbitMQ publish span linked to Kafka consume span
             with tracer.start_as_current_span(
-                "rabbitmq.publish",
-                links=[trace.Link(kafka_context)]
+                "rabbitmq.publish", links=[trace.Link(kafka_context)]
             ):
                 pass
 

@@ -28,16 +28,18 @@ logger.addHandler(logging.NullHandler())
 class OutboxQueryOperations:
     """Handle read-only queries for outbox status."""
 
-    def __init__(
-        self, session_factory: async_sessionmaker[AsyncSession]
-    ) -> None:
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
 
     async def count_unpublished(self) -> int:
         """Count pending unpublished and non-failed events."""
-        statement = select(func.count()).select_from(OutboxEventRecord).where(
-            OutboxEventRecord.published.is_(False),
-            OutboxEventRecord.failed.is_(False),
+        statement = (
+            select(func.count())
+            .select_from(OutboxEventRecord)
+            .where(
+                OutboxEventRecord.published.is_(False),
+                OutboxEventRecord.failed.is_(False),
+            )
         )
         async with self._session_factory() as session:
             return int(await session.scalar(statement) or 0)

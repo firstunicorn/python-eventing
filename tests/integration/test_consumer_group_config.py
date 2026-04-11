@@ -30,9 +30,7 @@ class TestConsumerGroupConfig:
     """Test cooperative rebalancing and static membership."""
 
     @pytest.mark.asyncio
-    async def test_static_membership_survives_restart(
-        self, kafka_with_partitions
-    ) -> None:
+    async def test_static_membership_survives_restart(self, kafka_with_partitions) -> None:
         """Consumer with group.instance.id survives restart without rebalance."""
         from confluent_kafka import Consumer
 
@@ -76,16 +74,12 @@ class TestConsumerGroupConfig:
         # With static membership, partitions should be same
         assert len(final_assignment) > 0, "Final assignment was empty"
         assert len(initial_assignment) == len(final_assignment)
-        assert {p.partition for p in initial_assignment} == {
-            p.partition for p in final_assignment
-        }
+        assert {p.partition for p in initial_assignment} == {p.partition for p in final_assignment}
 
         consumer2.close()
 
     @pytest.mark.asyncio
-    async def test_two_consumers_consume_disjoint_partitions(
-        self, kafka_with_partitions
-    ) -> None:
+    async def test_two_consumers_consume_disjoint_partitions(self, kafka_with_partitions) -> None:
         """Two consumers with same group.id consume disjoint partition sets."""
         from confluent_kafka import Consumer
 
@@ -120,9 +114,7 @@ class TestConsumerGroupConfig:
         consumer2.close()
 
     @pytest.mark.asyncio
-    async def test_cooperative_partition_assignment(
-        self, kafka_with_partitions
-    ) -> None:
+    async def test_cooperative_partition_assignment(self, kafka_with_partitions) -> None:
         """Cooperative-sticky strategy does not revoke all partitions on join."""
         from confluent_kafka import Consumer
 
@@ -155,7 +147,9 @@ class TestConsumerGroupConfig:
         # Consumer1 should retain at least some partitions (cooperative rebalance)
         # It doesn't lose ALL partitions like eager rebalancing
         if len(initial_assignment) >= 2:
-            assert len(final_assignment1) > 0, "Cooperative rebalance should not revoke all partitions"
+            assert (
+                len(final_assignment1) > 0
+            ), "Cooperative rebalance should not revoke all partitions"
 
         # Both consumers should have partitions
         assert len(final_assignment1) > 0

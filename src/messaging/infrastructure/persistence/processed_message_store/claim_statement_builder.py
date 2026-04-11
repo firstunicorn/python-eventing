@@ -54,16 +54,16 @@ def build_claim_statement(
     if dialect_name == "postgresql":
         return cast(
             Insert,
-            postgres_insert(table).values(**values).on_conflict_do_nothing(
-                index_elements=["consumer_name", "event_id"]
-            ),
+            postgres_insert(table)
+            .values(**values)
+            .on_conflict_do_nothing(index_elements=["consumer_name", "event_id"]),
         )
     if dialect_name == "sqlite":
         return cast(
             Insert,
-            sqlite_insert(table).values(**values).on_conflict_do_nothing(
-                index_elements=["consumer_name", "event_id"]
-            ),
+            sqlite_insert(table)
+            .values(**values)
+            .on_conflict_do_nothing(index_elements=["consumer_name", "event_id"]),
         )
     msg = (
         f"Unsupported database dialect: {dialect_name!r}. "

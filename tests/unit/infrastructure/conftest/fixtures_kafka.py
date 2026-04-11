@@ -43,14 +43,16 @@ class FakeKafkaBroker:
         Note: We intentionally use dict[str, object] instead of SendableMessage
         for message parameter as it's more explicit for test purposes.
         """
-        self.published.append({
-            "message": message,
-            "topic": topic,
-            "key": key,
-            "partition": partition,
-            "timestamp_ms": timestamp_ms,
-            "headers": headers,
-            "correlation_id": correlation_id,
-            "reply_to": reply_to,
-            "no_confirm": no_confirm,
-        })
+        self.published.append(
+            {
+                "message": message,
+                "topic": topic,
+                "key": key,
+                "partition": partition,
+                "timestamp_ms": timestamp_ms,
+                "headers": headers,
+                "correlation_id": correlation_id,
+                "reply_to": reply_to,
+                "no_confirm": no_confirm,
+            }
+        )

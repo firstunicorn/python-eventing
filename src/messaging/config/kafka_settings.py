@@ -26,14 +26,11 @@ class KafkaSettings(BaseModel):
         ),
     )
     rate_limiter_enabled: bool = Field(
-        default=False,
-        description="Enable rate limiting middleware for message consumption"
+        default=False, description="Enable rate limiting middleware for message consumption"
     )
     rate_limiter_max_rate: int = Field(
-        default=100,
-        description="Maximum number of messages to process per time period"
+        default=100, description="Maximum number of messages to process per time period"
     )
     rate_limiter_time_period: float = Field(
-        default=1.0,
-        description="Time period in seconds for rate limiting"
+        default=1.0, description="Time period in seconds for rate limiting"
     )

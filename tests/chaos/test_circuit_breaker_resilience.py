@@ -109,8 +109,9 @@ class TestCircuitBreakerResilience:
             await asyncio.sleep(0.1)
 
         # Verify circuit breaker opened after threshold failures
-        assert circuit_breaker.state.value == "open", \
-            f"Expected circuit open after failures, got {circuit_breaker.state.value}"
+        assert (
+            circuit_breaker.state.value == "open"
+        ), f"Expected circuit open after failures, got {circuit_breaker.state.value}"
 
         # Verify circuit rejects calls (protecting from cascading failures)
         with pytest.raises(CircuitOpenError):

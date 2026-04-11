@@ -22,7 +22,10 @@ class TestSchemaRegistryBasics:
         """Register two versions, retrieve each independently."""
         registry = SchemaRegistry()
         v1_schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
-        v2_schema = {"type": "object", "properties": {"id": {"type": "integer"}, "email": {"type": "string"}}}
+        v2_schema = {
+            "type": "object",
+            "properties": {"id": {"type": "integer"}, "email": {"type": "string"}},
+        }
 
         registry.register("user.created", v1_schema, "1.0")
         registry.register("user.created", v2_schema, "2.0")

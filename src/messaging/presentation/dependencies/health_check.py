@@ -25,9 +25,7 @@ async def get_outbox_health_check(request: Request) -> EventingHealthCheck:
     Raises:
         HTTPException: 503 if the health check infrastructure is not initialized
     """
-    checker: EventingHealthCheck | None = getattr(
-        request.app.state, "outbox_health_check", None
-    )
+    checker: EventingHealthCheck | None = getattr(request.app.state, "outbox_health_check", None)
     if checker is None:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

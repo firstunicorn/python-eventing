@@ -98,9 +98,7 @@ class OutboxCrudOperations:
     async def _mark(self, event_id: str, **values: object) -> None:
         """Generic update helper for status changes."""
         statement = (
-            update(OutboxEventRecord)
-            .where(OutboxEventRecord.event_id == event_id)
-            .values(**values)
+            update(OutboxEventRecord).where(OutboxEventRecord.event_id == event_id).values(**values)
         )
         async with self._session_factory() as session:
             await session.execute(statement)

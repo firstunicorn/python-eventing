@@ -21,9 +21,7 @@ class RabbitPrometheusMiddleware(BaseMiddleware):
             registry=registry,
         )
 
-    async def consume_scope(
-        self, call_next: Any, msg: StreamMessage[Any]
-    ) -> Any:
+    async def consume_scope(self, call_next: Any, msg: StreamMessage[Any]) -> Any:
         """Wrap consume with Prometheus metrics."""
         try:
             result = await call_next(msg)
