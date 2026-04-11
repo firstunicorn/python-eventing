@@ -377,17 +377,9 @@ async def async_client_with_kafka(
 
     from messaging.config import settings as app_settings
 
-    # BUG FIX: Use monkeypatch.setattr() instead of monkeypatch.setenv()
-    # ISSUE: Pydantic settings with env_prefix="EVENTING_" were not being overridden by
-    #        monkeypatch.setenv("KAFKA_BOOTSTRAP_SERVERS", ...).
-    # ROOT CAUSE: Pydantic loads settings at import time, before monkeypatch.setenv() runs.
-    #             Pydantic looks for EVENTING_KAFKA_BOOTSTRAP_SERVERS env var, not KAFKA_BOOTSTRAP_SERVERS.
-    # ATTEMPTED: Setting monkeypatch.setenv("EVENTING_KAFKA_BOOTSTRAP_SERVERS", ...) but this
-    #            still failed because settings were already instantiated.
-    # SOLUTION: Directly mutate the settings singleton using monkeypatch.setattr() to override
-    #           the already-loaded Pydantic values. This bypasses env var resolution entirely.
-    # WHY THIS WORKS: setattr() changes the actual Python object attributes after Pydantic has
-    #                 already loaded them, forcing the test-specific values into the singleton.
+    # BUG FIX: setattr() bypasses Pydantic env_prefix="EVENTING_" and import-time loading.
+    # setenv() fails because: (1) env_prefix requires EVENTING_* vars, (2) settings already
+    # instantiated at import time, so env changes ignored. setattr() mutates the singleton directly.
     monkeypatch.setattr(app_settings, "kafka_bootstrap_servers", kafka_bootstrap)
     monkeypatch.setattr(app_settings, "rabbitmq_url", rabbitmq_url)
 
@@ -399,26 +391,12 @@ async def async_client_with_kafka(
 
     # Initialize lifespan with real brokers
     async with app.router.lifespan_context(app) as state:
-        # BUG FIX: Check if state is None before calling update()
-        # ISSUE: TypeError: 'NoneType' object is not iterable when state was None
-        # ROOT CAUSE: lifespan_context() can yield None if lifespan doesn't explicitly return state dict.
-        #             Our lifespan() yields None (not a dict), so state is None here.
-        # SOLUTION: Guard update() call with `if state:` check to handle None gracefully.
-        # WHY THIS WORKS: If state is None, we skip update and brokers are accessed via app.state
-        #                 attributes set in attach_state_to_app() during lifespan initialization.
+        # BUG FIX: lifespan() yields None, not a state dict. Guard prevents TypeError.
         if state:
             app.state._state.update(state)
 
-        # CRITICAL FIX FOR FLAKY CI: Wait for Kafka consumer to fully join consumer group
-        # BUG HISTORY: test_bridge_publishes_to_rabbitmq was failing with QueueEmpty in CI
-        # ROOT CAUSE: FastStream broker.start() is async and returns before Kafka consumer
-        #             has fully joined the consumer group and started polling. This caused
-        #             a race condition where tests published messages before the bridge
-        #             consumer was ready to receive them.
-        # SOLUTION: Add explicit 5-second wait after lifespan initialization to ensure
-        #           all subscribers are fully connected and polling before tests proceed.
-        # WHY 5 SECONDS: Kafka consumer group rebalancing typically takes 2-3 seconds.
-        #                5 seconds provides buffer for slow CI environments (GitHub Actions).
+        # CRITICAL FIX: 5s wait for Kafka consumer group rebalancing (2-3s typical).
+        # BUG HISTORY: QueueEmpty in CI — broker.start() returns before consumer is polling.
         import asyncio
 
         await asyncio.sleep(5)

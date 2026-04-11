@@ -332,9 +332,8 @@ DEP002 = [
     "safety", "pylint", "flake8", "interrogate", "deptry", "mypy", "bandit", "vulture", "import-linter",
     # Runtime-only: uvicorn (ASGI server), asyncpg (SQLAlchemy driver), alembic (migrations CLI)
     "uvicorn", "asyncpg", "alembic",
-    # structlog: INTENTIONALLY only used in tests/conftest.py and scripts/cleanup_docker.py.
-    # Rationale: Production code must remain logging-library-agnostic (uses stdlib logging).
-    # Tests use structlog for structured test fixture output. This is a deliberate architectural decision.
+    # structlog: used only in tests/conftest.py and scripts/cleanup_docker.py.
+    # Production code remains logging-library-agnostic (stdlib logging).
     "structlog",
     # Unused local packages (placeholder/optional):
     "python-cqrs-core", "python-cqrs-dispatcher", "gridflow-python-mediator",

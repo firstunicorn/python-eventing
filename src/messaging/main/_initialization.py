@@ -83,29 +83,13 @@ def register_bridge_handler(
     """
 
     # CRITICAL BUG FIX: Per-message session and transaction scope
-    #
-    # BUG HISTORY: Original implementation had SqlAlchemyProcessedMessageStore as singleton
-    #              initialized once in lifespan with session_factory instead of AsyncSession.
-    #
-    # ROOT CAUSE: SqlAlchemyProcessedMessageStore.__init__ expects AsyncSession, not sessionmaker.
-    #             Using sessionmaker caused: AttributeError: 'async_sessionmaker' object has no
-    #             attribute 'in_transaction'. This broke idempotency checks completely.
-    #
-    # SOLUTION: Instantiate BridgeConsumer and SqlAlchemyProcessedMessageStore PER MESSAGE
-    #           within session context manager. This ensures:
-    #           1. Each message gets fresh AsyncSession instance (not factory)
-    #           2. Transaction scope is atomic: claim → publish → commit/rollback
-    #           3. Database connection lifecycle properly managed (no leaks)
-    #           4. Idempotency enforced at message level, not globally
-    #
-    # WHY session.begin(): Idempotency claim (INSERT...ON CONFLICT) and RabbitMQ publish
-    #                      must be atomic. If publish fails, claim rolls back and message
-    #                      can be reprocessed. Without begin(), autocommit would claim message
-    #                      even if RabbitMQ publish fails, causing message loss.
-    #
+    # BUG HISTORY: SqlAlchemyProcessedMessageStore singleton initialized with async_sessionmaker
+    #              instead of AsyncSession → AttributeError: no 'in_transaction'.
+    #              Idempotency checks completely broken.
+    # SOLUTION: Instantiate store+consumer per message within session context.
+    # WHY session.begin(): INSERT...ON CONFLICT + RabbitMQ publish must be atomic.
+    #                      Without begin(), autocommit claims message even if publish fails.
     # WHY combined `with`: Ruff SIM117 requires combining nested async context managers.
-    #                      `async with session_factory() as session, session.begin():`
-    #                      is equivalent to nested `async with` but satisfies SIM117.
 
     @broker.subscriber(bridge_config.kafka_topic)
     async def handle_kafka_event(message: dict[str, Any]) -> None:

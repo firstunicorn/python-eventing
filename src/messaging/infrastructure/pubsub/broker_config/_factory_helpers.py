@@ -23,18 +23,15 @@ def create_circuit_breaker_factory(
         Factory function that creates CircuitBreakerMiddleware with shared breaker.
     """
 
-    # LINTER EXCLUSION: ARG001 suppressed for msg and context parameters below
-    # RATIONALE: FastStream middleware factory signature REQUIRES (msg, context) parameters.
-    #            The framework expects factories with this exact signature for dependency injection.
-    #            We cannot change the signature even though we don't use these parameters.
-    # REFERENCE: https://faststream.ag2.ai/latest/getting-started/middlewares/middleware/
-    # DECISION: Suppress ARG001 via inline noqa rather than removing required parameters.
+    # LINTER EXCLUSION: ARG001 suppressed for msg and context parameters
+    # RATIONALE: FastStream middleware factory REQUIRES (msg, context) signature.
+    #            Cannot remove even though unused (framework interface requirement).
     def circuit_breaker_factory(
         msg: Any = None,  # noqa: ARG001
         context: Any = None,  # noqa: ARG001
     ) -> CircuitBreakerMiddleware:
         # Parameters required by FastStream middleware interface but unused
-        # We use the shared_breaker from closure instead of per-message state
+        # shared_breaker from closure used instead of per-message state
         middleware = CircuitBreakerMiddleware(
             failure_threshold=circuit_breaker_threshold,
             reset_timeout=circuit_breaker_timeout,

@@ -23,20 +23,10 @@ class RabbitEventPublisher:
         """
         self._broker = broker
 
-        # BUG FIX: Explicitly declare exchange type as TOPIC when string is passed
-        # ISSUE: test_kafka_rabbitmq_bridge was failing with QueueEmpty even after
-        #        fixing race condition (queue setup before publish).
-        # ROOT CAUSE: When default_exchange is a bare string "events", FastStream's
-        #             broker.publish() uses an IMPLICIT exchange type (defaults to DIRECT).
-        #             DIRECT exchanges require exact routing key match, but our test queue
-        #             was bound with routing_key="user.created" to a TOPIC exchange pattern.
-        #             Message mismatch: published to DIRECT, queue expected TOPIC.
-        # SYMPTOMS: No errors raised (publish succeeded), but queue.get() timed out because
-        #           message was routed to wrong exchange type or dropped entirely.
-        # SOLUTION: Explicitly construct RabbitExchange object with type=ExchangeType.TOPIC
-        #           and durable=True when initializing from string. This ensures publish()
-        #           uses the correct exchange type that matches test queue bindings.
-        # DECISION: Make exchange type explicit rather than relying on FastStream defaults.
+        # BUG FIX: Explicit TOPIC exchange type when string is passed.
+        # Bare string "events" caused FastStream to use implicit DIRECT exchange.
+        # DIRECT requires exact routing key match; test queue bound to TOPIC pattern.
+        # Publish succeeded silently but message routed to wrong exchange type.
         if isinstance(default_exchange, str):
             self._default_exchange = RabbitExchange(
                 default_exchange, type=ExchangeType.TOPIC, durable=True
