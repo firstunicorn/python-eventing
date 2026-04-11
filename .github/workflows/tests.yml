@@ -54,6 +54,16 @@ jobs:
           poetry run mypy src/
           echo "::endgroup::"
 
+      - name: Setup Docker for testcontainers
+        run: |
+          # Verify Docker is accessible
+          docker info
+          docker ps
+          
+          # Configure testcontainers
+          echo "TESTCONTAINERS_RYUK_DISABLED=false" >> $GITHUB_ENV
+          echo "TESTCONTAINERS_CHECKS_DISABLE=false" >> $GITHUB_ENV
+
       - name: Run ALL tests (including RabbitMQ)
         run: |
           poetry run pytest tests/ -v \
@@ -124,6 +134,16 @@ jobs:
 
       - name: Install dependencies
         run: poetry install --with test --no-interaction
+
+      - name: Setup Docker for testcontainers
+        run: |
+          # Verify Docker is accessible
+          docker info
+          docker ps
+          
+          # Configure testcontainers
+          echo "TESTCONTAINERS_RYUK_DISABLED=false" >> $GITHUB_ENV
+          echo "TESTCONTAINERS_CHECKS_DISABLE=false" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
