@@ -11,3 +11,22 @@ repos:
     hooks:
       - id: isort
         args: ["--profile", "black"]
+
+  - repo: local
+    hooks:
+      - id: coverage-overall
+        name: Check overall coverage (80% minimum)
+        entry: poetry run pytest tests/ -v --cov=src --cov-fail-under=80 -m "not slow and not integration" --tb=short -q
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
+      - id: coverage-critical-paths
+        name: Check critical path coverage (85% minimum)
+        entry: poetry run python scripts/check_coverage_thresholds.py
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+        # Depends on coverage-overall to generate .coverage file

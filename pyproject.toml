@@ -89,6 +89,7 @@ testcontainers = {extras = ["kafka", "rabbitmq"], version = "^4.9.0"}
 pytest-httpx = "^0.35.0"
 mutmut = "^3.2.0"
 aiosqlite = "^0.21.0"
+pytest-xdist = "^3.8.0"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^8.1.3"
@@ -264,6 +265,7 @@ addopts = [
     "--strict-markers",
     "--tb=short",
     "-v",
+    "-n", "0",  # Force sequential execution (no parallelization) to prevent multiple containers
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -272,6 +274,7 @@ markers = [
     "chaos: marks tests as chaos/fault-injection tests",
     "property_based: marks tests as property-based tests using Hypothesis",
     "requires_rabbitmq: marks tests requiring RabbitMQ (known issues with testcontainers on Windows)",
+    "requires_kafka: marks tests requiring Kafka testcontainers",
 ]
 
 [tool.coverage.run]
@@ -297,6 +300,33 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "@abstractmethod",
 ]
+
+# TIERED COVERAGE THRESHOLDS (per best practices 2026)
+# Overall project target: 80% (aggregate)
+# Critical components: 85% minimum
+# Based on Serena MCP codebase analysis + risk-based approach
+[tool.coverage.paths]
+# Critical infrastructure: 85% minimum (business logic, data integrity, resilience)
+critical_core = [
+    "src/messaging/core/contracts/circuit_breaker.py",
+    "src/messaging/core/contracts/bus/",
+    "src/messaging/core/contracts/dispatcher_setup.py",
+]
+critical_infrastructure = [
+    "src/messaging/main/_initialization.py",
+    "src/messaging/infrastructure/persistence/processed_message_store/",
+    "src/messaging/infrastructure/outbox/outbox_repository.py",
+    "src/messaging/infrastructure/outbox/outbox_crud/",
+    "src/messaging/infrastructure/pubsub/bridge/",
+    "src/messaging/infrastructure/pubsub/kafka_publisher.py",
+    "src/messaging/infrastructure/pubsub/rabbit/publisher.py",
+    "src/messaging/infrastructure/resilience/",
+]
+
+# NOTE: Per-path thresholds require pytest-cov>=5.0 with --cov-context flag
+# or manual enforcement via coverage.py API. For now, use overall 80% target
+# and manually monitor critical paths via htmlcov reports.
+# FUTURE: Add pre-commit hook or CI script to enforce 85% on critical paths.
 
 [tool.interrogate]
 ignore-init-method = true

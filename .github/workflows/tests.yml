@@ -80,6 +80,13 @@ jobs:
           # Increase testcontainer timeout for CI
           TESTCONTAINERS_WAIT_TIMEOUT: "300"
 
+      - name: Check tiered coverage thresholds
+        if: always()
+        run: |
+          echo "::group::Tiered Coverage Validation"
+          poetry run python scripts/check_coverage_thresholds.py
+          echo "::endgroup::"
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         if: always()
