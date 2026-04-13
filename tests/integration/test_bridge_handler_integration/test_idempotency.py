@@ -34,12 +34,15 @@ class TestIdempotency:
             monkeypatch,
             exchange="test-events-idempotency",
             consumer_group_id="idempotency-test-group",
+            kafka_topic="events-idempotency-test",
         )
 
         _, async_session_factory = sqlite_session_factory
 
         broker, rabbit_broker = initialize_production_bridge(
-            async_session_factory, consumer_group_id=consumer_group_id
+            async_session_factory,
+            consumer_group_id=consumer_group_id,
+            kafka_topic="events-idempotency-test",
         )
 
         async with broker, rabbit_broker:
@@ -64,11 +67,11 @@ class TestIdempotency:
                 "data": {"order_id": 456},
             }
 
-            producer.produce("events", value=json.dumps(test_msg).encode())
+            producer.produce("events-idempotency-test", value=json.dumps(test_msg).encode())
             producer.flush()
             await asyncio.sleep(8)
 
-            producer.produce("events", value=json.dumps(test_msg).encode())
+            producer.produce("events-idempotency-test", value=json.dumps(test_msg).encode())
             producer.flush()
             await asyncio.sleep(8)
 

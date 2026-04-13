@@ -15,6 +15,7 @@ def setup_test_containers_config(
     monkeypatch: Any,
     exchange: str = "test-events",
     consumer_group_id: str = "eventing-consumers",
+    kafka_topic: str = "events",
 ) -> tuple[str, str, str]:
     """Configure app settings to use test containers."""
     kafka_bootstrap = kafka_container.get_bootstrap_server()
@@ -34,13 +35,14 @@ def setup_test_containers_config(
 def initialize_production_bridge(
     session_factory: Any,
     consumer_group_id: str = "eventing-consumers",
+    kafka_topic: str = "events",
 ) -> tuple[Any, Any]:
     """Initialize production bridge components."""
     from messaging.infrastructure.pubsub.bridge.config import BridgeConfig
 
     broker, rabbit_broker, rabbit_publisher = initialize_brokers_and_publishers()
     bridge_config = BridgeConfig(
-        kafka_topic="events",
+        kafka_topic=kafka_topic,
         rabbitmq_exchange=app_settings.rabbitmq_exchange,
         routing_key_template="{event_type}",
         consumer_group_id=consumer_group_id,

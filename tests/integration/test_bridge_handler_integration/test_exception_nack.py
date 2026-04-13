@@ -35,6 +35,7 @@ class TestExceptionNack:
             monkeypatch,
             exchange="test-events-exception-nack",
             consumer_group_id="exception-nack-test-group",
+            kafka_topic="events-exception-nack-test",
         )
 
         _, async_session_factory = sqlite_session_factory
@@ -49,7 +50,9 @@ class TestExceptionNack:
         monkeypatch.setattr(bridge_module.BridgeConsumer, "handle_message", exploding_handle)
 
         broker, rabbit_broker = initialize_production_bridge(
-            async_session_factory, consumer_group_id=consumer_group_id
+            async_session_factory,
+            consumer_group_id=consumer_group_id,
+            kafka_topic="events-exception-nack-test",
         )
 
         async with broker, rabbit_broker:
@@ -74,7 +77,7 @@ class TestExceptionNack:
                 "payload": {"order_id": 999},
                 "timestamp": "2026-01-01T00:00:00Z",
             }
-            producer.produce("events", value=json.dumps(message).encode())
+            producer.produce("events-exception-nack-test", value=json.dumps(message).encode())
             producer.flush()
 
             await asyncio.sleep(8)

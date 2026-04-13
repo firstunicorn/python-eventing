@@ -173,7 +173,7 @@ class TestRegisterBridgeHandler:
         # Capture the decorated function
         registered_func = None
 
-        def capture_subscriber(topic, _ack_policy=None, _group_id=None):
+        def capture_subscriber(topic, **kwargs):
             def decorator(func):
                 nonlocal registered_func
                 registered_func = func
@@ -218,7 +218,7 @@ class TestRegisterBridgeHandler:
         # Capture handler
         registered_func = None
 
-        def capture_subscriber(topic, _ack_policy=None, _group_id=None):
+        def capture_subscriber(topic, **kwargs):
             def decorator(func):
                 nonlocal registered_func
                 registered_func = func
