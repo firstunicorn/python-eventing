@@ -28,13 +28,19 @@ class TestIdempotency:
         monkeypatch,
     ) -> None:
         """Test production handler prevents duplicate message processing."""
-        kafka_bootstrap, rabbitmq_url = setup_test_containers_config(
-            kafka_container, rabbitmq_container, monkeypatch, exchange="test-events-idempotency"
+        kafka_bootstrap, rabbitmq_url, consumer_group_id = setup_test_containers_config(
+            kafka_container,
+            rabbitmq_container,
+            monkeypatch,
+            exchange="test-events-idempotency",
+            consumer_group_id="idempotency-test-group",
         )
 
         _, async_session_factory = sqlite_session_factory
 
-        broker, rabbit_broker = initialize_production_bridge(async_session_factory)
+        broker, rabbit_broker = initialize_production_bridge(
+            async_session_factory, consumer_group_id=consumer_group_id
+        )
 
         async with broker, rabbit_broker:
             await broker.start()

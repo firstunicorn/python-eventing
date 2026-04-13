@@ -29,8 +29,12 @@ class TestExceptionNack:
         monkeypatch,
     ) -> None:
         """Test generic exceptions trigger nack and do NOT publish."""
-        kafka_bootstrap, rabbitmq_url = setup_test_containers_config(
-            kafka_container, rabbitmq_container, monkeypatch, exchange="test-events-exception-nack"
+        kafka_bootstrap, rabbitmq_url, consumer_group_id = setup_test_containers_config(
+            kafka_container,
+            rabbitmq_container,
+            monkeypatch,
+            exchange="test-events-exception-nack",
+            consumer_group_id="exception-nack-test-group",
         )
 
         _, async_session_factory = sqlite_session_factory
@@ -44,7 +48,9 @@ class TestExceptionNack:
 
         monkeypatch.setattr(bridge_module.BridgeConsumer, "handle_message", exploding_handle)
 
-        broker, rabbit_broker = initialize_production_bridge(async_session_factory)
+        broker, rabbit_broker = initialize_production_bridge(
+            async_session_factory, consumer_group_id=consumer_group_id
+        )
 
         async with broker, rabbit_broker:
             await broker.start()

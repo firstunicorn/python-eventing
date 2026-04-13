@@ -30,7 +30,7 @@ def register_bridge_handler(
     @broker.subscriber(
         bridge_config.kafka_topic,
         ack_policy=AckPolicy.MANUAL,
-        group_id="eventing-consumers",
+        group_id=bridge_config.consumer_group_id,
     )
     async def handle_kafka_event(message: dict[str, Any], msg: KafkaMessage) -> None:
         """Bridge handler: consume from Kafka, forward to RabbitMQ.

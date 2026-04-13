@@ -9,4 +9,5 @@ class BridgeConfig:
 
     kafka_topic: str
     rabbitmq_exchange: str
-    routing_key_template: str  # e.g. "{event_type}" or "events.{aggregate_type}"
+    routing_key_template: str
+    consumer_group_id: str  # e.g. "{event_type}" or "events.{aggregate_type}"

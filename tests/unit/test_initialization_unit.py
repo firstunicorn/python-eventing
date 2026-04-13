@@ -47,7 +47,7 @@ class TestInitializeBrokersAndPublishers:
     @patch("messaging.infrastructure.pubsub.rabbit_broker_config.create_rabbit_broker")
     @patch("messaging.infrastructure.create_kafka_broker")
     def test_passes_settings_to_kafka_broker(
-        self, mock_create_rabbit, mock_create_kafka
+        self, mock_create_kafka, mock_create_rabbit
     ) -> None:
         """Verify Kafka broker creation receives correct settings."""
         mock_kafka_broker = Mock(spec=KafkaBroker)
@@ -65,7 +65,7 @@ class TestInitializeBrokersAndPublishers:
     @patch("messaging.infrastructure.pubsub.rabbit_broker_config.create_rabbit_broker")
     @patch("messaging.infrastructure.create_kafka_broker")
     def test_passes_rate_limiter_settings(
-        self, mock_create_rabbit, mock_create_kafka
+        self, mock_create_kafka, mock_create_rabbit
     ) -> None:
         """Verify rate limiter settings passed to both brokers."""
         mock_kafka_broker = Mock(spec=KafkaBroker)
@@ -90,7 +90,7 @@ class TestInitializeBrokersAndPublishers:
     @patch("messaging.infrastructure.pubsub.rabbit_broker_config.create_rabbit_broker")
     @patch("messaging.infrastructure.create_kafka_broker")
     def test_rabbit_publisher_uses_correct_exchange(
-        self, mock_create_rabbit, mock_create_kafka
+        self, mock_create_kafka, mock_create_rabbit
     ) -> None:
         """Verify RabbitEventPublisher initialized with correct exchange."""
         mock_kafka_broker = Mock(spec=KafkaBroker)
