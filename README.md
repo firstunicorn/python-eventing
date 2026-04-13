@@ -240,9 +240,9 @@ flowchart LR
                  │    │  │  • SqlAlchemyProcessedMessageStore           │   │
                  │    │  │    (implements IProcessedMessageStore)       │   │
                  │    │  └──────────────────────────────────────────────┘   │
-                │    │                                                      │
-                │    │  ┌──────────────────────────────────────────────┐   │
-                │    │  │  OPTIONAL COMPONENTS                         │   │
+                 │    │                                                      │
+                 │    │  ┌──────────────────────────────────────────────┐   │
+                 │    │  │  OPTIONAL COMPONENTS                         │   │
                 │    │  │  • BridgeConsumer (Kafka→RabbitMQ bridge)    │   │
                 │    │  │    (manual idempotency, not base class)      │   │
                 │    │  │                                              │   │
@@ -251,7 +251,7 @@ flowchart LR
                 │    │  │  • RateLimiterMiddleware (optional)          │   │
                 │    │  │  • RabbitPrometheusMiddleware (metrics)      │   │
                 │    │  │  • TelemetryMiddleware (OTel, shared)        │   │
-                │    │  └──────────────────────────────────────────────┘   │
+                 │    │  └──────────────────────────────────────────────┘   │
                  │    │                                  │                   │
                  │    │                                  │ On failure        │
                  │    │                                  ▼                   │
