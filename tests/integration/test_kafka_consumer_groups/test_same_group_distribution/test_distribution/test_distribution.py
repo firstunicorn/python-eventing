@@ -8,11 +8,7 @@ import pytest
 from confluent_kafka import Producer
 from testcontainers.kafka import KafkaContainer
 
-from .messages import (
-    consume_and_collect_messages,
-    produce_test_messages,
-    verify_distribution,
-)
+from .messages import consume_and_collect_messages, produce_test_messages, verify_distribution
 from .setup import create_consumer, setup_kafka_with_topic
 
 

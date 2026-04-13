@@ -11,12 +11,8 @@ from faststream import BaseMiddleware
 from messaging.infrastructure.pubsub.broker_config._factory_helpers import (
     create_circuit_breaker_factory,
 )
-from messaging.infrastructure.resilience.circuit_breaker_middleware import (
-    CircuitBreakerMiddleware,
-)
-from messaging.infrastructure.resilience.rate_limiter_middleware import (
-    RateLimiterMiddleware,
-)
+from messaging.infrastructure.resilience.circuit_breaker_middleware import CircuitBreakerMiddleware
+from messaging.infrastructure.resilience.rate_limiter_middleware import RateLimiterMiddleware
 
 
 def test_middleware_factory_returns_correct_signature() -> None:

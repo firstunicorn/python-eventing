@@ -3,10 +3,7 @@
 import asyncio
 
 import pytest
-from confluent_kafka.admin import (  # type: ignore[attr-defined]
-    AdminClient,
-    NewTopic,
-)
+from confluent_kafka.admin import AdminClient, NewTopic  # type: ignore[attr-defined]
 
 
 @pytest.fixture
