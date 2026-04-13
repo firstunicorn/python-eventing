@@ -1,4 +1,4 @@
-"""Integration tests for DLQ admin HTTP API."""
+"""Integration tests for DLQ retry endpoints."""
 
 from uuid import uuid4
 
@@ -7,32 +7,8 @@ from httpx import AsyncClient
 
 
 @pytest.mark.integration
-class TestDLQAdminAPI:
-    """Test DLQ inspection and retry endpoints."""
-
-    @pytest.mark.asyncio
-    async def test_get_dlq_returns_failed_events(self, async_client: AsyncClient) -> None:
-        """GET /dlq returns list of dead-lettered events."""
-        response = await async_client.get("/api/v1/dlq")
-
-        assert response.status_code == 200
-        data = response.json()
-        assert "events" in data
-        assert isinstance(data["events"], list)
-
-    @pytest.mark.asyncio
-    async def test_get_dlq_filters_by_event_type(self, async_client: AsyncClient) -> None:
-        """GET /dlq?event_type=X filters by type."""
-        response = await async_client.get(
-            "/api/v1/dlq",
-            params={"event_type": "user.created"},
-        )
-
-        assert response.status_code == 200
-        data = response.json()
-        assert "events" in data
-        for event in data["events"]:
-            assert event["event_type"] == "user.created"
+class TestDLQRetry:
+    """Test DLQ retry endpoints."""
 
     @pytest.mark.asyncio
     async def test_retry_dlq_event_resets_failed_status(
@@ -45,7 +21,6 @@ class TestDLQAdminAPI:
 
         test_event_id = str(uuid4())
 
-        # Seed a failed outbox event
         _, session_factory = sqlite_session_factory
         async with session_factory() as session:
             failed_event = OutboxEventRecord(
@@ -87,9 +62,8 @@ class TestDLQAdminAPI:
         from messaging.infrastructure.persistence.orm_models.outbox_orm import OutboxEventRecord
 
         logger = structlog.get_logger()
-        test_event_id = str(uuid4())  # Use valid UUID format
+        test_event_id = str(uuid4())
 
-        # Seed a failed outbox event
         _, session_factory = sqlite_session_factory
         async with session_factory() as session:
             from datetime import UTC, datetime
@@ -107,7 +81,6 @@ class TestDLQAdminAPI:
             session.add(failed_event)
             await session.commit()
 
-        # Retry the event
         response = await async_client.post(f"/api/v1/dlq/{test_event_id}/retry")
 
         if response.status_code != 200:
@@ -115,11 +88,10 @@ class TestDLQAdminAPI:
 
         assert response.status_code == 200
 
-        # Verify attempt counter was incremented
         async with session_factory() as session:
             result = await session.execute(
                 select(OutboxEventRecord).where(OutboxEventRecord.event_id == test_event_id)
             )
             event = result.scalar_one()
             assert event.attempt_count == 2
-            assert event.failed is False  # Reset for retry
+            assert event.failed is False
