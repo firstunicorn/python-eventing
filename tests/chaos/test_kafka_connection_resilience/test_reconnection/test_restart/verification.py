@@ -18,6 +18,7 @@ async def produce_and_verify_message_after_restart(
         topic: Topic to use
 
     Raises:
+        KafkaException: If Kafka operations fail
         AssertionError: If message not received
     """
     await asyncio.sleep(10)

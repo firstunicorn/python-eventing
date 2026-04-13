@@ -13,6 +13,9 @@ async def create_topic_and_verify(bootstrap_servers: str, topic: str) -> None:
     Args:
         bootstrap_servers: Kafka bootstrap servers
         topic: Topic name to create
+
+    Raises:
+        Exception: If topic creation or verification fails
     """
     admin = AdminClient({"bootstrap.servers": bootstrap_servers})
     new_topic = NewTopic(topic, num_partitions=1, replication_factor=1)
