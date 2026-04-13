@@ -29,7 +29,7 @@ class TestIdempotency:
     ) -> None:
         """Test production handler prevents duplicate message processing."""
         kafka_bootstrap, rabbitmq_url = setup_test_containers_config(
-            kafka_container, rabbitmq_container, monkeypatch
+            kafka_container, rabbitmq_container, monkeypatch, exchange="test-events-idempotency"
         )
 
         _, async_session_factory = sqlite_session_factory
@@ -43,7 +43,7 @@ class TestIdempotency:
             connection = await aio_pika.connect_robust(rabbitmq_url)
             channel = await connection.channel()
             exchange = await channel.declare_exchange(
-                "test-events", ExchangeType.TOPIC, durable=True
+                "test-events-idempotency", ExchangeType.TOPIC, durable=True
             )
             queue = await channel.declare_queue(f"test-queue-{uuid4()}", auto_delete=True)
             await queue.bind(exchange, routing_key="order.#")

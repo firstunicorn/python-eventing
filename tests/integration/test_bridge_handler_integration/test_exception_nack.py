@@ -30,7 +30,7 @@ class TestExceptionNack:
     ) -> None:
         """Test generic exceptions trigger nack and do NOT publish."""
         kafka_bootstrap, rabbitmq_url = setup_test_containers_config(
-            kafka_container, rabbitmq_container, monkeypatch
+            kafka_container, rabbitmq_container, monkeypatch, exchange="test-events-exception-nack"
         )
 
         _, async_session_factory = sqlite_session_factory
@@ -53,7 +53,7 @@ class TestExceptionNack:
             connection = await aio_pika.connect_robust(rabbitmq_url)
             channel = await connection.channel()
             exchange = await channel.declare_exchange(
-                "test-events", ExchangeType.TOPIC, durable=True
+                "test-events-exception-nack", ExchangeType.TOPIC, durable=True
             )
             queue = await channel.declare_queue(f"test-queue-{uuid4()}", auto_delete=True)
             await queue.bind(exchange, routing_key="#")
