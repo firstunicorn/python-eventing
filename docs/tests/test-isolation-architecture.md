@@ -118,7 +118,7 @@ def setup_test_containers_config(
     kafka_container,
     rabbitmq_container, 
     monkeypatch,
-    kafka_topic: str = "events",  # NEW
+    kafka_topic: str = "events",
     exchange: str = "test-events",
     consumer_group_id: str = "eventing-consumers",
 ) -> tuple[str, str, str]:
@@ -132,7 +132,7 @@ def setup_test_containers_config(
 def initialize_production_bridge(
     session_factory,
     consumer_group_id: str = "eventing-consumers",
-    kafka_topic: str = "events",  # NEW
+    kafka_topic: str = "events",
 ) -> tuple[KafkaBroker, RabbitBroker]:
     """Initialize bridge with configurable topic and consumer group."""
     pass
