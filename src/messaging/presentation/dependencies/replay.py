@@ -19,7 +19,8 @@ async def get_replay_service(
     """Provide replay service with dependencies."""
     queries = OutboxReplayQueries(session)
     broker = request.app.state.broker
-    publisher = KafkaEventPublisher(broker)
+    # Use autoflush=True for replay operations to ensure immediate delivery
+    publisher = KafkaEventPublisher(broker, autoflush=True)
     service = OutboxReplayService(queries, publisher)
     yield service
 
