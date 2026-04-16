@@ -94,6 +94,7 @@ class ProducerServiceV2:
         """Emit event via EventBus (writes to producer_db outbox)."""
         logger.info("=" * 60)
         logger.info("PRODUCER: Emitting event via EventBus")
+        logger.info(f"  📍 Code flow: EventBus.dispatch() → OutboxEventHandler → Database")
         logger.info(f"  Event ID: {event.event_id}")
         logger.info(f"  Event Type: {event.event_type}")
         logger.info(f"  Aggregate ID: {event.aggregate_id}")
@@ -206,7 +207,13 @@ class ProducerServiceV2:
     async def stop(self) -> None:
         """Stop producer service."""
         if self.kafka_producer:
-            # Flush any remaining messages
-            self.kafka_producer.flush(timeout=5.0)
+            # Flush any remaining messages with shorter timeout
+            logger.info("Flushing Kafka producer before shutdown...")
+            unflushed = self.kafka_producer.flush(timeout=2.0)
+            if unflushed > 0:
+                logger.warning(f"⚠️  {unflushed} messages not flushed during shutdown")
+            # Important: Delete producer to cleanly close connections
+            del self.kafka_producer
+            self.kafka_producer = None
         if self.engine:
             await self.engine.dispose()

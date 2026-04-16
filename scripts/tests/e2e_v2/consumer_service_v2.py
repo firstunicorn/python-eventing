@@ -165,6 +165,7 @@ class ConsumerServiceV2:
     async def stop(self) -> None:
         """Stop consumer service."""
         if self.kafka_broker:
+            logger.info("Closing Kafka broker connections...")
             await self.kafka_broker.close()
         if self.engine:
             await self.engine.dispose()
