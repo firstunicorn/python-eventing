@@ -1,6 +1,6 @@
 {
   "test_name": "E2E Test V2 - Database-per-Service Pattern",
-  "start_time": "2026-04-14 23:27:13.530480+00:00",
+  "start_time": "2026-04-16 22:46:35.070607+00:00",
   "producer_db": "eventing-postgres:5432/producer_db",
   "consumer_db": "eventing-postgres:5432/consumer_db",
   "kafka": "localhost:9092 (main eventing-kafka)",
@@ -18,7 +18,7 @@
   ],
   "success": true,
   "errors": [],
-  "event_id": "59fc4a43-5f64-4a6d-9387-09022df781e7",
+  "event_id": "e356ee96-54af-4de1-b824-28a151533ce8",
   "event_type": "test.event_emitted_v2",
   "producer_outbox_count": 1,
   "consumer_received_count": 1,
@@ -27,6 +27,6 @@
   "consumer_db_isolated": true,
   "idempotency_test_received": 1,
   "idempotency_test_processed": 1,
-  "end_time": "2026-04-14 23:27:28.154171+00:00",
-  "duration_seconds": 14.623691
+  "end_time": "2026-04-16 22:46:53.352370+00:00",
+  "duration_seconds": 18.281763
 }

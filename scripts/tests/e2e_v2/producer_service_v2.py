@@ -82,7 +82,8 @@ class ProducerServiceV2:
         logger.info("Connecting to Kafka at localhost:9092")
         self.kafka_producer = Producer({
             'bootstrap.servers': "localhost:9092",
-            'client.id': 'e2e-producer-v2'
+            'client.id': 'e2e-producer-v2',
+            'log_level': 3  # 0=emerg, 1=alert, 2=crit, 3=err, 4=warning (suppress info/debug)
         })
         logger.info("✅ Kafka producer initialized")
         
@@ -94,7 +95,6 @@ class ProducerServiceV2:
         """Emit event via EventBus (writes to producer_db outbox)."""
         logger.info("=" * 60)
         logger.info("PRODUCER: Emitting event via EventBus")
-        logger.info(f"  📍 Code flow: EventBus.dispatch() → OutboxEventHandler → Database")
         logger.info(f"  Event ID: {event.event_id}")
         logger.info(f"  Event Type: {event.event_type}")
         logger.info(f"  Aggregate ID: {event.aggregate_id}")
@@ -111,6 +111,11 @@ class ProducerServiceV2:
         # Clear existing handlers and register new one
         self.event_bus._handlers.clear()  # Note: _handlers is private
         self.event_bus.register(TestEventV2, outbox_handler)
+        
+        logger.info("📍 Executing code:")
+        logger.info("    async with session.begin():")
+        logger.info("        await self.event_bus.dispatch(event)")
+        logger.info("    # Transaction auto-commits here")
         
         logger.info("Starting database transaction")
         async with self.session_factory() as session:

@@ -70,6 +70,7 @@ class ConsumerServiceV2:
             # Consumer config passed via config parameter
             config={
                 'auto.offset.reset': 'earliest',  # Read from beginning for new consumer groups
+                'log_level': 3,  # Suppress info/debug logs (0=emerg to 7=debug)
             }
         )
         logger.info("✅ Kafka broker initialized")
