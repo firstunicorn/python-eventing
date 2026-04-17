@@ -14,6 +14,7 @@ from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
 from fastapi_config_patterns import BaseDatabaseSettings, BaseFastAPISettings
+from messaging.config.event_catalog_settings import EventCatalogSettings
 from messaging.config.kafka_settings import KafkaSettings
 from messaging.config.rabbitmq_settings import RabbitMQSettings
 
@@ -23,6 +24,7 @@ class Settings(
     BaseDatabaseSettings,
     KafkaSettings,
     RabbitMQSettings,
+    EventCatalogSettings,
 ):
     """Application settings loaded from environment variables."""
 

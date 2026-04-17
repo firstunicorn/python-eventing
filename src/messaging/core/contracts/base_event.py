@@ -11,6 +11,7 @@ See Also
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
@@ -36,6 +37,42 @@ class BaseEvent(IOutboxEvent, BaseDomainEvent):  # pylint: disable=too-many-ance
     correlation_id: UUID | None = None
     causation_id: UUID | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("event_type")
+    @classmethod
+    def validate_event_type_format(cls, value: str) -> str:
+        """Enforce domain.entity.event naming convention.
+
+        Examples: orders.order.created, payments.transaction.completed
+        Pattern: lowercase letters, dots between segments, hyphens within segments.
+        """
+        pattern = r"^[a-z]+\.[a-z-]+\.[a-z-]+$"
+        if not re.match(pattern, value):
+            msg = (
+                f"event_type must match pattern: domain.entity.event\n"
+                f"Expected: lowercase with dots (e.g., orders.order.created)\n"
+                f"Got: {value}"
+            )
+            raise ValueError(msg)
+        return value
+
+    @field_validator("source")
+    @classmethod
+    def validate_source_format(cls, value: str) -> str:
+        """Enforce lowercase-with-hyphens service naming convention.
+
+        Examples: order-service, payment-api, user-service
+        Pattern: starts with letter, lowercase alphanumeric and hyphens only.
+        """
+        pattern = r"^[a-z][a-z0-9-]*$"
+        if not re.match(pattern, value):
+            msg = (
+                f"source must be lowercase-with-hyphens\n"
+                f"Expected: lowercase, hyphens, numbers (e.g., order-service)\n"
+                f"Got: {value}"
+            )
+            raise ValueError(msg)
+        return value
 
     @field_validator("occurred_at")
     @classmethod
