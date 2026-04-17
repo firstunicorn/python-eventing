@@ -72,7 +72,7 @@ class BaseEvent(IOutboxEvent, BaseDomainEvent):  # pylint: disable=too-many-ance
         if _catalog_manager:
             # Check if there's a running event loop
             try:
-                loop = asyncio.get_running_loop()
+                asyncio.get_running_loop()
                 # We're in an async context, need to create_task or run_coroutine_threadsafe
                 # For Pydantic validators, we can't await, so we check catalog_data directly
                 if _catalog_manager._catalog_data:
@@ -87,7 +87,7 @@ class BaseEvent(IOutboxEvent, BaseDomainEvent):  # pylint: disable=too-many-ance
                 if catalog:
                     is_valid, message = _catalog_manager.validate_event_type(value)
                     if not is_valid:
-                        raise ValueError(message)
+                        raise ValueError(message) from None
                     if "Warning" in message:
                         logger.warning(message)
 
@@ -115,7 +115,7 @@ class BaseEvent(IOutboxEvent, BaseDomainEvent):  # pylint: disable=too-many-ance
         if _catalog_manager:
             # Check if there's a running event loop
             try:
-                loop = asyncio.get_running_loop()
+                asyncio.get_running_loop()
                 # We're in an async context, check catalog_data directly
                 if _catalog_manager._catalog_data:
                     is_valid, message = _catalog_manager.validate_service_name(value)
@@ -129,7 +129,7 @@ class BaseEvent(IOutboxEvent, BaseDomainEvent):  # pylint: disable=too-many-ance
                 if catalog:
                     is_valid, message = _catalog_manager.validate_service_name(value)
                     if not is_valid:
-                        raise ValueError(message)
+                        raise ValueError(message) from None
                     if "Warning" in message:
                         logger.warning(message)
 
