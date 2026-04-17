@@ -1,6 +1,13 @@
+# Event Registry
+# This file lives in the centralized event-catalog repository (one per organization)
+# Example: https://github.com/your-org/event-catalog.git
+#
+# This registry defines all event types used across the organization.
+# Each service consults THIS repository to validate their events.
+
 [events."orders.order.created"]
 owner_service = "order-service"
 owner_team = "commerce"
 added_date = "2026-01-15"
 schema_version = "1.0"
-description = "Test event"
+description = "Test event for integration tests"
