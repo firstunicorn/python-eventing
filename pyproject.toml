@@ -48,6 +48,7 @@ python-input-validation = "^0.1.0"
 sqlalchemy-async-repositories = "^0.1.0"
 sqlalchemy-async-session-factory = "^0.1.0"
 fastapi-config-patterns = "^0.1.0"
+tomli = "^2.0.1"  # TOML parser for Python <3.11 (backport of tomllib)
 fastapi-middleware-toolkit = "^0.1.0"
 pydantic-response-models = "^0.1.0"
 postgres-data-sanitizers = "^0.1.0"
