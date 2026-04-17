@@ -58,7 +58,7 @@ cross-service handlers small and ensures replay-safe event handling when Kafka
 redelivers a message.
 
 Keep producer-specific translation at the consuming service boundary. For
-example, gamification extensions can map `learning.lesson_completed` into
+example, gamification extensions can map `learning.lesson.completed` into
 `RecordTrustedActivity` without teaching the eventing service about lesson or
 quiz reward logic.
 
@@ -70,7 +70,7 @@ services still publish locally through the package, their own outbox, and Kafka.
 
 ## Topic convention
 
-Use stable namespaced topic names `{domain}.{Action}` style, for example `gamification.XPAwarded`,
-`learning.lesson_completed`, or `assessment.quiz_completed`. The Kafka
+Use stable namespaced topic names following the `domain.entity.event` pattern (all lowercase), for example `gamification.xp.awarded`,
+`learning.lesson.completed`, or `assessment.quiz.completed`. The Kafka
 publisher resolves the topic name from the event payload so producers do not
 need a separate topic map for standard cases.
