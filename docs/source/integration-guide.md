@@ -7,10 +7,20 @@ in-process dispatch and reliable cross-service publication.
 
 ## Install the package
 
-Use a normal package dependency instead of a source checkout:
+Add to your project's `pyproject.toml`:
 
 ```toml
+[tool.poetry.dependencies]
+python = "^3.12"
 python-eventing = "^0.1.0"
+```
+
+Or install directly:
+
+```bash
+pip install python-eventing
+# or
+poetry add python-eventing
 ```
 
 The published distribution name is `python-eventing`, while Python imports use
@@ -19,7 +29,7 @@ The published distribution name is `python-eventing`, while Python imports use
 ## Add a new event schema
 
 1. Create a Pydantic event model that extends
-   `eventing.core.contracts.BaseEvent`.
+   `messaging.core.BaseEvent`.
 2. Declare a stable default `event_type` so the registry can auto-register it.
 3. Keep payload fields transport-safe and JSON-serializable.
 
@@ -32,8 +42,8 @@ producer payload.
 
 1. Register the event class in an `EventRegistry`.
 2. Add dispatcher registrations through
-   `eventing.core.contracts.build_dispatcher` or the higher-level
-   `eventing.core.contracts.build_event_bus`.
+   `messaging.core.build_dispatcher` or the higher-level
+   `messaging.core.build_event_bus`.
 3. Include the outbox writer handler so in-process dispatch automatically
    persists the event inside the same application transaction.
 
@@ -44,16 +54,18 @@ hooks while keeping the current outbox and Kafka data plane unchanged.
 ## Publish through the outbox
 
 1. Persist the domain event with
-   `eventing.infrastructure.outbox.OutboxEventHandler`.
-2. Let `eventing.infrastructure.outbox.OutboxWorker` read unpublished rows.
-3. Publish via `eventing.infrastructure.messaging.KafkaEventPublisher`.
-4. Route terminal failures through
-   `eventing.infrastructure.messaging.DeadLetterHandler`.
+   `messaging.infrastructure.OutboxEventHandler`.
+2. Kafka Connect with Debezium CDC automatically monitors the outbox table and
+   publishes to Kafka (no manual polling needed).
+3. Configure CDC with the Outbox Event Router SMT to route events to topics
+   based on event type.
+
+See {doc}`debezium-cdc-architecture` for CDC connector configuration details.
 
 ## Consume idempotently
 
 Create inbound consumers by extending
-`eventing.infrastructure.messaging.IdempotentConsumerBase`. This keeps
+`messaging.infrastructure.IdempotentConsumerBase`. This keeps
 cross-service handlers small and ensures replay-safe event handling when Kafka
 redelivers a message.
 
