@@ -13,8 +13,8 @@ Use a normal package dependency instead of a source checkout:
 python-eventing = "^0.1.0"
 ```
 
-The published distribution name is `python-eventing`, while Python imports stay
-`from eventing ...`.
+The published distribution name is `python-eventing`, while Python imports use
+`from messaging ...` (not `eventing`).
 
 ## Add a new event schema
 
