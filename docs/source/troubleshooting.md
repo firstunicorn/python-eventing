@@ -41,7 +41,7 @@ Common issues and solutions for `python-eventing` integration.
 1. Ensure `IProcessedMessageStore` is configured in consumer:
    ```python
    from messaging.infrastructure import IdempotentConsumerBase
-   
+
    class MyConsumer(IdempotentConsumerBase):
        def __init__(self, store: IProcessedMessageStore):
            super().__init__(store)
@@ -62,8 +62,8 @@ Common issues and solutions for `python-eventing` integration.
 **Solutions:**
 1. Check outbox table has unpublished events older than threshold:
    ```sql
-   SELECT COUNT(*) FROM outbox_events 
-   WHERE published = false 
+   SELECT COUNT(*) FROM outbox_events
+   WHERE published = false
    AND created_at < NOW() - INTERVAL '5 minutes';
    ```
 
@@ -119,4 +119,4 @@ The PyPI distribution name is `python-eventing`, but imports use `messaging`.
 - Review [Integration Guide](integration-guide.html) for setup verification
 - Check [Debezium CDC Architecture](debezium-cdc-architecture.html) for publishing details
 - See [Consumer Transactions](consumer-transactions.html) for idempotency patterns
-- Open issue on GitHub: https://github.com/firstunicorn/python-eventing/issues
+- [Open issue on GitHub](https://github.com/firstunicorn/python-eventing/issues)
