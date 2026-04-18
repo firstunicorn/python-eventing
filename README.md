@@ -53,8 +53,8 @@ from messaging.infrastructure import SqlAlchemyOutboxRepository
 - Native broker integration (FastStream, Debezium CDC, RabbitMQ DLX)
 
 **Consider alternatives if:**
-- Simple in-process events only → [`pyventus`](https://github.com/mdapena/pyventus)
-- FastAPI request-scoped events → [`fastapi-events`](https://github.com/melvinkcx/fastapi-events)
+- Simple in-process events only → <a href="https://github.com/mdapena/pyventus" target="_blank">`pyventus`</a>
+- FastAPI request-scoped events → <a href="https://github.com/melvinkcx/fastapi-events" target="_blank">`fastapi-events`</a>
 - Non-Kafka message brokers without CDC support
 - No need for durable outbox persistence
 
@@ -64,7 +64,7 @@ Support scale: `❌` none, `✅` basic, `✅✅` strong, `✅✅✅` first-class
 
 `python-eventing` prioritizes **durable messaging** (transactional outbox + CDC) and **Kafka/RabbitMQ integration** over in-process event simplicity:
 
-| Capability | `python-eventing` | [`pyventus`](https://github.com/mdapena/pyventus) | [`fastapi-events`](https://github.com/melvinkcx/fastapi-events) | Notes |
+| Capability | `python-eventing` | <a href="https://github.com/mdapena/pyventus" target="_blank">`pyventus`</a> | <a href="https://github.com/melvinkcx/fastapi-events" target="_blank">`fastapi-events`</a> | Notes |
 | --- | --- | --- | --- | --- |
 | Transactional outbox | ✅✅✅ | ❌ | ❌ | Durable local DB plus outbox boundary is a core feature here |
 | Kafka data plane | ✅✅✅ | ❌ | ❌ | This package is built for Kafka-backed microservice messaging |
