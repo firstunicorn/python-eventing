@@ -71,7 +71,7 @@ If a library configures logging, it:
 
 ### Your eventing service context
 
-Looking at your code, this is a **library/package** (`python-eventing`) that will be imported by other services. Currently it has:
+Looking at your code, this is a **library/package** (`messagekit`) that will be imported by other services. Currently it has:
 - ✅ Zero logging (clean slate)
 - ❌ But violates the "libraries should log" principle
 
@@ -114,7 +114,7 @@ Plan updated successfully! Here are the key changes reflecting that this is a **
 ## What changed
 
 ### 1. Added critical context section
-New section explaining that `python-eventing` is a PyPI library, so it must follow library logging practices (emit logs but never configure).
+New section explaining that `messagekit` is a PyPI library, so it must follow library logging practices (emit logs but never configure).
 
 ### 2. Rewrote section 2 "No logging"
 **Before**: Criticized lack of structlog  
@@ -791,7 +791,7 @@ This ensures links remain valid as your documentation evolves!
 
 **User**
 
-ok add it. It's https://python-eventing.readthedocs.io/en/latest/  exactly
+ok add it. It's https://messagekit.readthedocs.io/en/latest/  exactly
 
 ---
 
@@ -963,19 +963,19 @@ Perfect! Sphinx build completed successfully. Here are the URLs for the newly ad
 **User Guide Pages (Markdown):**
 1. **Transactional Outbox Pattern**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/transactional-outbox.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/transactional-outbox.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/transactional-outbox.html`
 
 2. **Dead Letter Queue Handlers**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/dlq-handlers.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/dlq-handlers.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/dlq-handlers.html`
 
 3. **Consumer Transaction Management**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/consumer-transactions.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/consumer-transactions.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/consumer-transactions.html`
 
 4. **Exception Handling Strategy**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/exception-handling.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/exception-handling.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/exception-handling.html`
 
 **New AutoAPI Generated Pages (from code splits):**
 - `outbox_crud`: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/autoapi/eventing/infrastructure/outbox/outbox_crud/index.html`

@@ -24,7 +24,7 @@ Replace `monkeypatch.setenv()` with `monkeypatch.setattr()` to directly mutate t
 monkeypatch.setenv("KAFKA_BOOTSTRAP_SERVERS", kafka_bootstrap)
 
 # CORRECT:
-from messaging.config import settings as app_settings
+from messagekit.config import settings as app_settings
 monkeypatch.setattr(app_settings, "kafka_bootstrap_servers", kafka_bootstrap)
 ```
 

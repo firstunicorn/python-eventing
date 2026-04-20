@@ -25,7 +25,7 @@ Use `monkeypatch.setattr()` to directly mutate the settings singleton:
 monkeypatch.setenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
 
 # CORRECT — bypasses env var resolution:
-from messaging.config import settings as app_settings
+from messagekit.config import settings as app_settings
 monkeypatch.setattr(app_settings, "kafka_bootstrap_servers", "localhost:9092")
 ```
 

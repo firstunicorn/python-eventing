@@ -76,7 +76,7 @@ be integrated. Decision was made to integrate.
 
 ```markdown
 ✅ Good:
-- Imported build_event_bus from messaging.core.contracts
+- Imported build_event_bus from messagekit.core.contracts
 - Added EventBus initialization in lifespan() with empty handler list
 - Exposed via app.state.event_bus
 

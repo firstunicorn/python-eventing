@@ -71,7 +71,7 @@ If a library configures logging, it:
 
 ### Your eventing service context
 
-Looking at your code, this is a **library/package** (`python-eventing`) that will be imported by other services. Currently it has:
+Looking at your code, this is a **library/package** (`messagekit`) that will be imported by other services. Currently it has:
 - ✅ Zero logging (clean slate)
 - ❌ But violates the "libraries should log" principle
 
@@ -114,7 +114,7 @@ Plan updated successfully! Here are the key changes reflecting that this is a **
 ## What changed
 
 ### 1. Added critical context section
-New section explaining that `python-eventing` is a PyPI library, so it must follow library logging practices (emit logs but never configure).
+New section explaining that `messagekit` is a PyPI library, so it must follow library logging practices (emit logs but never configure).
 
 ### 2. Rewrote section 2 "No logging"
 **Before**: Criticized lack of structlog  
@@ -815,7 +815,7 @@ This ensures links remain valid as your documentation evolves!
 
 **User**
 
-ok add it. It's https://python-eventing.readthedocs.io/en/latest/  exactly
+ok add it. It's https://messagekit.readthedocs.io/en/latest/  exactly
 
 ---
 
@@ -987,19 +987,19 @@ Perfect! Sphinx build completed successfully. Here are the URLs for the newly ad
 **User Guide Pages (Markdown):**
 1. **Transactional Outbox Pattern**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/transactional-outbox.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/transactional-outbox.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/transactional-outbox.html`
 
 2. **Dead Letter Queue Handlers**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/dlq-handlers.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/dlq-handlers.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/dlq-handlers.html`
 
 3. **Consumer Transaction Management**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/consumer-transactions.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/consumer-transactions.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/consumer-transactions.html`
 
 4. **Exception Handling Strategy**
    - Local: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/exception-handling.html`
-   - ReadTheDocs: `https://python-eventing.readthedocs.io/en/latest/exception-handling.html`
+   - ReadTheDocs: `https://messagekit.readthedocs.io/en/latest/exception-handling.html`
 
 **New AutoAPI Generated Pages (from code splits):**
 - `outbox_crud`: `file:///c:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/autoapi/eventing/infrastructure/outbox/outbox_crud/index.html`
@@ -1855,7 +1855,7 @@ I am currently in **Ask mode** (Read-only), so I cannot fix the test mock myself
 
 2)@src/eventing  comes up with few naming ideas rate, pros cons, Recommended. It's bad to have eventing folder inside of eventing library
 
-3) In docs there is links file:///C:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/dlq-handlers.html like this: https://python-eventing.readthedocs.io/en/latest/autoapi/eventing/infrastructure/messaging/index.html . Change them to hyperlink 
+3) In docs there is links file:///C:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/dlq-handlers.html like this: https://messagekit.readthedocs.io/en/latest/autoapi/eventing/infrastructure/messaging/index.html . Change them to hyperlink 
 
 ---
 
@@ -1872,7 +1872,7 @@ Now that we've completely removed the legacy backward-compatibility wrapper (`de
 
 ### 2) Naming ideas for `src/eventing`
 
-Having `src/eventing` inside a library called `eventing` (or `python-eventing`) is actually a standard Python convention when using the `src/` layout. It ensures that the import statement matches the package name (`import eventing`). 
+Having `src/eventing` inside a library called `eventing` (or `messagekit`) is actually a standard Python convention when using the `src/` layout. It ensures that the import statement matches the package name (`import eventing`). 
 
 However, if you want to rename the core package directory to avoid stuttering or to be more descriptive, here are some options evaluated:
 
@@ -1892,10 +1892,10 @@ If you want to move away from `eventing`, `python_outbox` is the strongest candi
 ### 3) Changing raw URLs to Hyperlinks in docs
 
 In the markdown files, there are raw URLs at the top of the files like:
-`**API Reference:** https://python-eventing.readthedocs.io/en/latest/...`
+`**API Reference:** https://messagekit.readthedocs.io/en/latest/...`
 
 To change these to markdown hyperlinks, they should be formatted like this:
-`**API Reference:** [eventing.infrastructure.messaging.kafka_consumer_base](https://python-eventing.readthedocs.io/en/latest/autoapi/eventing/infrastructure/messaging/kafka_consumer_base/index.html)`
+`**API Reference:** [eventing.infrastructure.messaging.kafka_consumer_base](https://messagekit.readthedocs.io/en/latest/autoapi/eventing/infrastructure/messaging/kafka_consumer_base/index.html)`
 
 This is definitely a good change for readability and standard markdown styling.
 
@@ -2042,7 +2042,7 @@ Here are the best options to solve this underselling problem:
 
 ### 1. `messaging`
 This is the most standard, enterprise-grade term for a library that handles buses, brokers, and reliability patterns.
-* **Imports:** `from messaging.core import EventBus` | `from messaging.infrastructure import ScheduledOutboxWorker`
+* **Imports:** `from messagekit.core import EventBus` | `from messagekit.infrastructure import ScheduledOutboxWorker`
 * **Why it solves it:** "Messaging" encompasses producing (outbox), routing (bus), and consuming (idempotent inbox). It leaves nothing out.
 * **Verdict:** Highly recommended. Clean, professional, and comprehensive.
 
@@ -2093,7 +2093,7 @@ Here is the rating and breakdown for the options that solve the "underselling" p
 
 | Name | Rating | Pros | Cons |
 | :--- | :--- | :--- | :--- |
-| **`messaging`** | **95/100** | Industry standard. Perfectly encompasses the outbox, the bus, the broker, and the idempotent consumer. Extremely clean imports (`from messaging.core import EventBus`, `from messaging.infrastructure.outbox import SqlAlchemyOutboxRepository`). | Slightly generic, but in a microservices context, everyone knows what "messaging" means. |
+| **`messaging`** | **95/100** | Industry standard. Perfectly encompasses the outbox, the bus, the broker, and the idempotent consumer. Extremely clean imports (`from messagekit.core import EventBus`, `from messagekit.infrastructure.outbox import SqlAlchemyOutboxRepository`). | Slightly generic, but in a microservices context, everyone knows what "messaging" means. |
 | **`event_bus`** | **90/100** | Highly descriptive of the primary developer interaction point. "Bus" implies both routing (dispatch) and transport (Kafka/Outbox). | "Bus" usually implies the routing part, so it slightly downplays the heavy persistence lifting done by the Outbox and Inbox patterns. |
 | **`events`** | **85/100** | Very concise. Zero stuttering. Focuses on the noun being moved around. | Can clash with local variables or domain concepts (e.g., a file named `events.py` in another app could shadow it). |
 | **`reliable_messaging`** | **80/100** | Explicitly states the architectural guarantees (which is exactly what Outbox + Idempotent Consumer provides). | A bit long to type for every import. |
@@ -2113,7 +2113,7 @@ also:
 
 1) rename universal_dead_letter to just dead_letter_... 
 
-3) In docs there is links file:///C:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/dlq-handlers.html like this: https://python-eventing.readthedocs.io/en/latest/autoapi/eventing/infrastructure/messaging/index.html . Change them to hyperlink 
+3) In docs there is links file:///C:/coding/gridflow-microservices-codex-taskmaster/microservices/eventing/docs/build/html/dlq-handlers.html like this: https://messagekit.readthedocs.io/en/latest/autoapi/eventing/infrastructure/messaging/index.html . Change them to hyperlink 
 
 ---
 
@@ -2191,7 +2191,7 @@ Excellent! All unit tests are passing! The refactoring is complete. Let me provi
 
 ✅ **Task 2: Renamed `src/eventing` to `src/messaging`**
 - Directory was already renamed to `src/messaging`
-- Updated all imports from `from eventing.` to `from messaging.` across:
+- Updated all imports from `from eventing.` to `from messagekit.` across:
   - All source files (44+ files)
   - All test files (11+ files)
   - All docstring references
@@ -2336,7 +2336,7 @@ The refactoring affected 55+ files across the entire codebase:
 - 4 configuration files (pyproject.toml, setup.cfg, .importlinter, docs/conf.py)
 
 ### Import Chain Complexity
-Every `from eventing.` import needed updating to `from messaging.`, including:
+Every `from eventing.` import needed updating to `from messagekit.`, including:
 - Direct imports in Python files
 - Docstring cross-references (See also sections)
 - Test module imports
@@ -2367,7 +2367,7 @@ After completing the rename, one integration test failed:
 
 ### Package Rename
 - Directory: `src/eventing/` → `src/messaging/`
-- All imports: `from eventing.*` → `from messaging.*`
+- All imports: `from eventing.*` → `from messagekit.*`
 - Updated in:
   - Core business logic (contracts, bus, events)
   - Infrastructure layer (messaging, outbox, persistence, health)
@@ -2388,12 +2388,12 @@ Converted raw URLs to markdown hyperlinks in:
 
 Format changed from:
 ```markdown
-**API Reference:** https://python-eventing.readthedocs.io/...
+**API Reference:** https://messagekit.readthedocs.io/...
 ```
 
 To:
 ```markdown
-**API Reference:** [DeadLetterHandler](https://python-eventing.readthedocs.io/...)
+**API Reference:** [DeadLetterHandler](https://messagekit.readthedocs.io/...)
 ```
 
 ### Test Mock Fix
@@ -2438,9 +2438,9 @@ from eventing.infrastructure.messaging import KafkaEventPublisher
 from eventing.infrastructure.messaging.universal_dead_letter_handler import DeadLetterHandler
 
 # After
-from messaging.core.contracts import BaseEvent
-from messaging.infrastructure.messaging import KafkaEventPublisher
-from messaging.infrastructure.messaging.dead_letter_handler import DeadLetterHandler
+from messagekit.core.contracts import BaseEvent
+from messagekit.infrastructure.messaging import KafkaEventPublisher
+from messagekit.infrastructure.messaging.dead_letter_handler import DeadLetterHandler
 ```
 ```
 
@@ -2693,26 +2693,26 @@ async def outbox_health(checker: OutboxHealthCheckDep) -> dict[str, str]:
 - 4 configuration files
 
 **Import chain complexity**:
-- Every `from eventing.` → `from messaging.`
+- Every `from eventing.` → `from messagekit.`
 - Docstring "See also" cross-references
 - Test monkeypatch attribute strings
 - Configuration tool settings (setup.cfg, pyproject.toml, .importlinter)
 - Sphinx autodoc paths (docs/conf.py)
 
 **Configuration updates**:
-- `pyproject.toml`: `packages = [{include = "messaging", from = "src"}]`
-- `pyproject.toml`: `known_first_party = ["messaging"]` (deptry + isort)
+- `pyproject.toml`: `packages = [{include = "messagekit", from = "src"}]`
+- `pyproject.toml`: `known_first_party = ["messagekit"]` (deptry + isort)
 - `setup.cfg`: Updated flake8 per-file-ignores paths
 - `.importlinter`: `root_package = messaging` and all layer definitions
-- `docs/source/conf.py`: `autoapi_dirs = [str(SRC_DIR / "messaging")]`
+- `docs/source/conf.py`: `autoapi_dirs = [str(SRC_DIR / "messagekit")]`
 
 **Documentation URL cleanup**:
 ```markdown
 # BEFORE:
-**API Reference:** https://python-eventing.readthedocs.io/...
+**API Reference:** https://messagekit.readthedocs.io/...
 
 # AFTER:
-**API Reference:** [DeadLetterHandler](https://python-eventing.readthedocs.io/...)
+**API Reference:** [DeadLetterHandler](https://messagekit.readthedocs.io/...)
 ```
 
 **Hidden reference categories found and fixed**:
@@ -2735,10 +2735,10 @@ from eventing.infrastructure.messaging.universal_dead_letter_handler import Dead
 from eventing.infrastructure.outbox import SqlAlchemyOutboxRepository
 
 # AFTER:
-from messaging.core.contracts import BaseEvent, EventRegistry
-from messaging.infrastructure.messaging import KafkaEventPublisher
-from messaging.infrastructure.messaging.dead_letter_handler import DeadLetterHandler
-from messaging.infrastructure.outbox import SqlAlchemyOutboxRepository
+from messagekit.core.contracts import BaseEvent, EventRegistry
+from messagekit.infrastructure.messaging import KafkaEventPublisher
+from messagekit.infrastructure.messaging.dead_letter_handler import DeadLetterHandler
+from messagekit.infrastructure.outbox import SqlAlchemyOutboxRepository
 
 # TRANSACTIONAL OUTBOX (NEW PATTERN):
 async with session_factory() as session:
@@ -2800,7 +2800,7 @@ async with session_factory() as session:
 1. **Package name**: `eventing` → `messaging`
 2. **Outbox repository**: `add_event()` now accepts optional `session` parameter
 3. **DLQ handler**: Renamed `universal_dead_letter_handler.py` → `dead_letter_handler.py`
-4. **Imports**: All `from eventing.*` must change to `from messaging.*`
+4. **Imports**: All `from eventing.*` must change to `from messagekit.*`
 
 ## Time Investment
 
@@ -3077,14 +3077,14 @@ Good. The import in `kafka/__init__.py` will still work because it imports `Kafk
 
 The handler.py and publisher.py files both use:
 ```python
-from messaging.infrastructure.messaging.kafka.kafka_dead_letter_handler import helpers
+from messagekit.infrastructure.messaging.kafka.kafka_dead_letter_handler import helpers
 ```
 
 This should resolve to `kafka/kafka_dead_letter_handler/helpers.py` correctly. Let me verify the config import:
 
 The handler.py also has:
 ```python
-from messaging.infrastructure.messaging.kafka.kafka_dead_letter_handler.config import KafkaDLQConfig
+from messagekit.infrastructure.messaging.kafka.kafka_dead_letter_handler.config import KafkaDLQConfig
 ```
 
 This will resolve to `kafka/kafka_dead_letter_handler/config.py` which is correct.
@@ -4033,10 +4033,10 @@ In our codebase, it prevents circular imports and reduces import overhead. For e
 if TYPE_CHECKING:
     from typing import Protocol
 
-    from messaging.infrastructure.messaging.kafka.kafka_dead_letter_handler.config import (
+    from messagekit.infrastructure.messaging.kafka.kafka_dead_letter_handler.config import (
         KafkaDLQConfig,
     )
-    from messaging.infrastructure.messaging.kafka_publisher import KafkaEventPublisher
+    from messagekit.infrastructure.messaging.kafka_publisher import KafkaEventPublisher
     from python_outbox_core import IOutboxRepository
 ```
 
@@ -4568,7 +4568,7 @@ Now I need to create the `__init__.py` for it. But wait - there was already a `p
 
 Now I need to:
 1. Create `consumer_base/__init__.py` with re-exports
-2. Update `pubsub/__init__.py` line 32: `from messaging.infrastructure.pubsub.kafka_consumer_base` → `from messaging.infrastructure.pubsub.consumer_base.kafka_consumer_base`
+2. Update `pubsub/__init__.py` line 32: `from messagekit.infrastructure.pubsub.kafka_consumer_base` → `from messagekit.infrastructure.pubsub.consumer_base.kafka_consumer_base`
 
 
 
@@ -4638,13 +4638,13 @@ I need to use `find_referencing_symbols` with the correct parameters. Let me che
 Let me update the imports across all files. I know the pattern - I need to replace old import paths with the new subfolder paths. Let me do a global find-and-replace using StrReplace with replace_all across all files that have the old paths. Let me check each unique old path:
 
 Old → New mapping:
-- `from messaging.infrastructure.pubsub.consumer_consume` → `from messaging.infrastructure.pubsub.consumer_base.consumer_consume`
-- `from messaging.infrastructure.pubsub.consumer_helpers` → `from messaging.infrastructure.pubsub.consumer_base.consumer_helpers`
-- `from messaging.infrastructure.pubsub.consumer_validators` → `from messaging.infrastructure.pubsub.consumer_base.consumer_validators`
-- `from messaging.infrastructure.pubsub.kafka_consumer_base` → `from messaging.infrastructure.pubsub.consumer_base.kafka_consumer_base`
-- `from messaging.infrastructure.persistence.processed_message_store import` → `from messaging.infrastructure.persistence.processed_message_store.processed_message_store import`
-- `from messaging.infrastructure.persistence.outbox_orm` → `from messaging.infrastructure.persistence.orm_models.outbox_orm`
-- `from messaging.infrastructure.persistence.processed_message_orm` → `from messaging.infrastructure.persistence.orm_models.processed_message_orm`
+- `from messagekit.infrastructure.pubsub.consumer_consume` → `from messagekit.infrastructure.pubsub.consumer_base.consumer_consume`
+- `from messagekit.infrastructure.pubsub.consumer_helpers` → `from messagekit.infrastructure.pubsub.consumer_base.consumer_helpers`
+- `from messagekit.infrastructure.pubsub.consumer_validators` → `from messagekit.infrastructure.pubsub.consumer_base.consumer_validators`
+- `from messagekit.infrastructure.pubsub.kafka_consumer_base` → `from messagekit.infrastructure.pubsub.consumer_base.kafka_consumer_base`
+- `from messagekit.infrastructure.persistence.processed_message_store import` → `from messagekit.infrastructure.persistence.processed_message_store.processed_message_store import`
+- `from messagekit.infrastructure.persistence.outbox_orm` → `from messagekit.infrastructure.persistence.orm_models.outbox_orm`
+- `from messagekit.infrastructure.persistence.processed_message_orm` → `from messagekit.infrastructure.persistence.orm_models.processed_message_orm`
 
 ---
 
@@ -5706,7 +5706,7 @@ You're right - TOML does support comments in standard table format. The issue wa
 check if missed something from comments before
 [tool.deptry]
 extend_exclude = ["docs"]
-known_first_party = ["messaging"]
+known_first_party = ["messagekit"]
 # DEP002: dev/CLI tools and runtime-only drivers not imported by src/ code.
 #   - CLI tools: safety, pylint, flake8, interrogate, deptry, mypy, bandit, vulture, import-linter
 #   - Runtime-only: uvicorn (ASGI server), asyncpg (SQLAlchemy driver), alembic (migrations CLI)
@@ -5920,7 +5920,7 @@ Now I need to update the imports in outbox/__init__.py:
 
 
 
-The existing import path `from messaging.infrastructure.outbox.outbox_worker import ScheduledOutboxWorker` will continue to work because `outbox_worker/` is now a package with `__init__.py` that re-exports the class. Let me verify everything compiles:
+The existing import path `from messagekit.infrastructure.outbox.outbox_worker import ScheduledOutboxWorker` will continue to work because `outbox_worker/` is now a package with `__init__.py` that re-exports the class. Let me verify everything compiles:
 
 
 

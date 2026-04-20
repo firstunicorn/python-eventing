@@ -102,7 +102,7 @@ def initialize_production_bridge(
     kafka_topic: str = "events",  # NEW PARAMETER
 ) -> tuple[Any, Any]:
     """Initialize bridge with configurable topic."""
-    from messaging.infrastructure.pubsub.bridge.config import BridgeConfig
+    from messagekit.infrastructure.pubsub.bridge.config import BridgeConfig
     
     broker, rabbit_broker, rabbit_publisher = initialize_brokers_and_publishers()
     bridge_config = BridgeConfig(

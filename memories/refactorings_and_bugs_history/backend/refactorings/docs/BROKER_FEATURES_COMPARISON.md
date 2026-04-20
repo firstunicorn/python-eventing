@@ -781,7 +781,7 @@ This example demonstrates **when to use each broker** in the same service:
 ```python
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from messaging.infrastructure import SqlAlchemyOutboxRepository, RabbitEventPublisher
+from messagekit.infrastructure import SqlAlchemyOutboxRepository, RabbitEventPublisher
 
 class OrderService:
     """Order service using BOTH brokers for different purposes."""
