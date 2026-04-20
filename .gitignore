@@ -63,6 +63,7 @@ dmypy.json
 
 # Documentation builds / Sphinx docs
 docs/_build/
+docs/build/
 docs/.doctrees/
 docs/source/autoapi/
 docs/autoapi/
