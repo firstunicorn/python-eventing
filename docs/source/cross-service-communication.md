@@ -158,12 +158,12 @@ async def handle_user_created(message: dict):
 The bridge service (part of standard architecture) runs the Kafka → RabbitMQ forwarder:
 
 ```python
-# eventing-bridge/main.py (thin wrapper service)
+# messagekit-bridge/main.py (thin wrapper service)
 from fastapi import FastAPI
 from messagekit.main._initialization.bridge_setup import initialize_production_bridge
 from messagekit.config import settings
 
-app = FastAPI(title="Eventing Bridge")
+app = FastAPI(title="Messagekit Bridge")
 
 @app.on_event("startup")
 async def startup():
@@ -292,8 +292,8 @@ services:
     networks:
       - microservices-network
 
-  eventing-bridge:
-    build: ./eventing-bridge
+  messagekit-bridge:
+    build: ./messagekit-bridge
     depends_on:
       - kafka
       - rabbitmq
@@ -530,7 +530,7 @@ async with session.begin():
 
 1. Check bridge service logs:
    ```bash
-   docker logs eventing-bridge
+   docker logs messagekit-bridge
    ```
 
 2. Verify bridge environment variables:

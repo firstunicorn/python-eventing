@@ -73,25 +73,6 @@ Common issues and solutions for `messagekit` integration.
 
 4. Check database connection pool exhaustion
 
-## Import errors
-
-**Symptom:**
-```python
-ModuleNotFoundError: No module named 'eventing'
-```
-
-**Solution:**
-The import package is `messagekit`, not `eventing`:
-```python
-# Correct
-from messagekit.core import BaseEvent
-
-# Incorrect
-from eventing.core import BaseEvent  # ❌
-```
-
-The PyPI distribution name is `messagekit`, matching the import package name.
-
 ## Performance issues
 
 **Symptoms:**

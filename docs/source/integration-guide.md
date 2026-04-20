@@ -70,7 +70,7 @@ redelivers a message.
 
 Keep producer-specific translation at the consuming service boundary. For
 example, gamification extensions can map `learning.lesson.completed` into
-`RecordTrustedActivity` without teaching the eventing service about lesson or
+`RecordTrustedActivity` without teaching the messagekit library about lesson or
 quiz reward logic.
 
 ## Optional later extension

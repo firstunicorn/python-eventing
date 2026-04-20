@@ -1,6 +1,6 @@
-# Python Eventing
+# messagekit
 
-Package-first universal eventing infrastructure shared across
+Package-first universal messaging infrastructure shared across
 microservices. Services should install the `messagekit` distribution and
 import it as `messagekit`. The package owns reusable event contracts, outbox
 persistence, Kafka publishing/consumption primitives, DLQ handling, health

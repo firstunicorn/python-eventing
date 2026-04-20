@@ -4,7 +4,7 @@
 
 ## Overview
 
-The eventing service provides two DLQ handler implementations:
+The messagekit library provides two DLQ handler implementations:
 
 1. **Universal DLQ handler** - Broker-agnostic, works with any message broker
 2. **Kafka-specific DLQ handler** - Leverages Kafka features (headers, partitions, timestamps)

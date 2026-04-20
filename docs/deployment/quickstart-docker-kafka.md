@@ -79,7 +79,7 @@ Edit `.env`:
 KAFKA_BOOTSTRAP_SERVERS=localhost:9092
 
 # Only needed for transactional outbox pattern:
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/eventing
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/messagekit
 ```
 
 ### 2. Start infrastructure
@@ -131,7 +131,7 @@ For transactional outbox pattern, configure Debezium CDC connector. This tells K
 | `database.port` | `5432` | PostgreSQL default port |
 | `database.user` | `postgres` | From docker-compose.yml `POSTGRES_USER` |
 | `database.password` | `postgres` | From docker-compose.yml `POSTGRES_PASSWORD` |
-| `database.dbname` | `eventing` | From docker-compose.yml `POSTGRES_DB` |
+| `database.dbname` | `messagekit` | From docker-compose.yml `POSTGRES_DB` |
 | `database.server.name` | `myapp` | Arbitrary logical name (choose any) |
 | `table.include.list` | `public.outbox_events` | Table name from messagekit ORM model |
 
@@ -146,7 +146,7 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
     "database.port": "5432",
     "database.user": "postgres",
     "database.password": "postgres",
-    "database.dbname": "eventing",
+    "database.dbname": "messagekit",
     "database.server.name": "myapp",
     "table.include.list": "public.outbox_events",
     "transforms": "outbox",
@@ -155,7 +155,7 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
 }'
 ```
 
-**Note**: If you changed `POSTGRES_DB` in docker-compose.yml or `DATABASE_URL` in .env, use that database name instead of `eventing`.
+**Note**: If you changed `POSTGRES_DB` in docker-compose.yml or `DATABASE_URL` in .env, use that database name instead of `messagekit`.
 
 Verify: `curl http://localhost:8083/connectors/outbox-connector/status`
 
@@ -198,8 +198,8 @@ docker-compose logs -f kafka
 docker-compose down
 
 # Kafka operations
-docker exec eventing-kafka kafka-topics --list --bootstrap-server localhost:9092
-docker exec eventing-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic events --from-beginning
+docker exec messagekit-kafka kafka-topics --list --bootstrap-server localhost:9092
+docker exec messagekit-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic events --from-beginning
 
 # Kafka Connect (if using outbox)
 curl http://localhost:8083/connectors

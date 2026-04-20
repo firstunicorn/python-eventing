@@ -1,7 +1,7 @@
 # Event catalog
 
-The canonical event contract is defined by the installable `eventing` import
-package via `eventing.core.contracts.BaseEvent`.
+The canonical event contract is defined by the installable `messagekit` import
+package via `messagekit.core.contracts.BaseEvent`.
 Every published event shares the fields below before service-specific payload
 fields are added.
 
@@ -18,7 +18,7 @@ fields are added.
 | `metadata` | Extra transport-safe attributes. |
 
 The transport envelope is produced through
-`eventing.core.contracts.EventEnvelopeFormatter`, which wraps each event as a
+`messagekit.core.contracts.EventEnvelopeFormatter`, which wraps each event as a
 CloudEvents 1.0 payload before publication.
 
 ## Event type and source validation
@@ -82,7 +82,7 @@ events_published = ["orders.order.created"]
 
 > **Note:** The events below are purely illustrative examples. The `messagekit` library does *not* contain any hardcoded business payloads or domains (like gamification).
 
-The eventing service does not define producer-specific business payloads.
+The messagekit library does not define producer-specific business payloads.
 Instead, it provides the reusable base contract that other services extend. The
 rows below show how a theoretical gamification service might structure its domain
 events using that shared contract.
@@ -95,7 +95,7 @@ events using that shared contract.
 
 ## Trusted backend fact examples
 
-> **Note:** Similarly, these are purely theoretical examples of how other microservices might use the eventing contracts.
+> **Note:** Similarly, these are purely theoretical examples of how other microservices might use the messagekit contracts.
 
 Producer services can also publish facts for downstream consumers without
 embedding reward decisions in the payload. These events still use the shared
@@ -121,5 +121,5 @@ The outbox table persists:
 - timestamps and publication bookkeeping
 
 That persistence format is implemented by
-`eventing.infrastructure.outbox.SqlAlchemyOutboxRepository` and the
-`eventing.infrastructure.persistence.OutboxRecord` ORM model.
+`messagekit.infrastructure.outbox.SqlAlchemyOutboxRepository` and the
+`messagekit.infrastructure.persistence.OutboxRecord` ORM model.

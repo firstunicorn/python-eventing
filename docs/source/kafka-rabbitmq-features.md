@@ -82,7 +82,7 @@ await publisher.publish({
 ```python
 kafka_consumer_conf: dict[str, str] = Field(
     default_factory=lambda: {
-        "group.id": "eventing-consumers",
+        "group.id": "messagekit-consumers",
         "partition.assignment.strategy": "cooperative-sticky",
         "max.poll.interval.ms": "600000",
         "session.timeout.ms": "45000",
@@ -102,7 +102,7 @@ Topic: user.created (3 partitions)
 │ Partition 0 │ Partition 1 │ Partition 2 │
 └──────┬───────────┬─────────────┬─────┘
        │           │             │
-Consumer Group "eventing-consumers"
+Consumer Group "messagekit-consumers"
 ┌──────▼─────┐ ┌──▼─────┐ ┌─────▼──────┐
 │ Consumer 1 │ │ Consumer 2 │ │ Consumer 3 │
 └────────────┘ └────────┘ └────────────┘
@@ -500,7 +500,7 @@ class KafkaSettings(BaseModel):
     
     kafka_consumer_conf: dict[str, str] = Field(
         default_factory=lambda: {
-            "group.id": "eventing-consumers",
+            "group.id": "messagekit-consumers",
             "partition.assignment.strategy": "cooperative-sticky",
             "max.poll.interval.ms": "600000",  # 10 minutes
             "session.timeout.ms": "45000",      # 45 seconds

@@ -31,7 +31,7 @@ Kafka consumer groups maintain offset state across topic partitions. When multip
 # test_idempotency.py expects only:
 {"event_id": "idempotent-prod-{uuid}", "event_type": "order.placed"}
 
-# But receives BOTH because same consumer group "eventing-consumers"
+# But receives BOTH because same consumer group "messagekit-consumers"
 ```
 
 ## Solution
@@ -46,7 +46,7 @@ def setup_test_containers_config(
     monkeypatch,
     kafka_topic: str = "events",
     exchange: str = "test-events",
-    consumer_group_id: str = "eventing-consumers",
+    consumer_group_id: str = "messagekit-consumers",
 ) -> tuple[str, str, str]:  # Returns (kafka_url, rabbit_url, group_id)
     """Configure app settings with UNIQUE test identifiers."""
     # Monkeypatch settings with unique values
@@ -121,7 +121,7 @@ def setup_test_containers_config(
     monkeypatch,
     kafka_topic: str = "events",
     exchange: str = "test-events",
-    consumer_group_id: str = "eventing-consumers",
+    consumer_group_id: str = "messagekit-consumers",
 ) -> tuple[str, str, str]:
     """Configure test containers with unique identifiers.
     
@@ -132,7 +132,7 @@ def setup_test_containers_config(
 
 def initialize_production_bridge(
     session_factory,
-    consumer_group_id: str = "eventing-consumers",
+    consumer_group_id: str = "messagekit-consumers",
     kafka_topic: str = "events",
 ) -> tuple[KafkaBroker, RabbitBroker]:
     """Initialize bridge with configurable topic and consumer group."""

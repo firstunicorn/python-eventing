@@ -24,14 +24,14 @@ Now using broker-level consumer group config via `config` parameter:
 
 ```python
 # Before (aiokafka - subscriber level):
-@broker.subscriber("topic", group_id="eventing-consumers", 
+@broker.subscriber("topic", group_id="messagekit-consumers", 
                    partition_assignment_strategy="cooperative-sticky")
 
 # After (confluent - broker level):
 broker = KafkaBroker(
     bootstrap_servers="...",
     config={
-        "group.id": "eventing-consumers",
+        "group.id": "messagekit-consumers",
         "partition.assignment.strategy": "cooperative-sticky",
         "max.poll.interval.ms": "300000",
         # ... other librdkafka settings
@@ -72,7 +72,7 @@ Consumer group settings follow librdkafka format:
 ### Current Settings
 ```python
 kafka_consumer_conf = {
-    "group.id": "eventing-consumers",
+    "group.id": "messagekit-consumers",
     "partition.assignment.strategy": "cooperative-sticky",
     "max.poll.interval.ms": "300000",
     "session.timeout.ms": "45000",

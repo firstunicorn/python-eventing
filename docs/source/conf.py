@@ -1,4 +1,4 @@
-"""Sphinx configuration for the eventing service."""
+"""Sphinx configuration for the messagekit library."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 SRC_DIR = ROOT_DIR / "src"
 sys.path.insert(0, str(SRC_DIR))
 
-project = "Python Eventing"
+project = "messagekit"
 author = "FirstUnicorn"
 copyright = "2026, FirstUnicorn"
 root_doc = "index"
@@ -18,7 +18,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
-    # "autoapi.extension",  # Disabled due to KeyError on eventing.config.settings
+    # "autoapi.extension",  # Disabled due to KeyError on messagekit.config.settings
     "myst_parser",
     "sphinx_copybutton",
     "sphinx_llms_txt",
@@ -73,6 +73,6 @@ myst_heading_anchors = 3
 
 llms_txt_title = project
 llms_txt_summary = (
-    "Universal eventing primitives for canonical events, transactional outbox "
+    "Universal messaging primitives for canonical events, transactional outbox "
     "publishing, Kafka integration, and service wiring."
 )
