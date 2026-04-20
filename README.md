@@ -1,11 +1,12 @@
 # Eventing
 
-[Documentation Status](https://messagekit.readthedocs.io/en/latest/?badge=latest)
-[Tests](https://github.com/firstunicorn/messagekit/actions)
-[Python](https://www.python.org/downloads/)
-[License](LICENSE)
-[Code Style](https://github.com/astral-sh/ruff)
-[Validate Dependencies](https://github.com/firstunicorn/messagekit/actions/workflows/validate-dependencies.yml)
+[![Documentation Status](https://readthedocs.org/projects/messagekit/badge/?version=latest)](https://messagekit.readthedocs.io/en/latest/?badge=latest)
+[![Tests](https://github.com/firstunicorn/messagekit/actions/workflows/tests.yml/badge.svg)](https://github.com/firstunicorn/messagekit/actions/workflows/tests.yml)
+[![Linters](https://github.com/firstunicorn/messagekit/actions/workflows/linters.yml/badge.svg)](https://github.com/firstunicorn/messagekit/actions/workflows/linters.yml)
+[![PyPI](https://img.shields.io/pypi/v/messagekit)](https://pypi.org/project/messagekit/)
+[![Python](https://img.shields.io/pypi/pyversions/messagekit)](https://pypi.org/project/messagekit/)
+[![License](https://img.shields.io/github/license/firstunicorn/messagekit)](LICENSE)
+[![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 ## Table of contents
 
